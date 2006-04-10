@@ -133,6 +133,16 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
             }
         }, true);
     }
+
+    public List loadByCriteria(final CriteriaSpecifiable specifier) throws DataAccessException {
+        return (List) execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Criteria criteria = specifier.specify(session);
+                prepareCriteria(criteria);
+                return getHibernateDtoCopier().hibernate2dto(criteria.list() /*, getSessionFactory() */);
+            }
+        }, true);
+    }
     
     //-------------------------------------------------------------------------
     // Convenience finder methods for HQL strings
@@ -245,4 +255,5 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
             }
         }, true);
     }
+
 }
