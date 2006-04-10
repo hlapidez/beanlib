@@ -1,0 +1,58 @@
+beanlib 3.1.0
+-------------
+* Drop the support of Hibernate 2 (ie only support Hibernate 3)
+* Simplify the implementation of Hibernate DTO Copier
+* Add JUnit test for Hibernate DTO Copier
+* Further generify
+
+beanlib 3.0.10
+--------------
+* bug fix with auto populating application member class set in Hibernate{2,3}DtoCopier
+
+beanlib 3.0.9
+-------------
+* add IO package.
+
+beanlib 3.0.8
+-------------
+* check if an object has been hibernate-initialized before hibernate-initializing it.
+
+beanlib 3.0.7
+-------------
+* add BeanUtils
+* add support for DTO Centric Hibernate Template, Copier and Populator
+
+beanlib 3.0.6
+-------------
+* bug fixes with cloning a SortedMap or SortedSet when a comparator is specified
+* add byte utils
+
+beanlib 3.0.5
+-------------
+* bug fixes with cloning an empty collection
+* bug fixes with checking Collection properties
+* fix EnumUtils so it will compile under Sun's JDK 1.5
+* further generify
+* support ant builds
+
+beanlib 3.0.4
+-------------
+* add fromOrdinal() to EnumUtils
+
+beanlib 3.0.3
+-------------
+* add utility methods to EnumUtils with lazy initialization
+
+beanlib 3.0.2
+-------------
+* add Subclass for creating dynamic instances similar to dynamic proxy
+
+beanlib 3.0.1
+-------------
+* added enum related utilities
+
+beanlib 3.0
+-----------
+* migrated from JDK1.4 to work only with JDK5+
+* add utilities for using XStream 1.1.2
+* misc refactorings
