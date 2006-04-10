@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="beanlib" default="call">
+
+  <property name="target" value="full"/>
+  <property name="javadoc.dir" value="doc/api"/>
+
+  <target name="call">
+    <ant antfile="build.xml" dir="./beanlib" target="${target}"/>
+    <ant antfile="build.xml" dir="./beanlib-hibernate" target="${target}" />
+    <ant antfile="build.xml" dir="./beanlib-test" target="${target}"/>
+    <ant antfile="build.xml" dir="./beanlib-hibernate-test" target="${target}"/>
+  </target>
+
+  <!-- Cleaning everything. -->
+  <target name="clean">
+    <antcall target="call">
+      <param name="target" value="clean"/>
+    </antcall>
+    <delete dir="${javadoc.dir}"/>
+    <delete dir="sequencelogs"/>
+    <delete file="cobertura.ser"/>
+  </target>
+
+  <!-- Building everything. -->
+  <target name="full">
+    <antcall target="call">
+      <param name="target" value="full"/>
+    </antcall>
+  </target>
+
+  <target name="javadoc">
+    <delete dir="${javadoc.dir}"/>
+    <mkdir dir="${javadoc.dir}"/>
+	<javadoc 
+		access="private" 
+		author="true" 
+		destdir="${javadoc.dir}" 
+		doctitle="JavaBean Library 3.1.0" 
+		nodeprecated="false" 
+		nodeprecatedlist="false" 
+		noindex="false" 
+		nonavbar="false" 
+		notree="false" 
+		source="1.5"
+		splitindex="true" 
+		use="true" 
+		version="true"
+		packagenames="net.sf.beanlib.*"
+		sourcepath="beanlib/src;beanlib/javadoc;beanlib-hibernate/src;beanlib-hibernate/javadoc"
+	>
+		<classpath>
+			<fileset dir=".">
+				<include name="beanlib/lib/**/*.jar"/>
+				<include name="beanlib-hibernate/lib/**/*.jar"/>
+			</fileset>
+		</classpath>
+		<link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+		<!--
+		<link href="http://www.hibernate.org/hib_docs/api/"/>
+		-->
+		<link href="http://www.hibernate.org/hib_docs/v3/api/"/>
+		<link href="http://jakarta.apache.org/commons/logging/apidocs/"/>
+		<link href="http://jakarta.apache.org/commons/lang/api/"/>
+		<link href="http://xstream.codehaus.org/javadoc/"/>
+		<link href="http://cglib.sourceforge.net/apidocs/" />
+		<link href="http://www.springframework.org/docs/api/" />
+	</javadoc>
+  </target>
+
+  <property name="version" value="3.1.0"/>
+
+  <target name="jar">
+	<delete dir="beanlib-${version}"/>
+	<mkdir dir="beanlib-${version}"/>
+
+	<jar destfile="beanlib-${version}/beanlib-${version}.jar" basedir="beanlib/target/classes" />
+	<jar destfile="beanlib-${version}/beanlib-hibernate-${version}.jar" basedir="beanlib-hibernate/target/classes" />
+
+	<jar destfile="beanlib-${version}/beanlib-src-${version}.jar">
+		<fileset dir="beanlib" excludes="doc/api/**,target,target/**,.*/**" />
+		<fileset dir="beanlib-test" excludes="target,target/**,.*/**" />
+	</jar>
+
+	<jar destfile="beanlib-${version}/beanlib-hibernate-src-${version}.jar">
+		<fileset dir="beanlib-hibernate" excludes="doc/api/**,target,target/**,.*/**" />
+		<fileset dir="beanlib-hibernate-test" excludes="target,target/**,.*/**" />
+	</jar>
+  </target>
+</project>
