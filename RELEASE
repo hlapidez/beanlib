@@ -1,3 +1,7 @@
+beanlib 3.1.1
+-------------
+* Supports CriteriaSpecifiable
+
 beanlib 3.1.0
 -------------
 * Drop the support of Hibernate 2 (ie only support Hibernate 3)
