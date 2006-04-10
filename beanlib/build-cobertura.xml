@@ -1,0 +1,28 @@
+
+<property name="cobertura.dir" value="../beanlib/lib/cobertura/1.7" />
+<property name="instrumented.dir" value="target/instrumented" />
+<property name="coveragereport.dir" value="target/coverage-report" />
+
+<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+
+<path id="cobertura.classpath">
+    <fileset dir="${cobertura.dir}">
+        <include name="cobertura.jar" />
+        <include name="lib/**/*.jar" />
+    </fileset>
+    <!--
+    <pathelement location="../dependencies/junit-4.0/junit-4.0.jar"/>
+    -->
+    <pathelement location="../beanlib/lib/log4j-1.2.12.jar"/>
+</path>
+
+<target depends="build" name="instrument">
+	<cobertura-instrument datafile="../cobertura.ser" todir="${instrumented.dir}">
+	    <ignore regex="org.apache.log4j.*" />
+	    <fileset dir="target/classes">
+	        <include name="**/*.class" />
+	    </fileset>
+	</cobertura-instrument>
+</target>
+
+

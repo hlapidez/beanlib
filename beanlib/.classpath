@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="javadoc"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/commons/commons-logging.jar"/>
+	<classpathentry kind="lib" path="lib/commons/commons-lang-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.12.jar"/>
+	<classpathentry sourcepath="C:/Playground/xstream/1.1.2/src/java" kind="lib" path="lib/xstream-1.1.2.jar"/>
+	<classpathentry sourcepath="C:/Playground/cglib/2.1_3/src" kind="lib" path="lib/cglib-2.1_3.jar"/>
+	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
