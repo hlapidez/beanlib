@@ -11,8 +11,9 @@
   <name>Java Bean Library for Hibernate</name>
   <url>http://beanlib.sourceforge.net/</url>
   <description>
-    Particularly handy to use with Hibernate so that the same class can be used 
-    for both persistenace instances and data transfer objects.
+    Particularly handy when used with Hibernate.  
+    It allows developers to easily reuse the same pojo classes for 
+    both persistence instances and data transfer objects.
   </description>
   <licenses>
     <license>
