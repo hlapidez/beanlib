@@ -77,14 +77,45 @@
 	<jar destfile="beanlib-${version}/beanlib-${version}.jar" basedir="beanlib/target/classes" />
 	<jar destfile="beanlib-${version}/beanlib-hibernate-${version}.jar" basedir="beanlib-hibernate/target/classes" />
 
-	<jar destfile="beanlib-${version}/beanlib-src-${version}.jar">
+	<jar destfile="beanlib-${version}/beanlib-${version}-sources.jar">
 		<fileset dir="beanlib" excludes="doc/api/**,target,target/**,.*/**" />
 		<fileset dir="beanlib-test" excludes="target,target/**,.*/**" />
 	</jar>
 
-	<jar destfile="beanlib-${version}/beanlib-hibernate-src-${version}.jar">
+	<jar destfile="beanlib-${version}/beanlib-hibernate-${version}-sources.jar">
 		<fileset dir="beanlib-hibernate" excludes="doc/api/**,target,target/**,.*/**" />
 		<fileset dir="beanlib-hibernate-test" excludes="target,target/**,.*/**" />
+	</jar>
+  </target>
+
+  <target name="jar-maven">
+	<delete dir="beanlib-${version}"/>
+	<mkdir dir="beanlib-${version}"/>
+
+	<jar destfile="beanlib-${version}/beanlib-${version}.jar" basedir="beanlib/target/classes" />
+	<jar destfile="beanlib-${version}/beanlib-hibernate-${version}.jar" basedir="beanlib-hibernate/target/classes" />
+
+	<jar destfile="beanlib-${version}/beanlib-${version}-sources.jar">
+		<fileset dir="beanlib" excludes="doc,doc/**,lib,lib/**,target,target/**,.*/**" />
+		<fileset dir="beanlib-test" excludes="lib,lib/**,target,target/**,.*/**" />
+	</jar>
+
+	<jar destfile="beanlib-${version}/beanlib-hibernate-${version}-sources.jar">
+		<fileset dir="beanlib-hibernate" excludes="doc,doc/**,lib,lib/**,target,target/**,.*/**" />
+		<fileset dir="beanlib-hibernate-test" excludes="target,target/**,.*/**" />
+	</jar>
+
+	<jar destfile="beanlib-${version}/beanlib-${version}-javadoc.jar" basedir="beanlib/doc/api" />
+	<jar destfile="beanlib-${version}/beanlib-hibernate-${version}-javadoc.jar" basedir="beanlib-hibernate/doc/api" />
+
+	<jar destfile="beanlib-${version}.jar">
+		<fileset dir="beanlib-${version}" excludes="beanlib-hibernate-*"/>
+		<fileset dir="beanlib" includes="pom.xml"/>
+	</jar>
+
+	<jar destfile="beanlib-hibernate-${version}.jar">
+		<fileset dir="beanlib-${version}" includes="beanlib-hibernate-*"/>
+		<fileset dir="beanlib-hibernate" includes="pom.xml"/>
 	</jar>
   </target>
 </project>

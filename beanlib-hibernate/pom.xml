@@ -10,6 +10,20 @@
   <version>3.1.1</version>
   <name>Java Bean Library for Hibernate</name>
   <url>http://beanlib.sourceforge.net/</url>
+  <description>
+    Particularly handy to use with Hibernate so that the same class can be used 
+    for both persistenace instances and data transfer objects.
+  </description>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://svn.sourceforge.net/viewcvs.cgi/beanlib</url>
+  </scm>
   <dependencies>
     <dependency>
       <groupId>beanlib</groupId>
