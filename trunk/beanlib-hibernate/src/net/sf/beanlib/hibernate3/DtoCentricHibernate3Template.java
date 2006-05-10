@@ -16,6 +16,10 @@
 package net.sf.beanlib.hibernate3;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -256,4 +260,69 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
         }, true);
     }
 
+    /**
+     * Just so we can use DtoCentricCloseSuppressingInvocationHandler.
+     */
+    @Override
+    protected Session createSessionProxy(Session session) {
+        return (Session) Proxy.newProxyInstance(
+                getClass().getClassLoader(),
+                new Class[] {Session.class},
+                new DtoCentricCloseSuppressingInvocationHandler(session));
+    }
+    
+    /**
+     * Cloned from {@link HibernateTemplate.CloseSuppressingInvocationHandler} 
+     * so we can dig out the target session, if needs be.
+     */
+    public class DtoCentricCloseSuppressingInvocationHandler implements InvocationHandler {
+
+        private final Session target;
+
+        public DtoCentricCloseSuppressingInvocationHandler(Session target) {
+            this.target = target;
+        }
+
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            // Invocation on Session interface coming in...
+
+            if (method.getName().equals("equals")) {
+                // Only consider equal when proxies are identical.
+                return (proxy == args[0] ? Boolean.TRUE : Boolean.FALSE);
+            }
+            else if (method.getName().equals("hashCode")) {
+                // Use hashCode of Session proxy.
+                return new Integer(hashCode());
+            }
+            else if (method.getName().equals("close")) {
+                // Handle close method: suppress, not valid.
+                return null;
+            }
+
+            // Invoke method on target Session.
+            try {
+                Object retVal = method.invoke(this.target, args);
+
+                // If return value is a Query or Criteria, apply transaction timeout.
+                // Applies to createQuery, getNamedQuery, createCriteria.
+                if (retVal instanceof Query) {
+                    prepareQuery(((Query) retVal));
+                }
+                if (retVal instanceof Criteria) {
+                    prepareCriteria(((Criteria) retVal));
+                }
+
+                return retVal;
+            }
+            catch (InvocationTargetException ex) {
+                throw ex.getTargetException();
+            }
+        }
+
+        public Session getTarget()
+        {
+            return target;
+        }
+    }
+    
 }

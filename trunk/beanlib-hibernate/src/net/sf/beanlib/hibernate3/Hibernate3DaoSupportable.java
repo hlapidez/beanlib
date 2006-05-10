@@ -16,7 +16,7 @@
 package net.sf.beanlib.hibernate3;
 
 import org.hibernate.SessionFactory;
-import org.springframework.orm.hibernate.HibernateTemplate;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 
 /**
  * Hibernate 3 DAO Support Interface.
