@@ -1,13 +1,13 @@
 
 BEANLIB is distributed in binary and source form
 
-beanlib-x.x.x.jar           	binary distribution, BEANLIB classes.
+beanlib-x.x.x.jar                     binary distribution, BEANLIB classes.
 
-beanlib-hibernate-x.x.x.jar 	binary distribution, BEANLIB classes for use with Hibernate.
+beanlib-hibernate-x.x.x.jar           binary distribution, BEANLIB classes for use with Hibernate.
 
-beanlib-src-x.x.x.jar       	source distribution with all runtime dependancies 
-				and API documentation for beanlib-x.x.x.jar
+beanlib-x.x.x-sources.jar             source distribution with all runtime dependancies 
+                                      and API documentation for beanlib-x.x.x.jar
 
-beanlib-hibernate-src-x.x.x.jar source distribution with all runtime dependancies 
-				and API documentation for beanlib-hibernate-x.x.x.jar
+beanlib-hibernate-x.x.x-sources.jar   source distribution with all runtime dependancies 
+                                      and API documentation for beanlib-hibernate-x.x.x.jar
 
