@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2004-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License")
  * you may not use this file except in compliance with the License.
@@ -272,7 +272,7 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
     }
     
     /**
-     * Cloned from {@link HibernateTemplate.CloseSuppressingInvocationHandler} 
+     * Cloned from {@link org.springframework.orm.hibernate3.HibernateTemplate.CloseSuppressingInvocationHandler} 
      * so we can dig out the target session, if needs be.
      */
     public class DtoCentricCloseSuppressingInvocationHandler implements InvocationHandler {
