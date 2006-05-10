@@ -16,6 +16,7 @@
 package net.sf.beanlib.hibernate3;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Properties;
@@ -31,6 +32,7 @@ import org.hibernate.id.IdentifierGeneratorFactory;
 import org.hibernate.impl.SessionFactoryImpl;
 import org.hibernate.impl.SessionImpl;
 import org.hibernate.type.TypeFactory;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 
 /**
  * Hibernate 3 DB Sequence Generator.
@@ -43,18 +45,57 @@ public class Hibernate3SequenceGenerator
     }
     
     /** Returns the next sequence id from the specified sequence and session. */
-    public static long nextval(String sequenceName, Session session) 
+    public static long nextval(final String sequenceName, final Session session) 
     {
-        SessionImpl sessionImpl = null;
+        Object target = session;
         
         if (Proxy.isProxyClass(session.getClass())) 
         {
             // Dig out the underlying session.
-            InvocationHandler ih = Proxy.getInvocationHandler(session);
-            DtoCentricCloseSuppressingInvocationHandler dch = (DtoCentricCloseSuppressingInvocationHandler)ih;
-            session = dch.getTarget();
+            InvocationHandler invocationHandler = Proxy.getInvocationHandler(session);
+            
+            if (invocationHandler instanceof DtoCentricCloseSuppressingInvocationHandler) 
+            {
+                // This is faster for we don't need to use reflection.
+                DtoCentricCloseSuppressingInvocationHandler dch = (DtoCentricCloseSuppressingInvocationHandler)invocationHandler;
+                target = dch.getTarget();
+            }
+            else {
+                Class invocationHandlerClass = invocationHandler.getClass();
+                Class invocationHandlerDeclaringClass = invocationHandlerClass.getDeclaringClass();
+                
+                if (invocationHandlerDeclaringClass == HibernateTemplate.class) 
+                {
+                    String className = invocationHandlerClass.getName();
+                    
+                    if (className.endsWith("CloseSuppressingInvocationHandler")) 
+                    {
+                        // Assume this is the private class org.springframework.orm.hibernate3.HibernateTempate$CloseSuppressingInvocationHandler
+                        // Dig out the private target.  
+                        // I know this is bad, but there doesn't seem to be a better way.  Oh well.
+                        try {
+                            Field f = invocationHandlerClass.getDeclaredField("target");
+                            f.setAccessible(true);
+                            target = f.get(invocationHandler);
+                        } catch (SecurityException e) {
+                            throw new RuntimeException(e);
+                        } catch (NoSuchFieldException e) {
+                            throw new RuntimeException(e);
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
+                        
+                    }
+                }
+                
+            }
         }
-        sessionImpl = (SessionImpl)session;
+        SessionImpl sessionImpl;
+        
+        if (target instanceof SessionImpl)
+            sessionImpl = (SessionImpl)target;
+        else
+            throw new IllegalStateException("Not yet know how to handle the given session!");
         IdentifierGenerator idGenerator = createIdentifierGenerator(sequenceName, session);
         Serializable id = idGenerator.generate(sessionImpl, null);
         return (Long)id;
@@ -64,6 +105,9 @@ public class Hibernate3SequenceGenerator
     private static IdentifierGenerator createIdentifierGenerator(String sequenceName, Session session) 
     {
         SessionFactory sessionFactory = session.getSessionFactory();
+        
+        if (!(sessionFactory instanceof SessionFactoryImpl))
+            throw new IllegalStateException("Not yet know how to handle the session factory of the given session!");
         SessionFactoryImpl sessionFactoryImpl = (SessionFactoryImpl)sessionFactory;
         Settings settings = sessionFactoryImpl.getSettings();
         Dialect dialect = settings.getDialect();

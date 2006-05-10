@@ -261,7 +261,7 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
     }
 
     /**
-     * Just so we can use DtoCentricCloseSuppressingInvocationHandler.
+     * Just so we can use DtoCentricCloseSuppressingInvocationHandler for faster performance.
      */
     @Override
     protected Session createSessionProxy(Session session) {
