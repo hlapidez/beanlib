@@ -16,6 +16,7 @@
         <pathelement location="target/classes"/>
         <pathelement location="${beanlib-hibernate.location}/lib/hibernate/hibernate3.jar"/>
         <pathelement location="${beanlib-hibernate.location}/lib/spring/spring.jar"/>
+        <pathelement location="${beanlib-hibernate.location}/lib/spring/spring-hibernate3.jar"/>
         <pathelement location="${beanlib.location}/lib/asm/asm-1.5.3.jar"/>
         <pathelement location="${beanlib.location}/lib/commons/commons-logging.jar"/>
         <pathelement location="${beanlib.location}/lib/log4j-1.2.12.jar"/>
