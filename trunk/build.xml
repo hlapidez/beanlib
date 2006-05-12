@@ -96,12 +96,15 @@
     </move> 	
   </target>
 
+  <property name="release.doc.file" value="${version}-doc.tar.gz" />
+  <property name="release.file" value="beanlib-${version}.tar.gz" />
+
   <target name="release-bundle"
 	  depends="javadoc,jar,move-cobertura"
   >
-    <tar destfile="${version}-doc.tar.gz" basedir="." 
+    <tar destfile="${release.doc.file}" basedir="." 
 	  includes="${version}/**" longfile="gnu" compression="gzip" />
-    <tar destfile="${version}-tar.gz" basedir="." 
+    <tar destfile="${release.file}" basedir="." 
 	  includes="beanlib-${version}/**" longfile="gnu" compression="gzip" />
   </target>
 
@@ -152,5 +155,36 @@
 		<fileset dir="beanlib-${version}" includes="beanlib-hibernate-*"/>
 		<fileset dir="beanlib-hibernate" includes="pom.xml"/>
 	</jar>
+  </target>
+
+  <property environment="env" />
+
+  <target name="release">
+    <!-- 
+	 Copy file to be released over to sourceforge. 
+	 Ant requires Commons Net library from http://jakarta.apache.org/site/downloads/downloads_commons.html 
+    -->
+    <ftp server="upload.sourceforge.net"
+	 userid="anonymous"
+	 password="joe_emporium@sourceforge.net"
+	 remotedir="/incoming"
+	 binary="yes"
+	 verbose="yes"
+    >
+      <fileset dir="." includes="${release.file}" />
+    </ftp>
+    <!-- 
+         Copy document to be released over to sourceforge. 
+
+         1) Ant requires jsch library from http://www.jcraft.com/jsch/index.html 
+	 2) Also requires set up of ssh public/private key pairs.
+	    See: http://sourceforge.net/docs/F02/en/#keygen_openssh
+    -->
+    <scp localFile="${release.doc.file}" 
+         remoteToDir="joe_emporium@shell.sourceforge.net:/home/groups/b/be/beanlib/" 
+	 passphrase=""
+	 keyfile="${env.HOME}/.ssh/id_dsa"
+	 trust="true"
+     />
   </target>
 </project>
