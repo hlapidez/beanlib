@@ -3,7 +3,9 @@
 <project name="beanlib" default="call">
 
   <property name="target" value="full"/>
-  <property name="javadoc.dir" value="doc/api"/>
+  <property name="version" value="3.2.0"/>
+  <property name="published.javadoc.dir" value="${version}/api"/>
+  <property name="published.cobertura.dir" value="${version}/cobertura"/>
 
   <target name="call">
     <ant antfile="build.xml" dir="./beanlib" target="${target}"/>
@@ -17,7 +19,8 @@
     <antcall target="call">
       <param name="target" value="clean"/>
     </antcall>
-    <delete dir="${javadoc.dir}"/>
+    <delete dir="${version}"/>
+    <delete dir="beanlib-${version}"/>
     <delete dir="sequencelogs"/>
     <delete file="cobertura.ser"/>
   </target>
@@ -30,13 +33,13 @@
   </target>
 
   <target name="javadoc">
-    <delete dir="${javadoc.dir}"/>
-    <mkdir dir="${javadoc.dir}"/>
+    <delete dir="${published.javadoc.dir}"/>
+    <mkdir dir="${published.javadoc.dir}"/>
 	<javadoc 
 		access="private" 
 		author="true" 
-		destdir="${javadoc.dir}" 
-		doctitle="JavaBean Library 3.2.0" 
+		destdir="${published.javadoc.dir}" 
+		doctitle="JavaBean Library ${version}" 
 		nodeprecated="false" 
 		nodeprecatedlist="false" 
 		noindex="false" 
@@ -56,9 +59,6 @@
 			</fileset>
 		</classpath>
 		<link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
-		<!--
-		<link href="http://www.hibernate.org/hib_docs/api/"/>
-		-->
 		<link href="http://www.hibernate.org/hib_docs/v3/api/"/>
 		<link href="http://jakarta.apache.org/commons/logging/apidocs/"/>
 		<link href="http://jakarta.apache.org/commons/lang/api/"/>
@@ -68,7 +68,42 @@
 	</javadoc>
   </target>
 
-  <property name="version" value="3.2.0"/>
+  <property name="cobertura.report.dir" value="beanlib-hibernate-test/target/coverage-report" />
+  <!-- Check to see if the cobertura report dir exists. -->
+  <!--
+  <available property="cobertura.reports.dir.available" type="dir" file="${cobertura.report.dir}" />
+
+  <echo message="cobertura.reports.dir.available=${cobertura.reports.dir.available}" />
+
+  <target name="conditional-build" unless="cobertura.report.dir.available">
+	  <echo message="conditonal-build..." />
+    <available property="cobertura.reports.dir.available.2" type="dir" file="${cobertura.report.dir}" />
+  </target>
+
+  <target name="move-cobertura-dir-or-not">
+	  <condition property="do.move.cobertura.dir">
+		  <or>
+			  <isset property="cobertura.report.dir.available"/>
+			  <isset property="cobertura.report.dir.available.2"/>
+		  </or>
+	  </condition>
+  </target>
+  -->
+
+  <target name="move-cobertura">
+    <move todir="${published.cobertura.dir}">
+	    <fileset dir="${cobertura.report.dir}" />
+    </move> 	
+  </target>
+
+  <target name="release-bundle"
+	  depends="javadoc,jar,move-cobertura"
+  >
+    <tar destfile="${version}-doc.tar.gz" basedir="." 
+	  includes="${version}/**" longfile="gnu" compression="gzip" />
+    <tar destfile="${version}-tar.gz" basedir="." 
+	  includes="beanlib-${version}/**" longfile="gnu" compression="gzip" />
+  </target>
 
   <target name="jar">
 	<delete dir="beanlib-${version}"/>
