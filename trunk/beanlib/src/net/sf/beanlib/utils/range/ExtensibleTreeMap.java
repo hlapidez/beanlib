@@ -680,7 +680,6 @@ public abstract class ExtensibleTreeMap<K, V> extends AbstractMap<K, V>
      * operations.
      * 
      * @return a set view of the mappings contained in this map.
-     * @see Map.Entry
      */
     @Override
     public Set<Map.Entry<K, V>> entrySet() {
