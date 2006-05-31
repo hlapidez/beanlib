@@ -47,6 +47,10 @@ public class RangeTreeMap<T,K extends RangeBoundable<T>,V>
         super(m);
     }
 
+    public RangeTreeMap(SortedRangeMap<T, K, ? extends V> m) {
+        super(m);
+    }
+
     public V getByPoint(Comparable<T> point) {
         NodeEntry<K, V> p = getEntryByPoint(point);
         return p == null ? null : p.value;
