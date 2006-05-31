@@ -39,16 +39,28 @@ public class RangeTreeMapTest extends TestCase {
         sortedRangeMap.put(new SimpleRange(400, 600), "400-600");
         
         assertNull(sortedRangeMap.getByPoint(1));
+        assertFalse(sortedRangeMap.containsKeyPoint(1));
         assertNull(sortedRangeMap.getByPoint(99));
+        assertFalse(sortedRangeMap.containsKeyPoint(99));
         assertNull(sortedRangeMap.getByPoint(301));
+        assertFalse(sortedRangeMap.containsKeyPoint(301));
         assertNull(sortedRangeMap.getByPoint(399));
+        assertFalse(sortedRangeMap.containsKeyPoint(399));
         assertNull(sortedRangeMap.getByPoint(601));
+        assertFalse(sortedRangeMap.containsKeyPoint(601));
+        
         assertEquals("100-300", sortedRangeMap.getByPoint(100));
+        assertTrue(sortedRangeMap.containsKeyPoint(100));
         assertEquals("100-300", sortedRangeMap.getByPoint(300));
+        assertTrue(sortedRangeMap.containsKeyPoint(300));
         assertEquals("100-300", sortedRangeMap.getByPoint(200));
+        assertTrue(sortedRangeMap.containsKeyPoint(200));
         assertEquals("400-600", sortedRangeMap.getByPoint(400));
+        assertTrue(sortedRangeMap.containsKeyPoint(400));
         assertEquals("400-600", sortedRangeMap.getByPoint(600));
+        assertTrue(sortedRangeMap.containsKeyPoint(600));
         assertEquals("400-600", sortedRangeMap.getByPoint(500));
+        assertTrue(sortedRangeMap.containsKeyPoint(500));
     }
     
     public static junit.framework.Test suite() {
