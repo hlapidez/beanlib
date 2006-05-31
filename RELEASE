@@ -1,3 +1,7 @@
+beanlib 3.2.1
+-------------
+Add package net.sf.net.beanlib.utils.range
+
 beanlib 3.2.0
 -------------
 Supports Hibernate3SequenceGenerator
