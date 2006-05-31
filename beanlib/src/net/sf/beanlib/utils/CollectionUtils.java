@@ -34,6 +34,8 @@ import net.sf.beanlib.utils.range.SortedRangeMap;
  */
 public class CollectionUtils 
 {
+    private CollectionUtils() {
+    }
     /**
      * Returns a synchronized (thread-safe) sorted range map backed by the specified
      * sorted range map.  In order to guarantee serial access, it is critical that
