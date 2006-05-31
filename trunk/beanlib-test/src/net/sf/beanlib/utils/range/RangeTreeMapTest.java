@@ -17,6 +17,7 @@ package net.sf.beanlib.utils.range;
 
 import junit.framework.JUnit4TestAdapter;
 import junit.framework.TestCase;
+import net.sf.beanlib.utils.CollectionUtils;
 
 import org.junit.Test;
 
@@ -26,23 +27,28 @@ import org.junit.Test;
 public class RangeTreeMapTest extends TestCase {
     
     @Test
-    public void test() {
-        SortedRangeMap<Integer,SimpleRange,String> srm = 
-            new RangeTreeMap<Integer,SimpleRange,String>();
-        srm.put(new SimpleRange(100, 300), "100-300");
-        srm.put(new SimpleRange(400, 600), "400-600");
+    public void test() 
+    {
+        this.testImpl(new RangeTreeMap<Integer,SimpleRange,String>());
+        this.testImpl(CollectionUtils.synchronizedSortedRangeMap(new RangeTreeMap<Integer,SimpleRange,String>()));
+    }
+    
+    private void testImpl(SortedRangeMap<Integer,SimpleRange,String> sortedRangeMap) 
+    {
+        sortedRangeMap.put(new SimpleRange(100, 300), "100-300");
+        sortedRangeMap.put(new SimpleRange(400, 600), "400-600");
         
-        assertNull(srm.getByPoint(1));
-        assertNull(srm.getByPoint(99));
-        assertNull(srm.getByPoint(301));
-        assertNull(srm.getByPoint(399));
-        assertNull(srm.getByPoint(601));
-        assertEquals("100-300", srm.getByPoint(100));
-        assertEquals("100-300", srm.getByPoint(300));
-        assertEquals("100-300", srm.getByPoint(200));
-        assertEquals("400-600", srm.getByPoint(400));
-        assertEquals("400-600", srm.getByPoint(600));
-        assertEquals("400-600", srm.getByPoint(500));
+        assertNull(sortedRangeMap.getByPoint(1));
+        assertNull(sortedRangeMap.getByPoint(99));
+        assertNull(sortedRangeMap.getByPoint(301));
+        assertNull(sortedRangeMap.getByPoint(399));
+        assertNull(sortedRangeMap.getByPoint(601));
+        assertEquals("100-300", sortedRangeMap.getByPoint(100));
+        assertEquals("100-300", sortedRangeMap.getByPoint(300));
+        assertEquals("100-300", sortedRangeMap.getByPoint(200));
+        assertEquals("400-600", sortedRangeMap.getByPoint(400));
+        assertEquals("400-600", sortedRangeMap.getByPoint(600));
+        assertEquals("400-600", sortedRangeMap.getByPoint(500));
     }
     
     public static junit.framework.Test suite() {

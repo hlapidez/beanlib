@@ -32,40 +32,84 @@ import net.sf.beanlib.utils.range.SortedRangeMap;
  * 
  * @author Joe D. Velopar
  */
-public class CollectionUtils {
+public class CollectionUtils 
+{
+    /**
+     * Returns a synchronized (thread-safe) sorted range map backed by the specified
+     * sorted range map.  In order to guarantee serial access, it is critical that
+     * <strong>all</strong> access to the backing sorted range map is accomplished
+     * through the returned sorted range map (or its views).<p>
+     *
+     * It is imperative that the user manually synchronize on the returned
+     * sorted range map when iterating over any of its collection views, or the
+     * collections views of any of its <tt>subMap</tt>, <tt>headMap</tt> or
+     * <tt>tailMap</tt> views.
+     * <pre>
+     *  SortedRangeMap m = CollectionUtils.synchronizedSortedRangeMap(new RangeTreeMap());
+     *      ...
+     *  Set s = m.keySet();  // Needn't be in synchronized block
+     *      ...
+     *  synchronized(m) {  // Synchronizing on m, not s!
+     *      Iterator i = s.iterator(); // Must be in synchronized block
+     *      while (i.hasNext())
+     *          foo(i.next());
+     *  }
+     * </pre>
+     * or:
+     * <pre>
+     *  SortedRangeMap m = CollectionUtils.synchronizedSortedRangeMap(new RangeTreeMap());
+     *  SortedMap m2 = m.subMap(foo, bar);
+     *      ...
+     *  Set s2 = m2.keySet();  // Needn't be in synchronized block
+     *      ...
+     *  synchronized(m) {  // Synchronizing on m, not m2 or s2!
+     *      Iterator i = s.iterator(); // Must be in synchronized block
+     *      while (i.hasNext())
+     *          foo(i.next());
+     *  }
+     * </pre>
+     * Failure to follow this advice may result in non-deterministic behavior.
+     *
+     * <p>The returned sorted range map will be serializable if the specified
+     * sorted range map is serializable.
+     *
+     * @param  m the sorted range map to be "wrapped" in a synchronized sorted range map.
+     * @return a synchronized view of the specified sorted range map.
+     */
     public static <T, K, V> SortedRangeMap<T, K, V> synchronizedSortedRangeMap(
             SortedRangeMap<T, K, V> m) 
     {
         return new SynchronizedSortedRangeMap<T, K, V>(m);
     }
 
+    /** A thread-safe SortedRangeMap. */
     static class SynchronizedSortedRangeMap<T, K, V> 
             extends SynchronizedSortedMap<K, V> 
             implements SortedRangeMap<T, K, V> 
     {
         private static final long serialVersionUID = 1L;
         
-        private SortedRangeMap<T, K, V> sm;
+        private SortedRangeMap<T, K, V> srm;
 
-        SynchronizedSortedRangeMap(SortedRangeMap<T, K, V> m) {
-            super(m);
-            sm = m;
+        SynchronizedSortedRangeMap(SortedRangeMap<T, K, V> srm) {
+            super(srm);
+            this.srm = srm;
         }
 
-        SynchronizedSortedRangeMap(SortedRangeMap<T, K, V> m, Object mutex) {
-            super(m, mutex);
-            sm = m;
+        SynchronizedSortedRangeMap(SortedRangeMap<T, K, V>  srm, Object mutex) {
+            super(srm, mutex);
+            this.srm = srm;
         }
 
         public V getByPoint(Comparable<T> point) {
             synchronized(mutex) {
-                return sm.getByPoint(point);
+                return srm.getByPoint(point);
             }
         }
         
         public boolean containsKeyPoint(Comparable<T> point) {
             synchronized(mutex) {
-                return sm.containsKeyPoint(point);
+                return srm.containsKeyPoint(point);
             }
         }
     }
