@@ -1,3 +1,10 @@
+beanlib 3.2.2
+-------------
+Add packages
+
+	net.sf.net.beanlib.util 
+	net.sf.net.beanlib.util.concurrent
+
 beanlib 3.2.1
 -------------
 Add package net.sf.net.beanlib.utils.range
