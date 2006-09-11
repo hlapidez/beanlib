@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Created-By: ant
+Built-By: Hanson Char
+Main-Class: net.sf.beanlib.util.concurrent.TestMain
