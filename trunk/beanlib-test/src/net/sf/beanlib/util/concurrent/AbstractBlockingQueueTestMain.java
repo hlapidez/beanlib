@@ -70,6 +70,7 @@ public abstract class AbstractBlockingQueueTestMain implements Callable<Void>
                         + "\nmin: " + min + " ms" 
                         + "\nmax: " + max + " ms"
                         );
+        System.out.println();
         return null;
     }
     
