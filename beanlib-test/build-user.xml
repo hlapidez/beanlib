@@ -1,8 +1,13 @@
 
 &cobertura;
 
+<tstamp/>
 <property name="beanlib-test.location" value="."/>
 <property name="beanlib.location" value="../beanlib"/>
+
+<property name="dist.dir" location="dist" />
+<property name="dist.jar.file" value="${dist.dir}/q-test-${DSTAMP}.jar"/>
+<property name="dist.src-jar.file" value="${dist.dir}/q-test-${DSTAMP}-sources.jar"/>	
 
 <target name="help">
     <echo message="Please run: $ ant -v -projecthelp"/>
@@ -11,11 +16,13 @@
 <target name="init">
     <mkdir dir="target/classes"/>
     <mkdir dir="target/test-reports"/>
+    <mkdir dir="${dist.dir}"/>
 </target>
 
 <target name="clean">
     <delete dir="target"/>
-	<delete dir="sequencelogs" />
+    <delete dir="${dist.dir}"/>
+    <delete dir="sequencelogs" />
 </target>
 
 <target depends="init" name="build">
@@ -67,5 +74,21 @@
 	    </fileset>
  	</cobertura-report>
 </target>
+
+  <target name="jar-qtest" depends="jar-qtest-src">
+    <jar destfile="${dist.jar.file}"
+    	manifest="etc/QTEST-MANIFEST.MF"
+   	>
+      <fileset dir="../beanlib/target/classes" includes="**/*ConcurrentLinkedBlockingQueue*.class"/>
+      <fileset dir="target/classes" includes="**/*TestMain*.class"/>
+    </jar>
+  </target>
+	
+  <target name="jar-qtest-src">
+    <jar destfile="${dist.src-jar.file}">
+      <fileset dir="../beanlib" includes="src/**/ConcurrentLinkedBlockingQueue.java" />
+      <fileset dir="." includes="src/**/*TestMain.java" />
+    </jar>
+  </target>
 
 <target name="full" depends="clean,build,instrument,test,report" />
