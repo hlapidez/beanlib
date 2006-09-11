@@ -34,7 +34,11 @@ public class TestMain
         for (int i=0; i < 10; i++)
         {
             new ConcurrentLinkedBlockingQueueTestMain().call();
+            // try to minimize residual memory effect
+            System.gc();
             new LinkedBlockingQueueTestMain().call();
+            // try to minimize residual memory effect
+            System.gc();
         }
         System.exit(0);
     }
