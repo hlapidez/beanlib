@@ -6,8 +6,8 @@
 <property name="beanlib.location" value="../beanlib"/>
 
 <property name="dist.dir" location="dist" />
-<property name="dist.jar.file" value="${dist.dir}/q-test-${DSTAMP}a.jar"/>
-<property name="dist.src-jar.file" value="${dist.dir}/q-test-${DSTAMP}a-sources.jar"/>	
+<property name="dist.jar.file" value="${dist.dir}/q-test-${DSTAMP}.jar"/>
+<property name="dist.src-jar.file" value="${dist.dir}/q-test-${DSTAMP}-sources.jar"/>	
 
 <target name="help">
     <echo message="Please run: $ ant -v -projecthelp"/>
