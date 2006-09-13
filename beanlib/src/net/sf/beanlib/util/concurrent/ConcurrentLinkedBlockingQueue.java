@@ -92,8 +92,9 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
      * an element becomes available.
      * 
      * @return the head of this queue
+     * @throws InterruptedException if interrupted while waiting
      */
-    public E take() 
+    public E take() throws InterruptedException 
     {
         for (;;) {
             E e = q.poll();
@@ -101,17 +102,28 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
             if (e != null)
                 return e;
             ThreadMarker m = new ThreadMarker(Thread.currentThread()); 
+            throwIfInterrupted(m);
             parkq.offer(m);
             // check again in case there is data race
             e = q.poll();
 
-            if (e != null) 
-            {
-                // data race indeed
+            if (e != null)
+            {   // data race indeed
                 m.parked = false;
                 return e;
             }
+            throwIfInterrupted(m);
             LockSupport.park();
+            throwIfInterrupted(m);
+        }
+    }
+    
+    private void throwIfInterrupted(ThreadMarker m) throws InterruptedException 
+    {
+        if (Thread.interrupted()) 
+        {
+            m.parked = false;
+            throw new InterruptedException();
         }
     }
     
@@ -120,14 +132,16 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
      * wait time if necessary for an element to become available.
      * 
      * @param timeout
-     *            how long to wait before giving up, in units of <tt>unit</tt>
+     *            how long to wait before giving up, in units of <tt>unit</tt>.
+     *            A negative timeout is treated the same as to wait forever.
      * @param unit
      *            a <tt>TimeUnit</tt> determining how to interpret the
      *            <tt>timeout</tt> parameter
      * @return the head of this queue, or <tt>null</tt> if the specified
      *         waiting time elapses before an element is available
+     * @throws InterruptedException if interrupted while waiting
      */
-    public E poll(long timeout, TimeUnit unit) 
+    public E poll(long timeout, TimeUnit unit) throws InterruptedException 
     {
         if (timeout < 0)
             return take();  // treat -ve timeout same as to wait forever
@@ -141,16 +155,20 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
             if (t0 > 0 && System.nanoTime() >= (t0 + unit.toNanos(timeout)))
                 return null;    // time out
             ThreadMarker m = new ThreadMarker(Thread.currentThread());
-            
+            throwIfInterrupted(m);
             parkq.offer(m);
+            // check again in case there is data race
             e = q.poll();
 
-            if (e != null) {
+            if (e != null)
+            {   // data race indeed
                 m.parked = false;
                 return e;
             }
             t0 = System.nanoTime();
+            throwIfInterrupted(m);
             LockSupport.parkNanos(unit.toNanos(timeout));
+            throwIfInterrupted(m);
         }
     }
 }
