@@ -101,8 +101,12 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
 
             if (e != null)
                 return e;
-            ThreadMarker m = new ThreadMarker(Thread.currentThread()); 
-            throwIfInterrupted(m);
+            ThreadMarker m = new ThreadMarker(Thread.currentThread());
+            
+            if (Thread.interrupted())
+            {   // avoid the parkq.offer(m) if already interrupted
+                throw new InterruptedException();
+            }
             parkq.offer(m);
             // check again in case there is data race
             e = q.poll();
@@ -112,18 +116,13 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
                 m.parked = false;
                 return e;
             }
-            throwIfInterrupted(m);
             LockSupport.park();
-            throwIfInterrupted(m);
-        }
-    }
-    
-    private void throwIfInterrupted(ThreadMarker m) throws InterruptedException 
-    {
-        if (Thread.interrupted()) 
-        {
-            m.parked = false;
-            throw new InterruptedException();
+            
+            if (Thread.interrupted()) 
+            {
+                m.parked = false;
+                throw new InterruptedException();
+            }
         }
     }
     
@@ -155,7 +154,11 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
             if (t0 > 0 && System.nanoTime() >= (t0 + unit.toNanos(timeout)))
                 return null;    // time out
             ThreadMarker m = new ThreadMarker(Thread.currentThread());
-            throwIfInterrupted(m);
+            
+            if (Thread.interrupted())
+            {   // avoid the parkq.offer(m) if already interrupted
+                throw new InterruptedException();
+            }
             parkq.offer(m);
             // check again in case there is data race
             e = q.poll();
@@ -166,9 +169,13 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
                 return e;
             }
             t0 = System.nanoTime();
-            throwIfInterrupted(m);
             LockSupport.parkNanos(unit.toNanos(timeout));
-            throwIfInterrupted(m);
+            
+            if (Thread.interrupted()) 
+            {
+                m.parked = false;
+                throw new InterruptedException();
+            }
         }
     }
 }
