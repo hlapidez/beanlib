@@ -26,6 +26,14 @@ public abstract class AbstractBlockingQueueTestMain implements Callable<Void>
     protected static final int PRODUCER_THREAD_COUNT = 10;
     protected static final int TOTAL = BATCH_SIZE * PRODUCER_THREAD_COUNT;
     
+    private static Integer[] data = new Integer[TOTAL];
+    
+    static 
+    {
+        for (int i=0; i < data.length; i++)
+            data[i] = i;
+    }
+        
     protected static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors() + 1;
     protected static final int REPEAT = 10;
     
@@ -101,7 +109,7 @@ public abstract class AbstractBlockingQueueTestMain implements Callable<Void>
                 Queue<Integer> q= getQueue();
                 
                 for (int i=start,end=start+BATCH_SIZE; i < end; i++) 
-                    q.offer(i);
+                    q.offer(data[i]);
                 return null;
             }
         };
