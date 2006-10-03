@@ -213,8 +213,7 @@ public class CollectionUtils
         public Set<Map.Entry<K, V>> entrySet() {
             synchronized (mutex) {
                 if (entrySet == null)
-                    entrySet = new SynchronizedSet<Map.Entry<K, V>>(
-                            (Set<Map.Entry<K, V>>) m.entrySet(), mutex);
+                    entrySet = new SynchronizedSet<Map.Entry<K, V>>(m.entrySet(), mutex);
                 return entrySet;
             }
         }
