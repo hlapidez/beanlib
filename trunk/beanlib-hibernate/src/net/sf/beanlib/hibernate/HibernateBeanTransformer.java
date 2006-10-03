@@ -111,11 +111,14 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
 		} catch (NoSuchMethodException e) {
 			log.error("", e);
 			throw new BeanlibHibernateException(e);
-		}
+		} catch (InvocationTargetException e) {
+            log.error("", e);
+            throw new BeanlibHibernateException(e);
+        }
 	}
 	private Object replicate(Object from)
 		throws SecurityException, InstantiationException, IllegalAccessException, ClassNotFoundException, 
-		SQLException, IOException, NoSuchMethodException 
+		SQLException, IOException, NoSuchMethodException, InvocationTargetException 
 	{
 		if (from == null)
 			return null;
@@ -126,13 +129,11 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
 	 * Currently an object is replicated if it is an instance
 	 * of Collection, Map, Timestamp, Date, Blob, Hibernate entity, 
 	 * JavaBean, or an array.
-	 * @throws NoSuchMethodException 
-	 * @throws SecurityException 
 	 */
 	@SuppressWarnings("unchecked")
     private <T> T replicate(Object from, Class<T> toClass) 
 		throws InstantiationException, IllegalAccessException, ClassNotFoundException, 
-		SQLException, IOException, SecurityException, NoSuchMethodException 
+		SQLException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException 
 	{
 		if (from == null)
 			return null;
@@ -227,7 +228,7 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
     
     private Object replicateArray(Object from) 
 		throws InstantiationException, IllegalAccessException, ClassNotFoundException, 
-		SQLException, IOException, SecurityException, NoSuchMethodException 
+		SQLException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException 
 	{
 		Class fromClass = from.getClass();
 		Class fromComponentType = fromClass.getComponentType();
@@ -259,7 +260,7 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
     // http://sourceforge.net/tracker/index.php?func=detail&aid=1432471&group_id=140152&atid=745596
     private Collection<?> replicateCollection(Collection<?> from) 
 		throws InstantiationException, IllegalAccessException, 
-		ClassNotFoundException, SQLException, IOException, SecurityException, NoSuchMethodException 
+		ClassNotFoundException, SQLException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException 
 	{
 		Collection<Object> toCollection = getToCollectionCloned(from);
 		
@@ -286,7 +287,7 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
 	
     private Map<?,?> replicateMap(Map<?,?> from) 
 		throws InstantiationException, IllegalAccessException, 
-		ClassNotFoundException, SQLException, IOException, SecurityException, NoSuchMethodException
+		ClassNotFoundException, SQLException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException
 	{
 		Map<Object,Object> toMap = getToMapCloned(from);
 		
@@ -365,11 +366,12 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
     // Thanks to Jam Flava for finding this bug.
 	@SuppressWarnings("unchecked")
     private Collection<Object> createToCollection(Collection<?> from) 
-		throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
-	{
-		Class fromClass = from.getClass();
-		
-		if (isJavaPackage(fromClass)) {
+		throws InstantiationException, IllegalAccessException, SecurityException, 
+                NoSuchMethodException, InvocationTargetException
+    {
+        Class fromClass = from.getClass();
+        
+        if (isJavaPackage(fromClass)) {
             if (from instanceof SortedSet) {
                 SortedSet fromSortedSet = (SortedSet)from;
                 Comparator toComparator = createToComparator(fromSortedSet);
@@ -379,19 +381,30 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
             }
             return createToInstanceAsCollection(from);
         }
-		if (from instanceof SortedSet) {
+        if (from instanceof SortedSet) {
             SortedSet fromSortedSet = (SortedSet)from;
             Comparator toComparator = createToComparator(fromSortedSet);
-			return new TreeSet<Object>(toComparator);
+            
+            if (isHibernatePackage(fromClass))
+                return new TreeSet<Object>(toComparator);
+            Constructor constructor = fromClass.getConstructor(Comparator.class);
+            Object[] initargs = {toComparator};
+            return (Collection<Object>) constructor.newInstance(initargs);
         }
-		if (from instanceof Set)
-			return new HashSet<Object>();
-		if (from instanceof List)
-			return new ArrayList<Object>(from.size());
-		// don't know what collection, so use list
-		log.warn("Don't know what collection object:" + fromClass + ", so assume List.");
-		return new ArrayList<Object>(from.size());
-	}
+        if (from instanceof Set) {
+            if (isHibernatePackage(fromClass))
+                return new HashSet<Object>();
+            return (Collection<Object>)fromClass.newInstance();
+        }
+        if (from instanceof List) {
+            if (isHibernatePackage(fromClass))
+                return new ArrayList<Object>(from.size());
+            return (Collection<Object>)fromClass.newInstance();
+        }
+        // don't know what collection, so use list
+        log.warn("Don't know what collection object:" + fromClass + ", so assume List.");
+        return new ArrayList<Object>(from.size());
+    }
     
     @SuppressWarnings("unchecked")
     private Collection<Object> createToInstanceAsCollection(Collection<?> from) 
@@ -449,14 +462,20 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
         Package p = c.getPackage();
         return p != null && p.getName().startsWith("java.");
     }
-	/** 
-	 * Creates a non cglib enhanced instance of the given object.
-	 */
-	private Object createToInstance(Object from) 
-		throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
-	{
-		return createToInstance(from.getClass());
-	}
+    
+    /** Returns true if the given class has a package name that starts with "org.hibernate."; false otherwise. */
+    private boolean isHibernatePackage(Class c) {
+        Package p = c.getPackage();
+        return p != null && p.getName().startsWith("org.hibernate.");
+    }
+    /** 
+     * Creates a non cglib enhanced instance of the given object.
+     */
+    private Object createToInstance(Object from) 
+    	throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
+    {
+    	return createToInstance(from.getClass());
+    }
     
 	/** 
 	 * Creates a non cglib enhanced instance of the given class, which could itself be the class of a cglib enhanced object.
