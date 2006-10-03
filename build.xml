@@ -181,7 +181,7 @@
 	    See: http://sourceforge.net/docs/F02/en/#keygen_openssh
     -->
     <scp localFile="${release.doc.file}" 
-         remoteToDir="joe_emporium@shell.sourceforge.net:/home/groups/b/be/beanlib/" 
+         remoteToDir="joe_emporium@shell.sf.net:/home/groups/b/be/beanlib/" 
 	 passphrase=""
 	 keyfile="${env.HOME}/.ssh/id_dsa"
 	 trust="true"
