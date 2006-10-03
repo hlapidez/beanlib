@@ -57,7 +57,7 @@ public class EnumTest {
 				@SuppressWarnings("unchecked")
                 public <T> T transform(Object in, @SuppressWarnings("unused") Class<T> toClass) {return (T)in;}
 			});
-		C c2 = (C)replicator.deepCopy(c);
+		C c2 = replicator.deepCopy(c);
 		assertNotSame(c2, c);
 		assertSame(c2.getStatus(), c.getStatus());
 		assertEquals(c.getTestString(), c2.getTestString());
