@@ -15,7 +15,12 @@
  */
 package net.sf.beanlib.hibernate3;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import junit.framework.JUnit4TestAdapter;
 import net.sf.beanlib.Bar;
 import net.sf.beanlib.BeanPopulator;
 import net.sf.beanlib.Foo;
@@ -24,10 +29,14 @@ import net.sf.beanlib.Type2;
 import net.sf.beanlib.api.DetailedBeanPopulatable;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 
+import org.junit.Test;
+
 /**
  * @author Joe D. Velopar
  */
-public class HibernateBeanReplicatorTest extends TestCase {
+public class HibernateBeanReplicatorTest 
+{
+    @Test
 	public void testDeepCopy() {
 		Foo foo = new Foo();
 		foo.setBoo(true);
@@ -43,6 +52,8 @@ public class HibernateBeanReplicatorTest extends TestCase {
 		assertFalse(to == to2);
 		assertEquals(to, to2);
 	}
+    
+    @Test
 	public void testDeepCopy2() {
 		Bar bar = new Bar();
 		bar.setBoo(true);
@@ -52,14 +63,14 @@ public class HibernateBeanReplicatorTest extends TestCase {
 		
 		HibernateBeanReplicator replicator = new Hibernate3BeanReplicator();
 		
-		Bar to = (Bar)replicator.deepCopy(bar);
+		Bar to = replicator.deepCopy(bar);
 		assertEquals(bar.getBarString(), to.getBarString());
 		assertEquals(bar.getString(), to.getString());
 		assertTrue(bar == bar.getBar());
 		assertTrue(to.getBar() == to);
 		assertFalse(to.getBar() == bar);
 		
-		Bar to2 = (Bar)replicator.deepCopy(bar);
+		Bar to2 = replicator.deepCopy(bar);
 		assertEquals(bar.getBarString(), to2.getBarString());
 		assertEquals(bar.getString(), to2.getString());
 		assertTrue(bar == bar.getBar());
@@ -67,6 +78,8 @@ public class HibernateBeanReplicatorTest extends TestCase {
 		assertFalse(to2.getBar() == bar);
 
 	}
+    
+    @Test
 	public void testShallowCopy() {
 		Foo foo = new Foo();
 		foo.setBoo(true);
@@ -82,6 +95,8 @@ public class HibernateBeanReplicatorTest extends TestCase {
 		assertFalse(to == to2);
 		assertEquals(foo, to2);
 	}
+    
+    @Test
 	public void testShallowCopy2() {
 		Bar bar = new Bar();
 		bar.setBoo(true);
@@ -89,13 +104,14 @@ public class HibernateBeanReplicatorTest extends TestCase {
 		bar.setBarString("barString");
 		bar.setBar(bar);
 		
-		Bar to = (Bar)new Hibernate3BeanReplicator().shallowCopy(bar);
+		Bar to = new Hibernate3BeanReplicator().shallowCopy(bar);
 		assertEquals(bar.getBarString(), to.getBarString());
 		assertEquals(bar.getString(), to.getString());
 		assertTrue(bar == bar.getBar());
 		assertNull(to.getBar());
 	}
 	
+    @Test
 	public void testDeepCopyProtected() {
 		Foo foo = new Foo("foo");
 		foo.setBoo(true);
@@ -106,11 +122,13 @@ public class HibernateBeanReplicatorTest extends TestCase {
 //		assertFalse(foo.getProtectedSetString().equals(to.getProtectedSetString()));
 //		assertNull(to.getProtectedSetString());
 		
-		Foo to = (Foo)new Hibernate3BeanReplicator().initDebug(false).deepCopy(foo);
+		Foo to = new Hibernate3BeanReplicator().initDebug(false).deepCopy(foo);
 		assertEquals(foo.getString(), to.getString());
 		assertEquals(foo.getProtectedSetString(), to.getProtectedSetString());
 		assertNotNull(to.getProtectedSetString());
 	}
+    
+    @Test
 	public void testDeepCopyProtected2() {
 		Bar bar = new Bar("bar");
 		bar.setBoo(true);
@@ -127,7 +145,7 @@ public class HibernateBeanReplicatorTest extends TestCase {
 //		assertFalse(bar.getProtectedSetString().equals(to.getProtectedSetString()));
 //		assertNull(to.getProtectedSetString());
 		
-		Bar to = (Bar)new Hibernate3BeanReplicator().initDebug(false).deepCopy(bar);
+		Bar to = new Hibernate3BeanReplicator().initDebug(false).deepCopy(bar);
 		assertEquals(bar.getBarString(), to.getBarString());
 		assertEquals(bar.getString(), to.getString());
 		assertTrue(bar == bar.getBar());
@@ -137,6 +155,7 @@ public class HibernateBeanReplicatorTest extends TestCase {
 		assertNotNull(to.getProtectedSetString());
 	}
 	
+    @Test
 	public void testShallowCopyProtected() {
 		Foo foo = new Foo("foo");
 		foo.setBoo(true);
@@ -146,12 +165,13 @@ public class HibernateBeanReplicatorTest extends TestCase {
 //		assertEquals(foo.getString(), to.getString());
 //		assertNull(to.getProtectedSetString());
 		
-		Foo to = (Foo)new Hibernate3BeanReplicator().initDebug(false).shallowCopy(foo);
+		Foo to = new Hibernate3BeanReplicator().initDebug(false).shallowCopy(foo);
 		assertEquals(foo.getString(), to.getString());
 		assertNotNull(to.getProtectedSetString());
 		assertEquals(foo.getProtectedSetString(), to.getProtectedSetString());
 	}
 	
+    @Test
 	public void testShallowCopyProtected2() {
 		Bar bar = new Bar("bar");
 		bar.setBoo(true);
@@ -166,7 +186,7 @@ public class HibernateBeanReplicatorTest extends TestCase {
 //		assertNull(to.getProtectedSetString());
 //		assertNull(to.getBar());
 		
-		Bar to = (Bar)new Hibernate3BeanReplicator().initDebug(false).shallowCopy(bar);
+		Bar to = new Hibernate3BeanReplicator().initDebug(false).shallowCopy(bar);
 		assertEquals(bar.getBarString(), to.getBarString());
 		assertEquals(bar.getString(), to.getString());
 		assertTrue(bar == bar.getBar());
@@ -174,6 +194,8 @@ public class HibernateBeanReplicatorTest extends TestCase {
 		assertEquals(bar.getProtectedSetString(), to.getProtectedSetString());
 		assertNull(to.getBar());
 	}
+    
+    @Test
 	public void testDeepCopyRegardless() {
 		Type1 t1 = new Type1();
 		t1.setF1("f1 of type1");
@@ -194,4 +216,7 @@ public class HibernateBeanReplicatorTest extends TestCase {
 		assertEquals(t1.getType().getF2(), t2.getType().getF2());
 	}
 
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(HibernateBeanReplicatorTest.class);
+    }
 }

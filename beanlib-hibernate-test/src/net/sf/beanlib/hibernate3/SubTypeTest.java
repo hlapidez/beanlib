@@ -53,7 +53,7 @@ public class SubTypeTest extends TestCase {
 		d.addToList(new C());
 		
 		HibernateBeanReplicator replicator = new Hibernate3BeanReplicator();
-		D d2 = (D)replicator.deepCopy(d);
+		D d2 = replicator.deepCopy(d);
 		assertTrue(d2.getList().size() == d.getList().size());
 		
 		for (A a : d2.getList()) {

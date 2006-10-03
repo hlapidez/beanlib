@@ -45,7 +45,7 @@ public class HibernateBeanReplicatorTestList {
 		// Test recursive references
 		fooList.addToList(fooList);
 		fooList.addToList(fooList.getList());
-		FooWithList toList = (FooWithList)new Hibernate3BeanReplicator().deepCopy(fooList);
+		FooWithList toList = new Hibernate3BeanReplicator().deepCopy(fooList);
 
 		assertFalse(fooList.getList() == toList.getList());
 		
@@ -71,17 +71,17 @@ public class HibernateBeanReplicatorTestList {
         fooList.setList(emptyList);
         assertEquals(0, fooList.getList().size());
         {
-            FooWithList toList = (FooWithList)new Hibernate3BeanReplicator().copy(fooList);
+            FooWithList toList = new Hibernate3BeanReplicator().copy(fooList);
             assertEquals(0, toList.getList().size());
         }
         {
-            FooWithList toList = (FooWithList)new Hibernate3BeanReplicator().deepCopy(fooList);
+            FooWithList toList = new Hibernate3BeanReplicator().deepCopy(fooList);
             assertEquals(0, toList.getList().size());
         }
         // Explicitely specify not to copy any collection properties.
         {
             Set<CollectionPropertyName> collectionPropertyNameSet = Collections.emptySet();
-            FooWithList toList = (FooWithList)new Hibernate3BeanReplicator()
+            FooWithList toList = new Hibernate3BeanReplicator()
                                     .initCollectionPropertyNameSet(collectionPropertyNameSet)
                                     .copy(fooList);
             assertNull(toList.getList());
@@ -89,7 +89,7 @@ public class HibernateBeanReplicatorTestList {
         // Deep copy, however, alwlays copy all collection properties regardless.
         {
             Set<CollectionPropertyName> collectionPropertyNameSet = Collections.emptySet();
-            FooWithList toList = (FooWithList)new Hibernate3BeanReplicator()
+            FooWithList toList = new Hibernate3BeanReplicator()
                                     .initCollectionPropertyNameSet(collectionPropertyNameSet)
                                     .deepCopy(fooList);
             assertEquals(0, toList.getList().size());
@@ -102,11 +102,11 @@ public class HibernateBeanReplicatorTestList {
         fooList.setList(null);
         assertNull(fooList.getList());
         {
-            FooWithList toList = (FooWithList)new Hibernate3BeanReplicator().copy(fooList);
+            FooWithList toList = new Hibernate3BeanReplicator().copy(fooList);
             assertNull(toList.getList());
         }
         {
-            FooWithList toList = (FooWithList)new Hibernate3BeanReplicator().deepCopy(fooList);
+            FooWithList toList = new Hibernate3BeanReplicator().deepCopy(fooList);
             assertNull(toList.getList());
         }
     }

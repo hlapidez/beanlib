@@ -15,32 +15,24 @@
  */
 package net.sf.beanlib.hibernate3;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-
-import java.util.Iterator;
-import java.util.Map;
-
+import static org.junit.Assert.assertTrue;
 import junit.framework.JUnit4TestAdapter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
 /**
  * @author Joe D. Velopar
  */
-public class HibernateBeanReplicatorTestMap 
+public class HibernateBeanReplicatorTestMySet 
 {
-	private Log log = LogFactory.getLog(this.getClass());
-    
     @Test
 	public void testDeepCopyMap() {
-		FooWithMap fooMap = new FooWithMap(null);
-		fooMap.addToMap("1", "a");
-		fooMap.addToMap("2", "b");
+		FooWithMySet fooWithMySet = new FooWithMySet();
+		fooWithMySet.addToMySet("a");
+		fooWithMySet.addToMySet("b");
 		// Test recursive references
-		fooMap.addToMap("3", fooMap);
+		fooWithMySet.addToMySet(fooWithMySet);
 		
 		FooWithList fooList = new FooWithList();
 		fooList.addToList("1");
@@ -49,27 +41,15 @@ public class HibernateBeanReplicatorTestMap
 		// Test recursive references
 		fooList.addToList(fooList);
 		fooList.addToList(fooList.getList());
-		fooMap.addToMap("4", fooList);
-		FooWithMap toMap = new Hibernate3BeanReplicator().deepCopy(fooMap);
+		fooWithMySet.addToMySet(fooList);
+		FooWithMySet toSet = new Hibernate3BeanReplicator().deepCopy(fooWithMySet);
 
-		assertFalse(fooMap.getMap() == toMap.getMap());
+		assertFalse(fooWithMySet.getMySet() == toSet.getMySet());
+        assertTrue(fooWithMySet.getMySet().size() == toSet.getMySet().size());
 		
-		Iterator itr1=fooMap.getMap().entrySet().iterator();
-		Iterator itr2=toMap.getMap().entrySet().iterator();
-		
-		while (itr1.hasNext()) {
-			Map.Entry n1 = (Map.Entry)itr1.next();
-			Map.Entry n2 = (Map.Entry)itr2.next();
-			log.debug("n1="+n1+", n2="+n2);
-			
-			if (n1.getKey()  instanceof String && n1.getValue() instanceof String) {
-				assertEquals(n1, n2);
-			}
-		}
-		assertFalse(itr2.hasNext());
 	}
     
     public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(HibernateBeanReplicatorTestMap.class);
+        return new JUnit4TestAdapter(HibernateBeanReplicatorTestMySet.class);
     }
 }
