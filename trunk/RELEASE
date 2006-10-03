@@ -1,3 +1,7 @@
+beanlib 3.2.6
+-------------
+Support custom collection classes
+
 beanlib 3.2.5
 -------------
 ConcurrentLinkedDeque removed as advised by Doug Lea.
