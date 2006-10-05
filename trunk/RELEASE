@@ -1,3 +1,7 @@
+beanlib 3.2.7
+-------------
+Fix to make ConcurrentSkipListSet usable when not loaded via -Xbootclasspath
+
 beanlib 3.2.6
 -------------
 Support custom collection classes
