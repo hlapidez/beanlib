@@ -1,5 +1,6 @@
 package net.sf.beanlib.util.concurrent;
 
+import java.lang.reflect.Field;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -458,7 +459,35 @@ public class ConcurrentSkipListSet<E>
     }
 
     // Support for resetting map in clone
-    private static final Unsafe unsafe = Unsafe.getUnsafe();
+    //    private static final Unsafe unsafe = Unsafe.getUnsafe();
+    private static final Unsafe unsafe = getUnsafe();
+    
+    // Note we replace the Unsafe.getUnsafe() with a different means to access the Unsafe instance.
+    // Otherwise, it would cause a "java.lang.SecurityException: Unsafe" 
+    // when this class is not loaded via the -Xbootclasspath
+    private static Unsafe getUnsafe() {
+        try {
+            return getUnsafeImpl();
+        } catch (SecurityException e) {
+            throw new IllegalStateException(e);
+        } catch (NoSuchFieldException e) {
+            throw new IllegalStateException(e);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+    
+    // Code originates from com.thoughtworks.xstream.converters.reflection.Sun14ReflectionProvider
+    private static Unsafe getUnsafeImpl() throws SecurityException, NoSuchFieldException, ClassNotFoundException, IllegalAccessException 
+    {
+        Class objectStreamClass = Class.forName("java.io.ObjectStreamClass$FieldReflector");
+        Field unsafeField = objectStreamClass.getDeclaredField("unsafe");
+        unsafeField.setAccessible(true);
+        return (Unsafe) unsafeField.get(null);
+    }
+    
     private static final long mapOffset;
     static {
         try {
