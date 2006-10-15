@@ -51,14 +51,12 @@
     >
 		<classpath refid="project.classpath"/>
 		<link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
-		<!--
-		<link href="http://www.hibernate.org/hib_docs/api/"/>
-		-->
-		<link href="http://www.hibernate.org/hib_docs/v3/api/"/>
 		<link href="http://jakarta.apache.org/commons/logging/apidocs/"/>
 		<link href="http://jakarta.apache.org/commons/lang/api/"/>
 		<link href="http://xstream.codehaus.org/javadoc/"/>
 		<link href="http://cglib.sourceforge.net/apidocs/" />
+		<link href="http://www.hibernate.org/hib_docs/v3/api/"/>
+                <link href="http://www.springframework.org/docs/api/" />
     </javadoc>
 </target>
 
