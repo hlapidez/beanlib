@@ -62,256 +62,258 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class HibernateBeanTransformer implements HibernateBeanTransformableSpi
 {
-	protected final Log log = LogFactory.getLog(this.getClass());
-	
-	// Contains those hibernate objects that have been replicated.
-	private Map<Object,Object> clonedMap = new IdentityHashMap<Object,Object>();
-	
-	private DetailedBeanPopulatable detailedBeanPopulatable;
-	private BeanPopulatable beanPopulatable; 
-	private BeanSourceHandler beanSourceHandler;
-	private BeanMethodFinder readerMethodFinder;
-	private BeanMethodCollector setterMethodCollector = ProtectedSetterMethodCollector.inst;
-	
-	/** Custom Transformer. */
-	private CustomHibernateBeanTransformable customTransformer = CustomHibernateBeanTransformable.NO_OP;
+    protected final Log log = LogFactory.getLog(this.getClass());
+    
+    // Contains those hibernate objects that have been replicated.
+    private Map<Object,Object> clonedMap = new IdentityHashMap<Object,Object>();
+    
+    private DetailedBeanPopulatable detailedBeanPopulatable;
+    private BeanPopulatable beanPopulatable; 
+    private BeanSourceHandler beanSourceHandler;
+    private BeanMethodFinder readerMethodFinder;
+    private BeanMethodCollector setterMethodCollector = ProtectedSetterMethodCollector.inst;
+    
+    /** Custom Transformer. */
+    private CustomHibernateBeanTransformable customTransformer = CustomHibernateBeanTransformable.NO_OP;
 
-	private boolean debug;	
-	
-	public abstract void hibernateInitialize(Object obj);
-	public abstract Blob hibernateCreateBlob(byte[] byteArray);
-	
-	public final void reset() {
-		clonedMap = new IdentityHashMap<Object,Object>();
-	}
-	
-	public final <T> T transform(Object from, Class<T> toClass) {
-		try {
-			if (customTransformer.isTransformable(from, toClass, this))
-				return customTransformer.transform(from, toClass);
-			return this.replicate(from, toClass);
-		} catch (InstantiationException e) {
-			log.error("", e);
-			throw new BeanlibHibernateException(e);
-		} catch (IllegalAccessException e) {
-			log.error("", e);
-			throw new BeanlibHibernateException(e);
-		} catch (ClassNotFoundException e) {
-			log.error("", e);
-			throw new BeanlibHibernateException(e);
-		} catch (SQLException e) {
-			log.error("", e);
-			throw new BeanlibHibernateException(e);
-		} catch (IOException e) {
-			log.error("", e);
-			throw new BeanlibHibernateException(e);
-		} catch (SecurityException e) {
-			log.error("", e);
-			throw new BeanlibHibernateException(e);
-		} catch (NoSuchMethodException e) {
-			log.error("", e);
-			throw new BeanlibHibernateException(e);
-		} catch (InvocationTargetException e) {
+    private boolean debug;    
+    
+    public abstract void hibernateInitialize(Object obj);
+    public abstract Blob hibernateCreateBlob(byte[] byteArray);
+    
+    public final void reset() {
+        clonedMap = new IdentityHashMap<Object,Object>();
+    }
+    
+    public final <T> T transform(Object from, Class<T> toClass) {
+        try {
+            if (customTransformer.isTransformable(from, toClass, this))
+                return customTransformer.transform(from, toClass);
+            return this.replicate(from, toClass);
+        } catch (InstantiationException e) {
+            log.error("", e);
+            throw new BeanlibHibernateException(e);
+        } catch (IllegalAccessException e) {
+            log.error("", e);
+            throw new BeanlibHibernateException(e);
+        } catch (ClassNotFoundException e) {
+            log.error("", e);
+            throw new BeanlibHibernateException(e);
+        } catch (SQLException e) {
+            log.error("", e);
+            throw new BeanlibHibernateException(e);
+        } catch (IOException e) {
+            log.error("", e);
+            throw new BeanlibHibernateException(e);
+        } catch (SecurityException e) {
+            log.error("", e);
+            throw new BeanlibHibernateException(e);
+        } catch (NoSuchMethodException e) {
+            log.error("", e);
+            throw new BeanlibHibernateException(e);
+        } catch (InvocationTargetException e) {
             log.error("", e);
             throw new BeanlibHibernateException(e);
         }
-	}
-	private Object replicate(Object from)
-		throws SecurityException, InstantiationException, IllegalAccessException, ClassNotFoundException, 
-		SQLException, IOException, NoSuchMethodException, InvocationTargetException 
-	{
-		if (from == null)
-			return null;
-		return replicate(from, from.getClass());
-	}
-	/**
-	 * Recursively replicate, if necessary, the given objects.
-	 * Currently an object is replicated if it is an instance
-	 * of Collection, Map, Timestamp, Date, Blob, Hibernate entity, 
-	 * JavaBean, or an array.
-	 */
-	@SuppressWarnings("unchecked")
+    }
+    private Object replicate(Object from)
+        throws SecurityException, InstantiationException, IllegalAccessException, ClassNotFoundException, 
+        SQLException, IOException, NoSuchMethodException, InvocationTargetException 
+    {
+        if (from == null)
+            return null;
+        return replicate(from, from.getClass());
+    }
+    /**
+     * Recursively replicate, if necessary, the given objects.
+     * Currently an object is replicated if it is an instance
+     * of Collection, Map, Timestamp, Date, Blob, Hibernate entity, 
+     * JavaBean, or an array.
+     */
+    @SuppressWarnings("unchecked")
     private <T> T replicate(Object from, Class<T> toClass) 
-		throws InstantiationException, IllegalAccessException, ClassNotFoundException, 
-		SQLException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException 
-	{
-		if (from == null)
-			return null;
-		if (toClass.isPrimitive())
-			return (T)from;
-		Class<?> fromClass = from.getClass();
-		// Collection
-		if (from instanceof Collection) {
-			if (!toClass.isAssignableFrom(fromClass))
-				return null;
-			return (T)replicateCollection((Collection<?>)from);
-		}
-		// Map
-		if (from instanceof Map) {
-			if (!toClass.isAssignableFrom(fromClass))
-				return null;
-			return (T)replicateMap((Map)from);
-		}
-		// Timestamp
-		if (from instanceof Timestamp) {
-			if (!toClass.isAssignableFrom(fromClass))
-				return null;
-			Timestamp ts = (Timestamp)from;
-			return (T)new Timestamp(ts.getTime());
-		}
-		// Date
-		if (from instanceof Date) {
-			if (!toClass.isAssignableFrom(fromClass))
-				return null;
-			Date date = (Date)from;
-			return (T)new Date(date.getTime());
-		}
-		T to = (T)clonedMap.get(from);
-		
-		if (to != null) {
-			if (!toClass.isAssignableFrom(fromClass))
-				return null;
-			return to;	// already transformed.
-		}
-		// Array
-		if (fromClass.isArray()) {
-			if (!toClass.isAssignableFrom(fromClass))
-				return null;
-			// both are arrays
-			return (T)replicateArray(from);
-		}
-		String fromPackageName = ClassUtils.getPackageName(from.getClass());
+        throws InstantiationException, IllegalAccessException, ClassNotFoundException, 
+        SQLException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException 
+    {
+        if (from == null)
+            return null;
+        if (toClass.isPrimitive() 
+        ||  toClass.isEnum())
+            return (T)from;
+        Class<?> fromClass = from.getClass();
+        // Collection
+        if (from instanceof Collection) {
+            if (!toClass.isAssignableFrom(fromClass))
+                return null;
+            return (T)replicateCollection((Collection<?>)from);
+        }
+        // Map
+        if (from instanceof Map) {
+            if (!toClass.isAssignableFrom(fromClass))
+                return null;
+            return (T)replicateMap((Map)from);
+        }
+        // Timestamp
+        if (from instanceof Timestamp) {
+            if (!toClass.isAssignableFrom(fromClass))
+                return null;
+            Timestamp ts = (Timestamp)from;
+            return (T)new Timestamp(ts.getTime());
+        }
+        // Date
+        if (from instanceof Date) {
+            if (!toClass.isAssignableFrom(fromClass))
+                return null;
+            Date date = (Date)from;
+            return (T)new Date(date.getTime());
+        }
+        T to = (T)clonedMap.get(from);
+        
+        if (to != null) {
+            if (!toClass.isAssignableFrom(fromClass))
+                return null;
+            return to;    // already transformed.
+        }
+        // Array
+        if (fromClass.isArray()) {
+            if (!toClass.isAssignableFrom(fromClass))
+                return null;
+            // both are arrays
+            return (T)replicateArray(from);
+        }
+        String fromPackageName = ClassUtils.getPackageName(from.getClass());
 
-		if (fromPackageName.startsWith("java.")) {
-			if (!toClass.isAssignableFrom(fromClass))
-				return null;
-			// Assume immutable object such as String, BigDecimal, etc.
-			// TODO: is this assumption valid ?
-			return (T)from;
-		}
-		if (fromPackageName.startsWith("net.sf.cglib.")) {
-			// Want to skip the cglib stuff.
-			return null;
-		}
-		// Blob
-		if (from instanceof Blob) {
-			if (!toClass.isAssignableFrom(fromClass))
-				return null;
-			Blob fromBlob = (Blob)from;
-			to = (T)replicateBlob(fromBlob);
-			clonedMap.put(from, to);
-			return to;
-		}
-		// Assume non-array application classes.  TODO: is this assumption valid ?
-		to = replicateApplicationObject(from, toClass);
-		return to;
-	}
+        if (fromPackageName.startsWith("java.")) {
+            if (!toClass.isAssignableFrom(fromClass))
+                return null;
+            // Assume immutable object such as String, BigDecimal, etc.
+            // TODO: is this assumption valid ?
+            return (T)from;
+        }
+        if (fromPackageName.startsWith("net.sf.cglib.")) {
+            // Want to skip the cglib stuff.
+            return null;
+        }
+        // Blob
+        if (from instanceof Blob) {
+            if (!toClass.isAssignableFrom(fromClass))
+                return null;
+            Blob fromBlob = (Blob)from;
+            to = (T)replicateBlob(fromBlob);
+            clonedMap.put(from, to);
+            return to;
+        }
+        // Assume non-array application classes.  TODO: is this assumption valid ?
+        to = replicateApplicationObject(from, toClass);
+        return to;
+    }
     
     private <T> T replicateApplicationObject(Object from, Class<T> toClass) 
         throws InstantiationException, IllegalAccessException, NoSuchMethodException 
     {
         T to = createToInstance(chooseClass(from.getClass(), toClass));
-		clonedMap.put(from, to);
-		// recursively populate member objects.
-		populate(from, to);
+        clonedMap.put(from, to);
+        // recursively populate member objects.
+        populate(from, to);
         return to;
     }
     
-	/** 
-	 * Returns the fromClass if it is assignable to the toClass;  
-	 * Otherwise returns the toClass. 
-	 */
-	@SuppressWarnings("unchecked")
+    /** 
+     * Returns the fromClass if it is assignable to the toClass;  
+     * Otherwise returns the toClass. 
+     */
+    @SuppressWarnings("unchecked")
     private <T> Class<T> chooseClass(Class<?> fromClass, Class<T> toClass) {
-		return (Class<T>)(toClass.isAssignableFrom(fromClass) ? fromClass : toClass);
-	}
+        return (Class<T>)(toClass.isAssignableFrom(fromClass) ? fromClass : toClass);
+    }
     
     private Object replicateArray(Object from) 
-		throws InstantiationException, IllegalAccessException, ClassNotFoundException, 
-		SQLException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException 
-	{
-		Class fromClass = from.getClass();
-		Class fromComponentType = fromClass.getComponentType();
-		// primitive array
-		if (fromComponentType.isPrimitive()) 
-		{
-			int len = Array.getLength(from);
-			Object to = Array.newInstance(fromComponentType, len);
-			System.arraycopy(from, 0, to, 0, len);
-			clonedMap.put(from, to);
-			return to;
-		}
-		// non-primitive array
-		int len = Array.getLength(from);
-		Object to = Array.newInstance(fromComponentType, len);
-		clonedMap.put(from, to);
-		Object[] fromArray = (Object[])from;
-		Object[] toArray = (Object[])to;
-		// recursively populate member objects.
-		for (int i=fromArray.length-1; i >= 0; i--) {
-			Object fromElement = fromArray[i];
-			Object toElement = replicate(fromElement);
-			toArray[i] = toElement;
-		}
-		return toArray;
-	}
+        throws InstantiationException, IllegalAccessException, ClassNotFoundException, 
+        SQLException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException 
+    {
+        Class fromClass = from.getClass();
+        Class fromComponentType = fromClass.getComponentType();
+        // primitive array
+        if (fromComponentType.isPrimitive() 
+        ||  fromComponentType.isEnum()) 
+        {
+            int len = Array.getLength(from);
+            Object to = Array.newInstance(fromComponentType, len);
+            System.arraycopy(from, 0, to, 0, len);
+            clonedMap.put(from, to);
+            return to;
+        }
+        // non-primitive array
+        int len = Array.getLength(from);
+        Object to = Array.newInstance(fromComponentType, len);
+        clonedMap.put(from, to);
+        Object[] fromArray = (Object[])from;
+        Object[] toArray = (Object[])to;
+        // recursively populate member objects.
+        for (int i=fromArray.length-1; i >= 0; i--) {
+            Object fromElement = fromArray[i];
+            Object toElement = replicate(fromElement);
+            toArray[i] = toElement;
+        }
+        return toArray;
+    }
 
     // Thanks to Tammo van Lessen for reporting a bug related to cloning an empty collection:
     // http://sourceforge.net/tracker/index.php?func=detail&aid=1432471&group_id=140152&atid=745596
     private Collection<?> replicateCollection(Collection<?> from) 
-		throws InstantiationException, IllegalAccessException, 
-		ClassNotFoundException, SQLException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException 
-	{
-		Collection<Object> toCollection = getToCollectionCloned(from);
-		
-		if (toCollection == null) {
-    		toCollection = this.createToCollection(from);
-    		clonedMap.put(from, toCollection);
-    		Collection fromCollection = from;
-    		hibernateInitialize(fromCollection);
-    		// recursively populate member objects.
+        throws InstantiationException, IllegalAccessException, 
+        ClassNotFoundException, SQLException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException 
+    {
+        Collection<Object> toCollection = getToCollectionCloned(from);
+        
+        if (toCollection == null) {
+            toCollection = this.createToCollection(from);
+            clonedMap.put(from, toCollection);
+            Collection fromCollection = from;
+            hibernateInitialize(fromCollection);
+            // recursively populate member objects.
             for (Object fromMember : fromCollection) {
-    			Object toMember = replicate(fromMember);
-    			toCollection.add(toMember);
-    		}
+                Object toMember = replicate(fromMember);
+                toCollection.add(toMember);
+            }
         }
-		// Return null if the set is empty
-		return toCollection;
-	}
+        // Return null if the set is empty
+        return toCollection;
+    }
     
     @SuppressWarnings("unchecked")
     private Collection<Object> getToCollectionCloned(Collection<?> from)
     {
         return (Collection<Object>)clonedMap.get(from);
     }
-	
+    
     private Map<?,?> replicateMap(Map<?,?> from) 
-		throws InstantiationException, IllegalAccessException, 
-		ClassNotFoundException, SQLException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException
-	{
-		Map<Object,Object> toMap = getToMapCloned(from);
-		
-		if (toMap != null) {
-			// Already transformed.
-			// Return null if the set is empty
-			return toMap.size() == 0 ? null : toMap;
-		}
-		toMap = this.createToMap(from);
-		clonedMap.put(from, toMap);
-		Map fromMap = from;
-		hibernateInitialize(fromMap);
-		// recursively populate member objects.
-		for (Iterator itr=fromMap.entrySet().iterator(); itr.hasNext(); ) {
-			Map.Entry fromEntry = (Map.Entry)itr.next();
-			Object fromKey = fromEntry.getKey();
-			Object fromValue = fromEntry.getValue();
-			Object toKey = replicate(fromKey);
-			Object toValue = replicate(fromValue);
-			toMap.put(toKey, toValue);
-		}
-		// Return null if the set is empty
-		return toMap.size() == 0 ? null : toMap;
-	}
+        throws InstantiationException, IllegalAccessException, 
+        ClassNotFoundException, SQLException, IOException, SecurityException, NoSuchMethodException, InvocationTargetException
+    {
+        Map<Object,Object> toMap = getToMapCloned(from);
+        
+        if (toMap != null) {
+            // Already transformed.
+            // Return null if the set is empty
+            return toMap.size() == 0 ? null : toMap;
+        }
+        toMap = this.createToMap(from);
+        clonedMap.put(from, toMap);
+        Map fromMap = from;
+        hibernateInitialize(fromMap);
+        // recursively populate member objects.
+        for (Iterator itr=fromMap.entrySet().iterator(); itr.hasNext(); ) {
+            Map.Entry fromEntry = (Map.Entry)itr.next();
+            Object fromKey = fromEntry.getKey();
+            Object fromValue = fromEntry.getValue();
+            Object toKey = replicate(fromKey);
+            Object toValue = replicate(fromValue);
+            toMap.put(toKey, toValue);
+        }
+        // Return null if the set is empty
+        return toMap.size() == 0 ? null : toMap;
+    }
     
     @SuppressWarnings("unchecked")
     private Map<Object, Object> getToMapCloned(Map<?, ?> from)
@@ -319,22 +321,22 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
         return (Map<Object,Object>)clonedMap.get(from);
     }
 
-	private void populate(Object fromMember, Object toMember) {
-		new BeanPopulator(fromMember, toMember)
-				.initBeanPopulatable(beanPopulatable)
-				.initBeanSourceHandler(beanSourceHandler)
-				.initDebug(debug)
-				.initDetailedBeanPopulatable(detailedBeanPopulatable)
-				.initReaderMethodFinder(readerMethodFinder)
-				.initSetterMethodCollector(setterMethodCollector)
-				.initTransformer(this)
-				.populate();
-	}
-	
+    private void populate(Object fromMember, Object toMember) {
+        new BeanPopulator(fromMember, toMember)
+                .initBeanPopulatable(beanPopulatable)
+                .initBeanSourceHandler(beanSourceHandler)
+                .initDebug(debug)
+                .initDetailedBeanPopulatable(detailedBeanPopulatable)
+                .initReaderMethodFinder(readerMethodFinder)
+                .initSetterMethodCollector(setterMethodCollector)
+                .initTransformer(this)
+                .populate();
+    }
+    
     private Blob replicateBlob(Blob fromBlob) {
-		byte[] byteArray = BlobUtils.inst.toByteArray(fromBlob);
-		return hibernateCreateBlob(byteArray);
-	}
+        byte[] byteArray = BlobUtils.inst.toByteArray(fromBlob);
+        return hibernateCreateBlob(byteArray);
+    }
 
     /** Returns a replicated comparator of the given sorted map, or null if there is no comparator. */
     @SuppressWarnings("unchecked")
@@ -364,9 +366,9 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
     // Use the same comparator or otherwise ClassCastException.
     // http://sourceforge.net/forum/forum.php?thread_id=1462253&forum_id=470286
     // Thanks to Jam Flava for finding this bug.
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     private Collection<Object> createToCollection(Collection<?> from) 
-		throws InstantiationException, IllegalAccessException, SecurityException, 
+        throws InstantiationException, IllegalAccessException, SecurityException, 
                 NoSuchMethodException, InvocationTargetException
     {
         Class fromClass = from.getClass();
@@ -427,12 +429,12 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
         return (SortedSet<Object>)createToInstanceWithComparator(from, comparator);
     }
     
-	private Map<Object,Object> createToMap(Map<?,?> from) 
-		throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
-	{
-		Class fromClass = from.getClass();
-		
-		if (isJavaPackage(fromClass)) {
+    private Map<Object,Object> createToMap(Map<?,?> from) 
+        throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
+    {
+        Class fromClass = from.getClass();
+        
+        if (isJavaPackage(fromClass)) {
             if (from instanceof SortedMap) {
                 SortedMap fromSortedMap = (SortedMap<?,?>)from;
                 Comparator<Object> toComparator = createToComparator(fromSortedMap);
@@ -440,15 +442,15 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
                 if (toComparator != null)
                     return this.createToSortedMapWithComparator(fromSortedMap, toComparator);
             }
-			return createToInstanceAsMap(from);
+            return createToInstanceAsMap(from);
         }
-		if (from instanceof SortedMap) {
+        if (from instanceof SortedMap) {
             SortedMap fromSortedMap = (SortedMap<?,?>)from;
             Comparator<Object> toComparator = createToComparator(fromSortedMap);
-			return new TreeMap<Object,Object>(toComparator);
+            return new TreeMap<Object,Object>(toComparator);
         }
-		return new HashMap<Object,Object>();
-	}
+        return new HashMap<Object,Object>();
+    }
     
     @SuppressWarnings("unchecked")
     private Map<Object, Object> createToInstanceAsMap(Map<?, ?> from) 
@@ -472,26 +474,26 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
      * Creates a non cglib enhanced instance of the given object.
      */
     private Object createToInstance(Object from) 
-    	throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
+        throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
     {
-    	return createToInstance(from.getClass());
+        return createToInstance(from.getClass());
     }
     
-	/** 
-	 * Creates a non cglib enhanced instance of the given class, which could itself be the class of a cglib enhanced object.
-	 */
+    /** 
+     * Creates a non cglib enhanced instance of the given class, which could itself be the class of a cglib enhanced object.
+     */
     @SuppressWarnings("unchecked")
     private <T> T createToInstance(Class<T> fromClass) 
-		throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
-	{
-		Class toClass = fromClass;
-		
-		if (Enhancer.isEnhanced(toClass)) {
-			// figure out the pre-enhanced class
-			toClass = toClass.getSuperclass();
-		}
-		return (T)newInstanceAsPrivileged(toClass);
-	}
+        throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
+    {
+        Class toClass = fromClass;
+        
+        if (Enhancer.isEnhanced(toClass)) {
+            // figure out the pre-enhanced class
+            toClass = toClass.getSuperclass();
+        }
+        return (T)newInstanceAsPrivileged(toClass);
+    }
     
     private Object createToInstanceWithComparator(Object from, Comparator comparator)
         throws SecurityException, NoSuchMethodException
@@ -512,42 +514,42 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
         return (T)newInstanceWithComparatorAsPrivileged(toClass, comparator);
     }
 
-	/** 
-	 * Creates a new instance of the given class via the no-arg constructor,
-	 * invoking the constructor as a privileged action if it is protected or private.
-	 * 
-	 * @param c given class
-	 * @return a new instance of the given class via the no-arg constructor
-	 */ 
+    /** 
+     * Creates a new instance of the given class via the no-arg constructor,
+     * invoking the constructor as a privileged action if it is protected or private.
+     * 
+     * @param c given class
+     * @return a new instance of the given class via the no-arg constructor
+     */ 
     private Object newInstanceAsPrivileged(Class c) 
-		throws SecurityException, NoSuchMethodException, InstantiationException, IllegalAccessException
-	{
-		final Constructor constructor = c.getDeclaredConstructor();
-		
-		if (Modifier.isPublic(constructor.getModifiers()))
-			return c.newInstance();
-		return AccessController.doPrivileged(
-			new PrivilegedAction<Object>() {
-				public Object run() {
-					constructor.setAccessible(true);
-					try {
-						return  constructor.newInstance();
-					} catch (IllegalArgumentException e) {
-						log.error("", e);
-						throw new BeanlibHibernateException(e);
-					} catch (IllegalAccessException e) {
-						log.error("", e);
-						throw new BeanlibHibernateException(e);
-					} catch (InvocationTargetException e) {
-						log.error("", e);
-						throw new BeanlibHibernateException(e);
-					} catch (InstantiationException e) {
-						log.error("", e);
-						throw new BeanlibHibernateException(e);
-					}
-				}
-		});
-	}
+        throws SecurityException, NoSuchMethodException, InstantiationException, IllegalAccessException
+    {
+        final Constructor constructor = c.getDeclaredConstructor();
+        
+        if (Modifier.isPublic(constructor.getModifiers()))
+            return c.newInstance();
+        return AccessController.doPrivileged(
+            new PrivilegedAction<Object>() {
+                public Object run() {
+                    constructor.setAccessible(true);
+                    try {
+                        return  constructor.newInstance();
+                    } catch (IllegalArgumentException e) {
+                        log.error("", e);
+                        throw new BeanlibHibernateException(e);
+                    } catch (IllegalAccessException e) {
+                        log.error("", e);
+                        throw new BeanlibHibernateException(e);
+                    } catch (InvocationTargetException e) {
+                        log.error("", e);
+                        throw new BeanlibHibernateException(e);
+                    } catch (InstantiationException e) {
+                        log.error("", e);
+                        throw new BeanlibHibernateException(e);
+                    }
+                }
+        });
+    }
 
     private Object newInstanceWithComparatorAsPrivileged(Class c, final Comparator comparator) 
         throws SecurityException, NoSuchMethodException
@@ -596,63 +598,63 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
         });
     }
 
-	//	/** Returns the given array as a set. */
-//	private Set toSet(Object[] array) {
-//		return array == null ? null : new HashSet(Arrays.asList(array));
-//	}
-	public final BeanPopulatable getBeanPopulatable() {
-		return beanPopulatable;
-	}
-	
-	public final HibernateBeanTransformable initCustomTransformer(CustomHibernateBeanTransformable customTransformer) {
-		this.customTransformer = customTransformer;
-		return this;
-	}
-	
-	public final HibernateBeanTransformable initBeanPopulatable(BeanPopulatable beanPopulatable) {
-		this.beanPopulatable = beanPopulatable;
-		return this;
-	}
-	public final BeanSourceHandler getBeanSourceHandler() {
-		return beanSourceHandler;
-	}
-	public final HibernateBeanTransformable initBeanSourceHandler(BeanSourceHandler beanSourceHandler) {
-		this.beanSourceHandler = beanSourceHandler;
-		return this;
-	}
-	public final boolean isDebug() {
-		return debug;
-	}
-	public final HibernateBeanTransformable initDebug(boolean debug) {
-		this.debug = debug;
-		return this;
-	}
-	public final DetailedBeanPopulatable getDetailedBeanPopulatable() {
-		return detailedBeanPopulatable;
-	}
-	public final HibernateBeanTransformable initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable) 
-	{
-		this.detailedBeanPopulatable = detailedBeanPopulatable;
-		return this;
-	}
-	public final BeanMethodFinder getReaderMethodFinder() {
-		return readerMethodFinder;
-	}
-	public final HibernateBeanTransformable initReaderMethodFinder(BeanMethodFinder readerMethodFinder) {
-		this.readerMethodFinder = readerMethodFinder;
-		return this;
-	}
-	public final BeanMethodCollector getSetterMethodCollector() {
-		return setterMethodCollector;
-	}
-	public final HibernateBeanTransformable initSetterMethodCollector(BeanMethodCollector setterMethodCollector) {
-		this.setterMethodCollector = setterMethodCollector;
-		return this;
-	}
-	public Map getClonedMap() {
-		return clonedMap;
-	}
-	public CustomHibernateBeanTransformable getCustomTransformer() {
-		return customTransformer;
-	}
+    //    /** Returns the given array as a set. */
+//    private Set toSet(Object[] array) {
+//        return array == null ? null : new HashSet(Arrays.asList(array));
+//    }
+    public final BeanPopulatable getBeanPopulatable() {
+        return beanPopulatable;
+    }
+    
+    public final HibernateBeanTransformable initCustomTransformer(CustomHibernateBeanTransformable customTransformer) {
+        this.customTransformer = customTransformer;
+        return this;
+    }
+    
+    public final HibernateBeanTransformable initBeanPopulatable(BeanPopulatable beanPopulatable) {
+        this.beanPopulatable = beanPopulatable;
+        return this;
+    }
+    public final BeanSourceHandler getBeanSourceHandler() {
+        return beanSourceHandler;
+    }
+    public final HibernateBeanTransformable initBeanSourceHandler(BeanSourceHandler beanSourceHandler) {
+        this.beanSourceHandler = beanSourceHandler;
+        return this;
+    }
+    public final boolean isDebug() {
+        return debug;
+    }
+    public final HibernateBeanTransformable initDebug(boolean debug) {
+        this.debug = debug;
+        return this;
+    }
+    public final DetailedBeanPopulatable getDetailedBeanPopulatable() {
+        return detailedBeanPopulatable;
+    }
+    public final HibernateBeanTransformable initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable) 
+    {
+        this.detailedBeanPopulatable = detailedBeanPopulatable;
+        return this;
+    }
+    public final BeanMethodFinder getReaderMethodFinder() {
+        return readerMethodFinder;
+    }
+    public final HibernateBeanTransformable initReaderMethodFinder(BeanMethodFinder readerMethodFinder) {
+        this.readerMethodFinder = readerMethodFinder;
+        return this;
+    }
+    public final BeanMethodCollector getSetterMethodCollector() {
+        return setterMethodCollector;
+    }
+    public final HibernateBeanTransformable initSetterMethodCollector(BeanMethodCollector setterMethodCollector) {
+        this.setterMethodCollector = setterMethodCollector;
+        return this;
+    }
+    public Map getClonedMap() {
+        return clonedMap;
+    }
+    public CustomHibernateBeanTransformable getCustomTransformer() {
+        return customTransformer;
+    }
 }
