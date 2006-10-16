@@ -34,96 +34,98 @@ import org.apache.commons.lang.ClassUtils;
  */
 public class HibernateBeanPopulatableSupport implements BeanPopulatable 
 {
-	// the set of entity bean to be populated; 
-	// or null if all entity bean are to be populated.
-	private Set<Class> entityBeanClassSet;
-	// the set of Collection fields to be populated; 
-	// or null if all Collection fields are to be populated.
-	private Set<? extends CollectionPropertyName> collectionPropertyNameSet;
-	
-	private BeanPopulatable vetoer;
-	
-	public HibernateBeanPopulatableSupport(Set<Class> entityBeanClassSet, 
+    // the set of entity bean to be populated; 
+    // or null if all entity bean are to be populated.
+    private Set<Class> entityBeanClassSet;
+    // the set of Collection fields to be populated; 
+    // or null if all Collection fields are to be populated.
+    private Set<? extends CollectionPropertyName> collectionPropertyNameSet;
+    
+    private BeanPopulatable vetoer;
+    
+    public HibernateBeanPopulatableSupport(Set<Class> entityBeanClassSet, 
         Set<? extends CollectionPropertyName> collectionPropertyNameSet, BeanPopulatable vetoer)
-	{
-		this.entityBeanClassSet = entityBeanClassSet;
-		this.collectionPropertyNameSet = collectionPropertyNameSet;
-		this.vetoer = vetoer;
-	}
-	/**
-	 * @see net.sf.beanlib.api.BeanPopulatable#shouldPopulate(String, Method)
-	 * 
-	 * @param propertyName property name.
-	 * @param readerMethod reader method of the property.
-	 * @return true if the property population should take place; false otherwise. 
-	 */
-	public boolean shouldPopulate(String propertyName, Method readerMethod) 
-	{
-		boolean goAhead = false;
-					
-		if (entityBeanClassSet == null) {
-			// All entity bean to be populated.
-			if (collectionPropertyNameSet == null) {
-				// all fields to be populated
-				goAhead = true;
-			}
-			else {
-				
-				// Only a subset of collection properties needs to be populated
-				goAhead = Collection.class.isAssignableFrom(unenhance(readerMethod.getReturnType())) 
-						? collectionPropertyNameSet.contains(
-								new CollectionPropertyName(unenhance(readerMethod.getDeclaringClass()), propertyName))
-						: true	// not a Collection property, so go ahead
-						;
-			}
-		}
-		else {
-			// Only a subset of entity bean to be populated.
-			Class returnType = unenhance(readerMethod.getReturnType());
-			
-			if (returnType.isPrimitive()) {
-				return vetoer == null ? true : vetoer.shouldPopulate(propertyName, readerMethod);
-			}
-			String packageName = ClassUtils.getPackageName(returnType);
-			
-			if (packageName.startsWith("java.")) {
-				// Not an entity bean.
-				if (collectionPropertyNameSet == null) {
-					// All Collection properties to be populated.
-					goAhead = true;
-				}
-				else {
-					// Only a subset of collection properties to be populated.
-					goAhead = Collection.class.isAssignableFrom(returnType)
-							? collectionPropertyNameSet.contains(
-									new CollectionPropertyName(unenhance(readerMethod.getDeclaringClass()), propertyName))
-							: true
-							;
-				}
-			}
-			else {
-				// An entity bean.
-				goAhead = entityBeanClassSet.contains(returnType);
-				Class superClass = returnType;
-				
-				for (;;) {
-					if (goAhead)
-						return vetoer == null ? true : vetoer.shouldPopulate(propertyName, readerMethod);
-					// check if it's ancestor is specified in entityBeanClassSet
-					superClass = superClass.getSuperclass();
-					
-					if (superClass == null || superClass == Object.class)
-						break;		// not specified in entityBeanClassSet
-					goAhead = entityBeanClassSet.contains(superClass);
-				}
-			}
-		}
-		if (goAhead)
-			return vetoer == null ? true : vetoer.shouldPopulate(propertyName, readerMethod);
-		return false;
-	}
-//	/** Returns the given array as a set. */
-//	private Set toSet(Object[] array) {
-//		return array == null ? null : new HashSet(Arrays.asList(array));
-//	}
+    {
+        this.entityBeanClassSet = entityBeanClassSet;
+        this.collectionPropertyNameSet = collectionPropertyNameSet;
+        this.vetoer = vetoer;
+    }
+    /**
+     * @see net.sf.beanlib.api.BeanPopulatable#shouldPopulate(String, Method)
+     * 
+     * @param propertyName property name.
+     * @param readerMethod reader method of the property.
+     * @return true if the property population should take place; false otherwise. 
+     */
+    public boolean shouldPopulate(String propertyName, Method readerMethod) 
+    {
+        boolean goAhead = false;
+                    
+        if (entityBeanClassSet == null) {
+            // All entity bean to be populated.
+            if (collectionPropertyNameSet == null) {
+                // all fields to be populated
+                goAhead = true;
+            }
+            else {
+                
+                // Only a subset of collection properties needs to be populated
+                goAhead = Collection.class.isAssignableFrom(unenhance(readerMethod.getReturnType())) 
+                        ? collectionPropertyNameSet.contains(
+                                new CollectionPropertyName(unenhance(readerMethod.getDeclaringClass()), propertyName))
+                        : true    // not a Collection property, so go ahead
+                        ;
+            }
+        }
+        else {
+            // Only a subset of entity bean to be populated.
+            Class returnType = unenhance(readerMethod.getReturnType());
+            
+            if (returnType.isPrimitive()
+            ||  returnType.isEnum()) 
+            {
+                return vetoer == null ? true : vetoer.shouldPopulate(propertyName, readerMethod);
+            }
+            String packageName = ClassUtils.getPackageName(returnType);
+            
+            if (packageName.startsWith("java.")) {
+                // Not an entity bean.
+                if (collectionPropertyNameSet == null) {
+                    // All Collection properties to be populated.
+                    goAhead = true;
+                }
+                else {
+                    // Only a subset of collection properties to be populated.
+                    goAhead = Collection.class.isAssignableFrom(returnType)
+                            ? collectionPropertyNameSet.contains(
+                                    new CollectionPropertyName(unenhance(readerMethod.getDeclaringClass()), propertyName))
+                            : true
+                            ;
+                }
+            }
+            else {
+                // An entity bean.
+                goAhead = entityBeanClassSet.contains(returnType);
+                Class superClass = returnType;
+                
+                for (;;) {
+                    if (goAhead)
+                        return vetoer == null ? true : vetoer.shouldPopulate(propertyName, readerMethod);
+                    // check if it's ancestor is specified in entityBeanClassSet
+                    superClass = superClass.getSuperclass();
+                    
+                    if (superClass == null || superClass == Object.class)
+                        break;        // not specified in entityBeanClassSet
+                    goAhead = entityBeanClassSet.contains(superClass);
+                }
+            }
+        }
+        if (goAhead)
+            return vetoer == null ? true : vetoer.shouldPopulate(propertyName, readerMethod);
+        return false;
+    }
+//    /** Returns the given array as a set. */
+//    private Set toSet(Object[] array) {
+//        return array == null ? null : new HashSet(Arrays.asList(array));
+//    }
 }
