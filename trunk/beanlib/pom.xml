@@ -7,7 +7,7 @@
   <groupId>net.sf.beanlib</groupId>
   <artifactId>beanlib</artifactId>
   <packaging>jar</packaging>
-  <version>3.2.1</version>
+  <version>3.2.8</version>
   <name>Java Bean Library</name>
   <url>http://beanlib.sourceforge.net/</url>
   <description>Java Bean Utilities Library</description>
