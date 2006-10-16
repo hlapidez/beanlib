@@ -1,3 +1,7 @@
+beanlib 3.2.9
+-------------
+* Tidy up the rourtines for checking immutability and java package.
+
 beanlib 3.2.8
 -------------
 * Native support of Java 5 enum
