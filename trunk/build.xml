@@ -3,7 +3,7 @@
 <project name="beanlib" default="call">
 
   <property name="target" value="full"/>
-  <property name="version" value="3.2.8"/>
+  <property name="version" value="3.2.9"/>
   <property name="published.javadoc.dir" value="${version}/api"/>
   <property name="published.cobertura.dir" value="${version}/cobertura"/>
 
