@@ -29,41 +29,41 @@ import org.junit.Test;
  * @author Joe D. Velopar
  */
 public class EnumTest {
-	public static enum Status {
-		BEGIN, WIP, END;
-	}
-	public static class C {
-		private Status status;
-		private String testString;
-		public Status getStatus() {return status;}
-		public void setStatus(Status status) {this.status = status;}
-		public String getTestString() {return testString;}
-		public void setTestString(String testString) {this.testString = testString;}
-	}
+    public static enum Status {
+        BEGIN, WIP, END;
+    }
+    public static class C {
+        private Status status;
+        private String testString;
+        public Status getStatus() {return status;}
+        public void setStatus(Status status) {this.status = status;}
+        public String getTestString() {return testString;}
+        public void setTestString(String testString) {this.testString = testString;}
+    }
     
-	@Test public void testCopyWithCustomTransformer() {
-		C c = new C();
-		c.setStatus(Status.BEGIN);
-		c.setTestString("testStr");
+    @Test public void testCopyWithCustomTransformer() {
+        C c = new C();
+        c.setStatus(Status.BEGIN);
+        c.setTestString("testStr");
         // Customer transformer used to be necessary to handle enum, 
         // before beanlib was entirely moved to Java 5.
-		HibernateBeanReplicator replicator = new Hibernate3BeanReplicator().initCustomTransformer(
-			new CustomHibernateBeanTransformable() {
-				public boolean isTransformable(
+        HibernateBeanReplicator replicator = new Hibernate3BeanReplicator().initCustomTransformer(
+            new CustomHibernateBeanTransformable() {
+                public boolean isTransformable(
                     @SuppressWarnings("unused") Object from, 
                     Class toClass, 
                     @SuppressWarnings("unused") HibernateBeanTransformableSpi hibernateBeanTransformer) 
                 {
-					return toClass.isEnum();
-				}
-				@SuppressWarnings("unchecked")
+                    return toClass.isEnum();
+                }
+                @SuppressWarnings("unchecked")
                 public <T> T transform(Object in, @SuppressWarnings("unused") Class<T> toClass) {return (T)in;}
-			});
-		C c2 = replicator.deepCopy(c);
-		assertNotSame(c2, c);
-		assertSame(c2.getStatus(), c.getStatus());
-		assertEquals(c.getTestString(), c2.getTestString());
-	}
+            });
+        C c2 = replicator.deepCopy(c);
+        assertNotSame(c2, c);
+        assertSame(c2.getStatus(), c.getStatus());
+        assertEquals(c.getTestString(), c2.getTestString());
+    }
     
     @Test public void testCopy() {
         C c = new C();
