@@ -32,6 +32,6 @@ public class SpringUtils {
 	 * the name of the given class. 
 	 */
 	public String toBeanName(Class c) {
-		return Introspector.decapitalize(ClassUtils.inst.unqualify(c));
+		return Introspector.decapitalize(ClassUtils.unqualify(c));
 	}
 }

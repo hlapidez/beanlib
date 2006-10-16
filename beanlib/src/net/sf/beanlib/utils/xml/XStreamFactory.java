@@ -54,7 +54,7 @@ public class XStreamFactory
         xstream.setMode(XStream.ID_REFERENCES);
         
         for (Class c : classes)
-            xstream.alias(ClassUtils.inst.unqualify(c), c);
+            xstream.alias(ClassUtils.unqualify(c), c);
         this.xstream = xstream;
     }
 }

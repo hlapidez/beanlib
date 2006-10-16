@@ -20,13 +20,37 @@ package net.sf.beanlib.utils;
  * 
  * @author Joe D. Velopar
  */
-public class ClassUtils {
-	public static final ClassUtils inst = new ClassUtils(); 
-	private ClassUtils() {}
-	/** Returns the unqalified class name. */
-	public String unqualify(Class c) {
-		String fqcn = c.getName();
-		int idx = fqcn.lastIndexOf('.');
-		return idx == -1 ? fqcn : fqcn.substring(idx+1);
-	}
+public enum ClassUtils {
+    ;
+    /** Returns the unqalified class name. */
+    public static String unqualify(Class c) {
+        if (c == null)
+            return null;
+        String fqcn = c.getName();
+        int idx = fqcn.lastIndexOf('.');
+        return idx == -1 ? fqcn : fqcn.substring(idx+1);
+    }
+    
+    /** 
+     * Returns true if the given class is known to be immutable; false otherwise. 
+     */
+    public static boolean immutable(Class c) {
+        if (c == null)
+            return false;
+        return c == String.class
+            || c.isPrimitive()
+            || c.isEnum()
+            || Number.class.isAssignableFrom(c) && isJavaPackage(c)
+            ;
+    }
+    
+    /**
+     * Returns true if the given class is under a package that starts with "java.". 
+     */
+    public static boolean isJavaPackage(Class c) {
+        if (c == null)
+            return false;
+        Package p = c.getPackage();
+        return p != null && p.getName().startsWith("java.");
+    }
 }

@@ -22,13 +22,13 @@ import java.beans.Introspector;
  * 
  * @author Joe D. Velopar
  */
-public class BeanUtils {
-    
+public enum BeanUtils {
+    ;
     /**
      * Returns a bean name by unqalifying and decapitalizing 
      * the name of the given class. 
      */
     public static String toBeanName(Class c) {
-        return Introspector.decapitalize(ClassUtils.inst.unqualify(c));
+        return Introspector.decapitalize(ClassUtils.unqualify(c));
     }
 }
