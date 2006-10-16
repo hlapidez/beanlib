@@ -41,10 +41,12 @@ public class EnumTest {
 		public void setTestString(String testString) {this.testString = testString;}
 	}
     
-	@Test public void testCopy() {
+	@Test public void testCopyWithCustomTransformer() {
 		C c = new C();
 		c.setStatus(Status.BEGIN);
 		c.setTestString("testStr");
+        // Customer transformer used to be necessary to handle enum, 
+        // before beanlib was entirely moved to Java 5.
 		HibernateBeanReplicator replicator = new Hibernate3BeanReplicator().initCustomTransformer(
 			new CustomHibernateBeanTransformable() {
 				public boolean isTransformable(
@@ -62,6 +64,17 @@ public class EnumTest {
 		assertSame(c2.getStatus(), c.getStatus());
 		assertEquals(c.getTestString(), c2.getTestString());
 	}
+    
+    @Test public void testCopy() {
+        C c = new C();
+        c.setStatus(Status.BEGIN);
+        c.setTestString("testStr");
+        HibernateBeanReplicator replicator = new Hibernate3BeanReplicator();
+        C c2 = replicator.deepCopy(c);
+        assertNotSame(c2, c);
+        assertSame(c2.getStatus(), c.getStatus());
+        assertEquals(c.getTestString(), c2.getTestString());
+    }
 
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(EnumTest.class);
