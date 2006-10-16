@@ -16,6 +16,8 @@
 package net.sf.beanlib.hibernate;
 
 import static net.sf.beanlib.hibernate.UnEnhancer.unenhance;
+import static net.sf.beanlib.utils.ClassUtils.immutable;
+import static net.sf.beanlib.utils.ClassUtils.isJavaPackage;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -23,8 +25,6 @@ import java.util.Set;
 
 import net.sf.beanlib.CollectionPropertyName;
 import net.sf.beanlib.api.BeanPopulatable;
-
-import org.apache.commons.lang.ClassUtils;
 
 /**
  * The default implemenation to determine if a Hibernate JavaBean property should be populated.
@@ -81,14 +81,12 @@ public class HibernateBeanPopulatableSupport implements BeanPopulatable
             // Only a subset of entity bean to be populated.
             Class returnType = unenhance(readerMethod.getReturnType());
             
-            if (returnType.isPrimitive()
-            ||  returnType.isEnum()) 
+            if (immutable(returnType))
             {
                 return vetoer == null ? true : vetoer.shouldPopulate(propertyName, readerMethod);
             }
-            String packageName = ClassUtils.getPackageName(returnType);
             
-            if (packageName.startsWith("java.")) {
+            if (isJavaPackage(returnType)) {
                 // Not an entity bean.
                 if (collectionPropertyNameSet == null) {
                     // All Collection properties to be populated.

@@ -15,6 +15,9 @@
  */
 package net.sf.beanlib.hibernate;
 
+import static net.sf.beanlib.utils.ClassUtils.immutable;
+import static net.sf.beanlib.utils.ClassUtils.isJavaPackage;
+
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -137,8 +140,7 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
     {
         if (from == null)
             return null;
-        if (toClass.isPrimitive() 
-        ||  toClass.isEnum())
+        if (immutable(toClass))
             return (T)from;
         Class<?> fromClass = from.getClass();
         // Collection
@@ -186,10 +188,9 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
         if (fromPackageName.startsWith("java.")) {
             if (!toClass.isAssignableFrom(fromClass))
                 return null;
-            // Assume immutable object such as String, BigDecimal, etc.
-            // TODO: is this assumption valid ?
-            return (T)from;
+            // Sorry, don't really know what it is ... soldier on...
         }
+        
         if (fromPackageName.startsWith("net.sf.cglib.")) {
             // Want to skip the cglib stuff.
             return null;
@@ -234,8 +235,7 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
         Class fromClass = from.getClass();
         Class fromComponentType = fromClass.getComponentType();
         // primitive array
-        if (fromComponentType.isPrimitive() 
-        ||  fromComponentType.isEnum()) 
+        if (immutable(fromComponentType))
         {
             int len = Array.getLength(from);
             Object to = Array.newInstance(fromComponentType, len);
@@ -459,12 +459,6 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
         return (Map<Object,Object>)createToInstance(from);
     }
     
-    /** Returns true if the given class has a package name that starts with "java."; false otherwise. */
-    private boolean isJavaPackage(Class c) {
-        Package p = c.getPackage();
-        return p != null && p.getName().startsWith("java.");
-    }
-    
     /** Returns true if the given class has a package name that starts with "org.hibernate."; false otherwise. */
     private boolean isHibernatePackage(Class c) {
         Package p = c.getPackage();
@@ -598,10 +592,6 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
         });
     }
 
-    //    /** Returns the given array as a set. */
-//    private Set toSet(Object[] array) {
-//        return array == null ? null : new HashSet(Arrays.asList(array));
-//    }
     public final BeanPopulatable getBeanPopulatable() {
         return beanPopulatable;
     }

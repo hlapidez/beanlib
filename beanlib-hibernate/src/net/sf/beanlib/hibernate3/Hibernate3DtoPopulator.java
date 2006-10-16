@@ -16,6 +16,8 @@
 package net.sf.beanlib.hibernate3;
 
 import static net.sf.beanlib.hibernate.UnEnhancer.unenhance;
+import static net.sf.beanlib.utils.ClassUtils.immutable;
+import static net.sf.beanlib.utils.ClassUtils.isJavaPackage;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -25,8 +27,6 @@ import java.util.Set;
 
 import net.sf.beanlib.CollectionPropertyName;
 import net.sf.beanlib.api.BeanPopulatable;
-
-import org.apache.commons.lang.ClassUtils;
 
 /**
  * Used by {@link Hibernate3DtoCopier} to dynamically expand the set of 
@@ -81,18 +81,13 @@ class Hibernate3DtoPopulator implements BeanPopulatable {
     {
         Class returnType = unenhance(readerMethod.getReturnType());
         
-        if (returnType.isPrimitive() 
-        ||  returnType.isEnum())
+        if (immutable(returnType))
             return true;
         
         if (returnType.isArray()) {
-            Class componentType = returnType.getComponentType();
-            
-            if (componentType.isPrimitive()
-            ||  componentType.isEnum())
+            if (immutable(returnType.getComponentType()))
                 return true;
         }
-        String packageName = ClassUtils.getPackageName(returnType);
         
         if (entityBeanClassSet == null) {
             // All entity bean to be populated.
@@ -103,7 +98,7 @@ class Hibernate3DtoPopulator implements BeanPopulatable {
             return checkCollectionProperty(propertyName, readerMethod);
         }
         // Only a selected set of entity bean to be populated.
-        if (packageName.startsWith("java.")) {
+        if (isJavaPackage(returnType)) {
             // Not an entity bean.
             if (collectionPropertyNameSet == null) {
                 // All Collection/Map properties to be populated.
