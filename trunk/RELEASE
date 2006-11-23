@@ -1,6 +1,7 @@
 beanlib 3.2.9
 -------------
 * Tidy up the rourtines for checking immutability and java package.
+* Treat java.util.Map as a kind of collection honored by CollectionPropertyName.
 
 beanlib 3.2.8
 -------------
