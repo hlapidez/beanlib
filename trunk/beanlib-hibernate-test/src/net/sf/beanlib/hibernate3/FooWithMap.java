@@ -22,7 +22,7 @@ import java.util.TreeMap;
  * @author Joe D. Velopar
  */
 public class FooWithMap {
-	private Map<Object,Object> map = new TreeMap<Object,Object>();
+	private Map<Object,Object> map;
 	
 	private FooWithMap() {
 		
@@ -42,6 +42,8 @@ public class FooWithMap {
 	}
 
 	public Object addToMap(Object key, Object value) {
+        if (map == null)
+            map = new TreeMap<Object,Object>();
 		return this.map.put(key, value);
 	}
 }

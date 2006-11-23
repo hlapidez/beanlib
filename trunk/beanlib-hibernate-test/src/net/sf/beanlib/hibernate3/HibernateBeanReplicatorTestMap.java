@@ -17,11 +17,15 @@ package net.sf.beanlib.hibernate3;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
+import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
 import junit.framework.JUnit4TestAdapter;
+import net.sf.beanlib.api.BeanPopulatable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -68,6 +72,51 @@ public class HibernateBeanReplicatorTestMap
 		}
 		assertFalse(itr2.hasNext());
 	}
+    
+    @Test
+    public void testCopyMap() {
+        FooWithMap fooMap = new FooWithMap(null);
+        fooMap.addToMap("1", "a");
+        fooMap.addToMap("2", "b");
+        
+        {
+            FooWithMap toFooWithMap = new Hibernate3BeanReplicator().copy(fooMap);
+            Map toMap = toFooWithMap.getMap();
+            toMap.size();
+//            log.info("toMap.size()=" + toMap.size());
+            assertEquals(toMap.size(), 2);
+        }
+        {
+            FooWithMap toFooWithMap = new Hibernate3BeanReplicator()
+                                                    .initCollectionPropertyNameSet(null)
+                                                    .copy(fooMap)
+                                                    ;
+            Map toMap = toFooWithMap.getMap();
+            toMap.size();
+//            log.info("toMap.size()=" + toMap.size());
+            assertEquals(toMap.size(), 2);
+        }
+        {
+            FooWithMap toFooWithMap = new Hibernate3BeanReplicator()
+                                        .initCollectionPropertyNameSet(Collections.EMPTY_SET)
+                                        .copy(fooMap)
+                                        ;
+            Map toMap = toFooWithMap.getMap();
+            assertNull(toMap);
+        }
+        {
+            FooWithMap toFooWithMap = new Hibernate3BeanReplicator()
+                                        .initVetoer(new BeanPopulatable() {
+                                            public boolean shouldPopulate(String propertyName, Method readerMethod) {
+                                                return !"map".equals(propertyName);
+                                            }
+                                        })
+                                        .copy(fooMap)
+                                        ;
+            Map toMap = toFooWithMap.getMap();
+            assertNull(toMap);
+        }
+    }
     
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(HibernateBeanReplicatorTestMap.class);
