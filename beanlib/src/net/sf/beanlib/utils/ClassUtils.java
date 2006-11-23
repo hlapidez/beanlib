@@ -41,6 +41,7 @@ public enum ClassUtils {
             || c.isPrimitive()
             || c.isEnum()
             || Number.class.isAssignableFrom(c) && isJavaPackage(c)
+            || Boolean.class == c
             ;
     }
     
