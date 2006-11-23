@@ -21,6 +21,7 @@ import static net.sf.beanlib.utils.ClassUtils.isJavaPackage;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import net.sf.beanlib.CollectionPropertyName;
@@ -68,9 +69,10 @@ public class HibernateBeanPopulatableSupport implements BeanPopulatable
                 goAhead = true;
             }
             else {
-                
+                Class<?> unenhancedReturnType = unenhance(readerMethod.getReturnType());
                 // Only a subset of collection properties needs to be populated
-                goAhead = Collection.class.isAssignableFrom(unenhance(readerMethod.getReturnType())) 
+                goAhead =  Collection.class.isAssignableFrom(unenhancedReturnType) 
+                        || Map.class.isAssignableFrom(unenhancedReturnType)
                         ? collectionPropertyNameSet.contains(
                                 new CollectionPropertyName(unenhance(readerMethod.getDeclaringClass()), propertyName))
                         : true    // not a Collection property, so go ahead
@@ -94,7 +96,8 @@ public class HibernateBeanPopulatableSupport implements BeanPopulatable
                 }
                 else {
                     // Only a subset of collection properties to be populated.
-                    goAhead = Collection.class.isAssignableFrom(returnType)
+                    goAhead =  Collection.class.isAssignableFrom(returnType)
+                            || Map.class.isAssignableFrom(returnType)
                             ? collectionPropertyNameSet.contains(
                                     new CollectionPropertyName(unenhance(readerMethod.getDeclaringClass()), propertyName))
                             : true
