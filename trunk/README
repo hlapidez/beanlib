@@ -11,3 +11,126 @@ beanlib-x.x.x-sources.jar             source distribution with all runtime depen
 beanlib-hibernate-x.x.x-sources.jar   source distribution with all runtime dependancies 
                                       and API documentation for beanlib-hibernate-x.x.x.jar
 
+History
+-------
+At the beginning, it's all about bean population.
+
+It started with BeanPopulator to populate stuff from one JavaBean to another.
+
+        new BeanPopulator(fromBean, toBean)
+            .populate()
+            ;
+
+To populate or not to populate ?
+
+        public interface BeanPopulatable {
+                boolean shouldPopulate(String propertyName, Method readerMethod);
+        }
+
+        new BeanPopulator(fromBean, toBean)
+            .initBeanPopulatable(myBeanPopulatable)
+            .populate()
+            ;
+
+More on to populate or not to populate ?
+
+        public interface DetailedBeanPopulatable {
+                public boolean shouldPopulate(String propertyName, 
+                                Object fromBean, Method readerMethod, 
+                                Object toBean, Method setterMethod);
+        }
+
+        new BeanPopulator(fromBean, toBean)
+            .initDetailedBeanPopulatable(myBeanPopulatable)
+            .populate()
+            ;
+
+Want to transform individual bean property value ?
+
+        public interface Transformable {
+        	public <T> T transform(Object in, Class<T> toClass);
+        }
+
+	new BeanPopulator(fromBean, toBean)
+	    .initTransformer(myTransformer)
+	    ;
+
+Then there are these ORM tools: Toplink, Hibernate, etc.
+They have POJO's but they are persistent objects.  One needs to be concerned about session state.
+But I just want a simple java bean with no concern about persistent states.
+We have 3-tier architecture that the session state within the persistence layer must not be exposed.
+
+How about replicating Hibernate persistent objects, transforming them into data transfer objects, 
+but optionally keep using the same classes ?
+
+        T dtoBean = new Hibernate3BeanReplicator().copy(fromEntityBean);
+        T dtoBean = new Hibernate3BeanReplicator().copy(fromEntityBean, tClass);
+
+        new Hibernate3BeanReplicator().deepCopy(fromEntityBean);
+        new Hibernate3BeanReplicator().shallowCopy(fromEntityBean);
+
+        new Hibernate3BeanReplicator()
+                .initBeanPopulatable(myBeanPopulatable)
+                .copy(fromEntityBean)
+                ;
+
+        new Hibernate3BeanReplicator()
+                .initDetailedBeanPopulatable(myDetailedBeanPopulatable)
+                .copy(fromEntityBean)
+                ;
+
+        new Hibernate3BeanReplicator()
+                .initVetoer(myVetoerBeanPopulatable)
+                .copy(fromEntityBean)
+                ;
+
+        new Hibernate3BeanReplicator()
+                .initEntityBeanClassSet(myEntityBeanClassSet)
+                .initCollectionPropertyNameSet(myCollectionPropertyNameSet)
+                .copy(fromEntityBean)
+                ;
+        
+Instead of specifying individual entity bean classes, how about specify them on an application level ?
+How about specifying the package prefix ?
+
+        Hibernate3DtoCopier fooHibernate3DtoCopier =
+                Hibernate3DtoCopier.Factory.getInstance("com.foo");
+
+        T fooDto = fooHibernate3DtoCopier.hibernate2dto(fooEntityBean);
+        List fooDtoList = fooHibernate3DtoCopier.hibernate2dto(fooEntityBeanCollection);
+
+Example in Spring:
+
+        public List<Foo> findFoosByDate(final date) {
+            return (List<Foo>)super.execute(
+              new HibernateCallback() {
+                  public Object doInHibernate(Session sess){
+                      Query q = //... 
+                      Hibernate3DtoCopier copier = 
+                          Hibernate3DtoCopier.Factory.getInstance(“com.foo”);
+                      return copier.hibernate2dto(q.list());
+                  }
+              }
+        }
+
+How about making this automatic/transparent in Spring ?
+
+        => DtoCentricHibernate3Template
+
+        public class MyDaoSupport extends HibernateDaoSupport 
+        {
+            ...
+            /** Invoked by Spring. */
+            @Override
+            protected HibernateTemplate createHibernateTemplate(SessionFactory sf)
+            {
+                return new DtoCentricHibernate3Template(sf).init(“com.foo”);
+            }
+            ...
+        }
+
+        
+
+
+
+
