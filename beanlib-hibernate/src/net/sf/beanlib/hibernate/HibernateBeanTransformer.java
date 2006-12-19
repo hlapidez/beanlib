@@ -295,8 +295,7 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
         
         if (toMap != null) {
             // Already transformed.
-            // Return null if the set is empty
-            return toMap.size() == 0 ? null : toMap;
+            return toMap;
         }
         toMap = this.createToMap(from);
         clonedMap.put(from, toMap);
@@ -311,8 +310,7 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
             Object toValue = replicate(fromValue);
             toMap.put(toKey, toValue);
         }
-        // Return null if the set is empty
-        return toMap.size() == 0 ? null : toMap;
+        return toMap;
     }
     
     @SuppressWarnings("unchecked")
