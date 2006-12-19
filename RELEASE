@@ -1,3 +1,8 @@
+beanlib 3.2.10
+--------------
+* Make consistent by returning an empty map instead of null when replicating 
+  an empty persistent map
+
 beanlib 3.2.9
 -------------
 * Tidy up the rourtines for checking immutability and java package.
