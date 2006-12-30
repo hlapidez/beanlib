@@ -38,7 +38,7 @@ public class PublicReaderMethodFinder implements BeanMethodFinder {
 			if (propertyName.length() > 1)
 				s += propertyName.substring(1);
 		}
-		Class beanClass = bean.getClass();
+		Class<?> beanClass = bean.getClass();
 		try {
 			// Find the public member method of the class or interface,
 			// recursively on super classes and interfaces as necessary.

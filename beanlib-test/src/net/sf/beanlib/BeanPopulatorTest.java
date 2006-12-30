@@ -15,12 +15,20 @@
  */
 package net.sf.beanlib;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import junit.framework.JUnit4TestAdapter;
+
+import org.junit.Test;
 
 /**
  * @author Joe D. Velopar
  */
-public class BeanPopulatorTest extends TestCase {
+public class BeanPopulatorTest {
+    @Test
 	public void test() {
 		Foo from = new Foo("from");
 		from.setBoo(true);
@@ -32,6 +40,7 @@ public class BeanPopulatorTest extends TestCase {
 		assertFalse(from.getProtectedSetString().equals(to.getProtectedSetString()));
 	}
 	
+    @Test
 	public void test2() {
 		Foo from = new Foo("from");
 		from.setBoo(true);
@@ -45,6 +54,7 @@ public class BeanPopulatorTest extends TestCase {
 		assertEquals(from.isBoo(), to.isBoo());
 	}
 
+    @Test
 	public void test4() {
 		Bar from = new Bar("from");
 		from.setBoo(true);
@@ -60,6 +70,7 @@ public class BeanPopulatorTest extends TestCase {
 		assertSame(from.getBar(), to.getBar());
 	}
 	
+    @Test
 	public void testProtected() {
 		Foo from = new Foo("from");
 		from.setBoo(true);
@@ -75,6 +86,7 @@ public class BeanPopulatorTest extends TestCase {
 		assertEquals(from, to);
 	}
 
+    @Test
 	public void testProtected4() {
 		Bar from = new Bar("from");
 		from.setBoo(true);
@@ -94,6 +106,7 @@ public class BeanPopulatorTest extends TestCase {
 		assertSame(from.getBar(), to.getBar());
 	}
 	
+    @Test
 	public void testDeepCopyRegardless() {
 		Type1 t1 = new Type1();
 		t1.setF1("f1 of type1");
@@ -111,4 +124,8 @@ public class BeanPopulatorTest extends TestCase {
 		assertNotNull(t1.getType());
 		assertNull(t2.getType());
 	}
+
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(BeanPopulatorTest.class);
+    }
 }

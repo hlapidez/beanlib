@@ -39,13 +39,11 @@ public class ProtectedSetterMethodCollector implements BeanMethodCollector {
 		// and private methods, but excludes inherited methods.
 		Set<Method> set = new HashSet<Method>();
 		
-		while (beanClass != Object.class) {
-			Method[] ma = beanClass.getDeclaredMethods();
-			
-			for (int i=ma.length-1; i > -1; i--) {
-				Method m = ma[i];
-				
-				if (!m.getName().startsWith("set"))
+		while (beanClass != Object.class) 
+        {
+            for (Method m : beanClass.getDeclaredMethods()) 
+            {
+				if (!m.getName().startsWith(getMethodPrefix()))
 					continue;
 				if (m.getParameterTypes().length != 1)
 					continue;
@@ -63,4 +61,8 @@ public class ProtectedSetterMethodCollector implements BeanMethodCollector {
 		}
 		return set.toArray(new Method[set.size()]);
 	}
+
+    public String getMethodPrefix() {
+        return "set";
+    }
 }

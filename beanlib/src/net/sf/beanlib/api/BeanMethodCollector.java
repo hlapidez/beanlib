@@ -24,4 +24,5 @@ import java.lang.reflect.Method;
  */
 public interface BeanMethodCollector {
 	public Method[] collect(Object bean);
+    public String getMethodPrefix();
 }
