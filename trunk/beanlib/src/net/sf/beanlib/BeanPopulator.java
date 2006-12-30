@@ -39,7 +39,6 @@ import org.apache.commons.logging.LogFactory;
  * @author Joe D. Velopar
  */
 public class BeanPopulator {
-	private static final Object PROPERTY_INIT_VALUE = new int[0];
 	private final Log log = LogFactory.getLog(this.getClass());
 
 	private final Object fromBean;
@@ -73,10 +72,9 @@ public class BeanPopulator {
 	 */
 	public Object populate() 
 	{
-		Method[] setterMethods = setterMethodCollector.collect(toBean);
 		// invoking all declaring setter methods of toBean from all matching getter methods of fromBean
-		for (int i = setterMethods.length-1; i > -1; i--)
-			processSetterMethod(setterMethods[i]);
+        for (Method m : setterMethodCollector.collect(toBean))
+            processSetterMethod(m);
 		return toBean;
 	}
 	/**
@@ -87,7 +85,7 @@ public class BeanPopulator {
 	private void processSetterMethod(Method setterMethod)
 	{
 		String methodName = setterMethod.getName();
-		final String propertyString = methodName.substring("set".length());
+		final String propertyString = methodName.substring(setterMethodCollector.getMethodPrefix().length());
 		
 		if (debug) {
 			if (log.isInfoEnabled())
@@ -132,16 +130,14 @@ public class BeanPopulator {
 			if (!beanPopulatable.shouldPopulate(propertyName, readerMethod))
 				return;
 		}
-		Object propertyValue = PROPERTY_INIT_VALUE;
+		Object propertyValue = this.invokeMethodAsPrivileged(fromBean, readerMethod, null);
 		
-		if (beanSourceHandler != null) {
-			propertyValue = this.invokeMethodAsPrivileged(fromBean, readerMethod, null);
+		if (beanSourceHandler != null)
 			beanSourceHandler.handleBeanSource(propertyValue);
-		}
-		if (propertyValue == PROPERTY_INIT_VALUE)
-			propertyValue = this.invokeMethodAsPrivileged(fromBean, readerMethod, null);
+        
 		if (transformer != null)
 			propertyValue = transformer.transform(propertyValue, paramType);
+        
 		if (debug) {
 			if (log.isInfoEnabled())
 				log.info("processSetterMethod: setting propertyName=" + propertyName);
@@ -226,22 +222,27 @@ public class BeanPopulator {
 		this.detailedBeanPopulatable = detailedBeanPopulatable;
 		return this;
 	}
+    
 	public BeanMethodFinder getReaderMethodFinder() {
 		return readerMethodFinder;
 	}
+    
 	public BeanPopulator initReaderMethodFinder(BeanMethodFinder readerMethodFinder) {
 		if (readerMethodFinder != null)
 			this.readerMethodFinder = readerMethodFinder;
 		return this;
 	}
-	public BeanMethodCollector getSetterMethodCollector() {
+
+    public BeanMethodCollector getSetterMethodCollector() {
 		return setterMethodCollector;
 	}
+    
 	public BeanPopulator initSetterMethodCollector(BeanMethodCollector setterMethodCollector) {
 		if (setterMethodCollector != null)
 			this.setterMethodCollector = setterMethodCollector;
 		return this;
 	}
+    
 	public Transformable getTransformer() {
 		return transformer;
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License")
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib;
+package net.sf.beanlib.jaxb2;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -22,14 +22,14 @@ import java.util.List;
 import net.sf.beanlib.api.BeanMethodCollector;
 
 /**
- * Supports collecting JavaBean public setter methods.
+ * Supports collecting Jaxb 2 fluent api setter methods.
  *   
- * @author Joe D. Velopar
+ * @author Hanson Char
  */
-public class PublicSetterMethodCollector implements BeanMethodCollector {
-	public static final PublicSetterMethodCollector inst = new PublicSetterMethodCollector();
+public class FluentSetterMethodCollector implements BeanMethodCollector {
+	public static final FluentSetterMethodCollector inst = new FluentSetterMethodCollector();
 	
-	private PublicSetterMethodCollector() {}
+	private FluentSetterMethodCollector() {}
 	
 	public Method[] collect(Object bean) {
 		// Get all the public member methods of the class or interface,
@@ -48,6 +48,6 @@ public class PublicSetterMethodCollector implements BeanMethodCollector {
 	}
 
     public String getMethodPrefix() {
-        return "set";
+        return "with";
     }
 }
