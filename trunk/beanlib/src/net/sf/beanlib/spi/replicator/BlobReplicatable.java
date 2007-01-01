@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.transform.spi;
+package net.sf.beanlib.spi.replicator;
 
-import java.util.Collection;
+import java.sql.Blob;
+
+import net.sf.beanlib.spi.BeanTransformableSpi;
+
 
 /**
- * Replicator interface for Collection.
- *  
  * @author Joe D. Velopar
  */
-public interface CollectionReplicatable 
+public interface BlobReplicatable 
 {
-    CollectionReplicatable initBeanTransformableSpi(BeanTransformableSpi beanTransformableSpi);
+    public static interface Factory {
+        BlobReplicatable newReplicatable(BeanTransformableSpi beanTransformer);
+    }
     
-    <V,T> T replicateCollection(Collection<V> from, Class<T> toClass);
+    <T> T replicateBlob(Blob fromBlob, Class<T> toClass);
 }

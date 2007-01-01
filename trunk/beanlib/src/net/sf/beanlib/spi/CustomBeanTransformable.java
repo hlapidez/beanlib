@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.transform.spi;
+package net.sf.beanlib.spi;
 
 import net.sf.beanlib.api.Transformable;
 

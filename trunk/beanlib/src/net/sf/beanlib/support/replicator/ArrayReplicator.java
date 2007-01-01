@@ -13,25 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.transform.impl;
+package net.sf.beanlib.support.replicator;
 
 import static net.sf.beanlib.utils.ClassUtils.immutable;
 
 import java.lang.reflect.Array;
 
-import net.sf.beanlib.transform.spi.ArrayReplicatable;
-import net.sf.beanlib.transform.spi.BeanTransformableSpi;
+import net.sf.beanlib.spi.BeanTransformableSpi;
+import net.sf.beanlib.spi.replicator.ArrayReplicatable;
 
 /**
  * @author Joe D. Velopar
  */
 public class ArrayReplicator extends ReplicatorTemplate implements ArrayReplicatable 
 {
-    // must be invoked as the first method on this object
-    public ArrayReplicatable initBeanTransformableSpi(BeanTransformableSpi beanTransformableSpi) 
-    {
-        super.setBeanTransformableSpi(beanTransformableSpi);
-        return this;
+    public static final Factory factory = new Factory();
+    
+    public static class Factory implements ArrayReplicatable.Factory {
+        private Factory() {}
+        
+        public ArrayReplicatable newReplicatable(BeanTransformableSpi beanTransformer) {
+            return new ArrayReplicator(beanTransformer);
+        }
+    }
+    
+    private ArrayReplicator(BeanTransformableSpi beanTransformer) {
+        super(beanTransformer);
     }
     
     public <V,T> T replicateArray(V[] from, Class<T> toClass)

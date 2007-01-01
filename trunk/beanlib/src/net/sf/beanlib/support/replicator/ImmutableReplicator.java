@@ -13,20 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.transform.impl;
+package net.sf.beanlib.support.replicator;
 
-import net.sf.beanlib.transform.spi.BeanTransformableSpi;
-import net.sf.beanlib.transform.spi.ImmutableReplicatable;
+import net.sf.beanlib.spi.BeanTransformableSpi;
+import net.sf.beanlib.spi.replicator.ImmutableReplicatable;
 
 /**
  * @author Joe D. Velopar
  */
 public class ImmutableReplicator implements ImmutableReplicatable
 {
-    public ImmutableReplicatable initBeanTransformableSpi(BeanTransformableSpi beanTransformableSpi) 
-    {
-        return this;
+    public static final Factory factory = new Factory();
+    
+    public static class Factory implements ImmutableReplicatable.Factory {
+        private Factory() {}
+        
+        public ImmutableReplicatable newReplicatable(BeanTransformableSpi beanTransformer) {
+            return new ImmutableReplicator();
+        }
     }
+    
+    private ImmutableReplicator() {}
 
     public <V, T> T replicateImmutable(V immutableFrom, Class<T> toClass) 
     {

@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.transform.impl;
+package net.sf.beanlib.spi.replicator;
 
-import java.sql.Blob;
+import java.util.Map;
 
-import net.sf.beanlib.transform.spi.BeanTransformableSpi;
-import net.sf.beanlib.transform.spi.BlobReplicatable;
+import net.sf.beanlib.spi.BeanTransformableSpi;
+
 
 /**
+ * Replicator interface for Map.
+ *  
  * @author Joe D. Velopar
  */
-public class UnsupportedBlobReplicator extends ReplicatorTemplate implements BlobReplicatable 
+public interface MapReplicatable 
 {
-    // must be invoked as the first method on this object
-    public BlobReplicatable initBeanTransformableSpi(BeanTransformableSpi beanTransformableSpi) 
-    {
-        return this;
+    public static interface Factory {
+        public MapReplicatable newReplicatable(BeanTransformableSpi beanTransformer);
     }
+//    MapReplicatable initBeanTransformableSpi(BeanTransformableSpi beanTransformableSpi);
     
-    public <T> T replicateBlob(Blob fromBlob, Class<T> toClass) {
-        throw new UnsupportedOperationException("You need to supply your own BlobReplicatable.");
-    }
+    <K,V,T> T replicateMap(Map<K,V> from, Class<T> toClass);
 }

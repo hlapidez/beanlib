@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.transform.spi;
+package net.sf.beanlib.spi.replicator;
 
-import java.util.Map;
+import java.util.Collection;
+
+import net.sf.beanlib.spi.BeanTransformableSpi;
+
 
 /**
- * Replicator interface for Map.
+ * Replicator interface for Collection.
  *  
  * @author Joe D. Velopar
  */
-public interface MapReplicatable 
+public interface CollectionReplicatable 
 {
-    MapReplicatable initBeanTransformableSpi(BeanTransformableSpi beanTransformableSpi);
+    public static interface Factory {
+        CollectionReplicatable newReplicatable(BeanTransformableSpi beanTransformer);
+    }
     
-    <K,V,T> T replicateMap(Map<K,V> from, Class<T> toClass);
+    <V,T> T replicateCollection(Collection<V> from, Class<T> toClass);
 }

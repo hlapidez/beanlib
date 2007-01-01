@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.transform.impl;
+package net.sf.beanlib.support.replicator;
 
 import static net.sf.beanlib.utils.ClassUtils.isJavaPackage;
 
@@ -27,19 +27,28 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import net.sf.beanlib.BeanlibException;
-import net.sf.beanlib.transform.spi.BeanTransformableSpi;
-import net.sf.beanlib.transform.spi.CollectionReplicatable;
+import net.sf.beanlib.spi.BeanTransformableSpi;
+import net.sf.beanlib.spi.replicator.CollectionReplicatable;
 
 /**
  * @author Joe D. Velopar
  */
 public class CollectionReplicator extends ReplicatorTemplate implements CollectionReplicatable 
 {
+    public static final Factory factory = new Factory();
+    
+    public static class Factory implements CollectionReplicatable.Factory {
+        private Factory() {}
+        
+        public CollectionReplicatable newReplicatable(BeanTransformableSpi beanTransformer) {
+            return new CollectionReplicator(beanTransformer);
+        }
+    }
+    
     // must be invoked as the first method on this object
-    public CollectionReplicatable initBeanTransformableSpi(BeanTransformableSpi beanTransformableSpi) 
+    private CollectionReplicator(BeanTransformableSpi beanTransformer) 
     {
-        super.setBeanTransformableSpi(beanTransformableSpi);
-        return this;
+        super(beanTransformer);
     }
     
     public <V,T> T replicateCollection(Collection<V> from, Class<T> toClass)
