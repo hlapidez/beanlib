@@ -67,7 +67,8 @@ public class BlobUtils {
 	}
 
 	private byte[] toByteArrayImpl(Blob fromBlob, ByteArrayOutputStream baos, int bufferSize)
-			throws SQLException, IOException {
+			throws SQLException, IOException 
+    {
 		byte[] buf = new byte[bufferSize];
 		InputStream is = fromBlob.getBinaryStream();
 		try {
