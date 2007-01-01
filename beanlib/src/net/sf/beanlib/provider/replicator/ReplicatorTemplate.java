@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.support.replicator;
+package net.sf.beanlib.provider.replicator;
 
 import static net.sf.beanlib.utils.ClassUtils.immutable;
 
