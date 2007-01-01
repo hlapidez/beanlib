@@ -32,21 +32,21 @@ import net.sf.beanlib.provider.replicator.ImmutableReplicator;
 import net.sf.beanlib.provider.replicator.MapReplicator;
 import net.sf.beanlib.provider.replicator.ReplicatorTemplate;
 import net.sf.beanlib.provider.replicator.UnsupportedBlobReplicator;
-import net.sf.beanlib.spi.BeanTransformableSpi;
-import net.sf.beanlib.spi.CustomBeanTransformable;
-import net.sf.beanlib.spi.replicator.ArrayReplicatable;
-import net.sf.beanlib.spi.replicator.BeanReplicatable;
-import net.sf.beanlib.spi.replicator.BlobReplicatable;
-import net.sf.beanlib.spi.replicator.CollectionReplicatable;
-import net.sf.beanlib.spi.replicator.ImmutableReplicatable;
-import net.sf.beanlib.spi.replicator.MapReplicatable;
+import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.CustomBeanTransformerSpi;
+import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
+import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
+import net.sf.beanlib.spi.replicator.BlobReplicatorSpi;
+import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
+import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
+import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
 
 /**
  * Bean Transformer.
  * 
  * @author Joe D. Velopar
  */
-public class BeanTransformer extends ReplicatorTemplate implements BeanTransformableSpi
+public class BeanTransformer extends ReplicatorTemplate implements BeanTransformerSpi
 {
     // Contains those objects that have been replicated.
     private Map<Object,Object> clonedMap = new IdentityHashMap<Object,Object>();
@@ -58,16 +58,16 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     private BeanMethodCollector setterMethodCollector = ProtectedSetterMethodCollector.inst;
     
     /** Custom Transformer. */
-    private CustomBeanTransformable customTransformer = CustomBeanTransformable.NO_OP;
+    private CustomBeanTransformerSpi customTransformer = CustomBeanTransformerSpi.NO_OP;
 
     private boolean debug;
     
-    private ImmutableReplicatable immutableReplicatable = ImmutableReplicator.factory.newReplicatable(this);
-    private CollectionReplicatable collectionReplicatable = CollectionReplicator.factory.newReplicatable(this);
-    private MapReplicatable mapReplicatable = MapReplicator.factory.newReplicatable(this);
-    private ArrayReplicatable arrayReplicatable = ArrayReplicator.factory.newReplicatable(this);
-    private BlobReplicatable blobReplicatable = UnsupportedBlobReplicator.factory.newReplicatable(this);
-    private BeanReplicatable objectReplicatable = BeanReplicator.factory.newReplicatable(this);
+    private ImmutableReplicatorSpi immutableReplicatable = ImmutableReplicator.factory.newReplicatable(this);
+    private CollectionReplicatorSpi collectionReplicatable = CollectionReplicator.factory.newReplicatable(this);
+    private MapReplicatorSpi mapReplicatable = MapReplicator.factory.newReplicatable(this);
+    private ArrayReplicatorSpi arrayReplicatable = ArrayReplicator.factory.newReplicatable(this);
+    private BlobReplicatorSpi blobReplicatable = UnsupportedBlobReplicator.factory.newReplicatable(this);
+    private BeanReplicatorSpi objectReplicatable = BeanReplicator.factory.newReplicatable(this);
     
     public BeanTransformer() {
     }
@@ -90,33 +90,33 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         return beanPopulatable;
     }
     
-    public final BeanTransformableSpi initCustomTransformer(CustomBeanTransformable customTransformer) {
+    public final BeanTransformerSpi initCustomTransformer(CustomBeanTransformerSpi customTransformer) {
         this.customTransformer = customTransformer;
         return this;
     }
     
-    public final BeanTransformableSpi initBeanPopulatable(BeanPopulatable beanPopulatable) {
+    public final BeanTransformerSpi initBeanPopulatable(BeanPopulatable beanPopulatable) {
         this.beanPopulatable = beanPopulatable;
         return this;
     }
     public final BeanSourceHandler getBeanSourceHandler() {
         return beanSourceHandler;
     }
-    public final BeanTransformableSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler) {
+    public final BeanTransformerSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler) {
         this.beanSourceHandler = beanSourceHandler;
         return this;
     }
     public final boolean isDebug() {
         return debug;
     }
-    public final BeanTransformableSpi initDebug(boolean debug) {
+    public final BeanTransformerSpi initDebug(boolean debug) {
         this.debug = debug;
         return this;
     }
     public final DetailedBeanPopulatable getDetailedBeanPopulatable() {
         return detailedBeanPopulatable;
     }
-    public final BeanTransformableSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable) 
+    public final BeanTransformerSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable) 
     {
         this.detailedBeanPopulatable = detailedBeanPopulatable;
         return this;
@@ -124,33 +124,33 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     public final BeanMethodFinder getReaderMethodFinder() {
         return readerMethodFinder;
     }
-    public final BeanTransformableSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder) {
+    public final BeanTransformerSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder) {
         this.readerMethodFinder = readerMethodFinder;
         return this;
     }
     public final BeanMethodCollector getSetterMethodCollector() {
         return setterMethodCollector;
     }
-    public final BeanTransformableSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector) {
+    public final BeanTransformerSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector) {
         this.setterMethodCollector = setterMethodCollector;
         return this;
     }
     
-    public BeanTransformableSpi initCollectionReplicatable(CollectionReplicatable.Factory factory) {
+    public BeanTransformerSpi initCollectionReplicatable(CollectionReplicatorSpi.Factory factory) {
         this.collectionReplicatable = factory.newReplicatable(this);
         return this;
     }
     
-    public CollectionReplicatable getCollectionReplicatable() {
+    public CollectionReplicatorSpi getCollectionReplicatable() {
         return collectionReplicatable;
     }
     
-    public BeanTransformableSpi initMapReplicatable(MapReplicatable.Factory factory) {
+    public BeanTransformerSpi initMapReplicatable(MapReplicatorSpi.Factory factory) {
         this.mapReplicatable = factory.newReplicatable(this);
         return this;
     }
     
-    public MapReplicatable getMapReplicatable() {
+    public MapReplicatorSpi getMapReplicatable() {
         return mapReplicatable;
     }
     
@@ -158,44 +158,44 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     public <K,V> Map<K,V> getClonedMap() {
         return (Map<K,V>)clonedMap;
     }
-    public CustomBeanTransformable getCustomTransformer() {
+    public CustomBeanTransformerSpi getCustomTransformer() {
         return customTransformer;
     }
 
-    public BeanTransformableSpi initImmutableReplicatable(ImmutableReplicatable.Factory immutableReplicatableFactory) 
+    public BeanTransformerSpi initImmutableReplicatable(ImmutableReplicatorSpi.Factory immutableReplicatableFactory) 
     {
         this.immutableReplicatable = immutableReplicatableFactory.newReplicatable(this);
         return this;
     }
 
-    public ImmutableReplicatable getImmutableReplicatable() {
+    public ImmutableReplicatorSpi getImmutableReplicatable() {
         return this.immutableReplicatable;
     }
 
-    public BeanTransformableSpi initArrayReplicatable(ArrayReplicatable.Factory arrayReplicatableFactory) {
+    public BeanTransformerSpi initArrayReplicatable(ArrayReplicatorSpi.Factory arrayReplicatableFactory) {
         this.arrayReplicatable = arrayReplicatableFactory.newReplicatable(this);
         return this;
     }
 
-    public ArrayReplicatable getArrayReplicatable() {
+    public ArrayReplicatorSpi getArrayReplicatable() {
         return this.arrayReplicatable;
     }
 
-    public BeanTransformableSpi initBlobReplicatable(BlobReplicatable.Factory blobReplicatableFactory) {
+    public BeanTransformerSpi initBlobReplicatable(BlobReplicatorSpi.Factory blobReplicatableFactory) {
         this.blobReplicatable = blobReplicatableFactory.newReplicatable(this);
         return this;
     }
 
-    public BlobReplicatable getBlobReplicatable() {
+    public BlobReplicatorSpi getBlobReplicatable() {
         return blobReplicatable;
     }
 
-    public BeanTransformableSpi initObjectReplicatable(BeanReplicatable.Factory objectReplicatableFactory) {
+    public BeanTransformerSpi initObjectReplicatable(BeanReplicatorSpi.Factory objectReplicatableFactory) {
         this.objectReplicatable = objectReplicatableFactory.newReplicatable(this);
         return this;
     }
 
-    public BeanReplicatable getObjectReplicatable() {
+    public BeanReplicatorSpi getObjectReplicatable() {
         return objectReplicatable;
     }
 }

@@ -16,26 +16,26 @@
 package net.sf.beanlib.provider.replicator;
 
 import net.sf.beanlib.BeanlibException;
-import net.sf.beanlib.spi.BeanTransformableSpi;
-import net.sf.beanlib.spi.replicator.BeanReplicatable;
+import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 
 /**
  * @author Joe D. Velopar
  */
-public class BeanReplicator extends ReplicatorTemplate implements BeanReplicatable
+public class BeanReplicator extends ReplicatorTemplate implements BeanReplicatorSpi
 {
     public static final Factory factory = new Factory();
     
-    public static class Factory implements BeanReplicatable.Factory {
+    public static class Factory implements BeanReplicatorSpi.Factory {
         private Factory() {}
         
-        public BeanReplicatable newReplicatable(BeanTransformableSpi beanTransformer) {
+        public BeanReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer) {
             return new BeanReplicator(beanTransformer);
         }
     }
     
     // must be invoked as the first method on this object
-    private BeanReplicator(BeanTransformableSpi beanTransformer) 
+    private BeanReplicator(BeanTransformerSpi beanTransformer) 
     {
         super(beanTransformer);
     }

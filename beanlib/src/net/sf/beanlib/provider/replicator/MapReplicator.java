@@ -25,25 +25,25 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import net.sf.beanlib.BeanlibException;
-import net.sf.beanlib.spi.BeanTransformableSpi;
-import net.sf.beanlib.spi.replicator.MapReplicatable;
+import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
 
 /**
  * @author Joe D. Velopar
  */
-public class MapReplicator extends ReplicatorTemplate implements MapReplicatable
+public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSpi
 {
     public static final Factory factory = new Factory();
     
-    public static class Factory implements MapReplicatable.Factory {
+    public static class Factory implements MapReplicatorSpi.Factory {
         private Factory() {}
         
-        public MapReplicatable newReplicatable(BeanTransformableSpi beanTransformer) {
+        public MapReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer) {
             return new MapReplicator(beanTransformer);
         }
     }
     // must be invoked as the first method on this object
-    private MapReplicator(BeanTransformableSpi beanTransformer) 
+    private MapReplicator(BeanTransformerSpi beanTransformer) 
     {
         super(beanTransformer);
     }

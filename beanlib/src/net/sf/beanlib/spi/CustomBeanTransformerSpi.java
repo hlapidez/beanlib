@@ -19,16 +19,16 @@ import net.sf.beanlib.api.Transformable;
 
 /**
  * Interface for Custom Bean Transformer.
- * Can be used to customize the transformation process provided by {@link BeanTransformableSpi}.
+ * Can be used to customize the transformation process provided by {@link BeanTransformerSpi}.
  * 
  * @author Joe D. Velopar
  */
-public interface CustomBeanTransformable extends Transformable {
-	public static final CustomBeanTransformable NO_OP = new CustomBeanTransformable() {
+public interface CustomBeanTransformerSpi extends Transformable {
+	public static final CustomBeanTransformerSpi NO_OP = new CustomBeanTransformerSpi() {
 		public boolean isTransformable(
                 @SuppressWarnings("unused") Object in, 
                 @SuppressWarnings("unused") Class toClass, 
-                @SuppressWarnings("unused") BeanTransformableSpi hibernateBeanTransformer) 
+                @SuppressWarnings("unused") BeanTransformerSpi hibernateBeanTransformer) 
         { 
             return false; 
         }
@@ -43,5 +43,5 @@ public interface CustomBeanTransformable extends Transformable {
 	 *  @param toClass target class to transform to
 	 *  @param hibernateBeanTransformer Hibernate Bean Transformer  
 	 */
-	public boolean isTransformable(Object from, Class toClass, BeanTransformableSpi hibernateBeanTransformer);
+	public boolean isTransformable(Object from, Class toClass, BeanTransformerSpi hibernateBeanTransformer);
 }

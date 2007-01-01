@@ -15,17 +15,19 @@
  */
 package net.sf.beanlib.spi.replicator;
 
-import net.sf.beanlib.spi.BeanTransformableSpi;
+import java.sql.Blob;
+
+import net.sf.beanlib.spi.BeanTransformerSpi;
 
 
 /**
  * @author Joe D. Velopar
  */
-public interface ImmutableReplicatable 
+public interface BlobReplicatorSpi 
 {
     public static interface Factory {
-        ImmutableReplicatable newReplicatable(BeanTransformableSpi beanTransformer);
+        BlobReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
     }
     
-    <V,T> T replicateImmutable(V immutable, Class<T> toClass);
+    <T> T replicateBlob(Blob fromBlob, Class<T> toClass);
 }
