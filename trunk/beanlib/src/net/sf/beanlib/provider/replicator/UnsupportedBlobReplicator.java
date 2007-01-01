@@ -13,34 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.support.replicator;
+package net.sf.beanlib.provider.replicator;
+
+import java.sql.Blob;
 
 import net.sf.beanlib.spi.BeanTransformableSpi;
-import net.sf.beanlib.spi.replicator.ImmutableReplicatable;
+import net.sf.beanlib.spi.replicator.BlobReplicatable;
 
 /**
  * @author Joe D. Velopar
  */
-public class ImmutableReplicator implements ImmutableReplicatable
+public class UnsupportedBlobReplicator implements BlobReplicatable 
 {
     public static final Factory factory = new Factory();
     
-    public static class Factory implements ImmutableReplicatable.Factory {
+    public static class Factory implements BlobReplicatable.Factory {
         private Factory() {}
         
-        public ImmutableReplicatable newReplicatable(BeanTransformableSpi beanTransformer) {
-            return new ImmutableReplicator();
+        public BlobReplicatable newReplicatable(BeanTransformableSpi beanTransformer) {
+            return new UnsupportedBlobReplicator();
         }
     }
     
-    private ImmutableReplicator() {}
-
-    public <V, T> T replicateImmutable(V immutableFrom, Class<T> toClass) 
-    {
-        if (immutableFrom == null)
-            return null;
-        if (toClass.isAssignableFrom(immutableFrom.getClass()))
-            return toClass.cast(immutableFrom);
-        return null;
+    private UnsupportedBlobReplicator() {}
+    
+    public <T> T replicateBlob(Blob fromBlob, Class<T> toClass) {
+        throw new UnsupportedOperationException("You need to supply your own BlobReplicatable.");
     }
 }

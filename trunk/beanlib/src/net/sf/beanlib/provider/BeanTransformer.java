@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.support;
+package net.sf.beanlib.provider;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -25,6 +25,13 @@ import net.sf.beanlib.api.BeanMethodFinder;
 import net.sf.beanlib.api.BeanPopulatable;
 import net.sf.beanlib.api.BeanSourceHandler;
 import net.sf.beanlib.api.DetailedBeanPopulatable;
+import net.sf.beanlib.provider.replicator.ArrayReplicator;
+import net.sf.beanlib.provider.replicator.BeanReplicator;
+import net.sf.beanlib.provider.replicator.CollectionReplicator;
+import net.sf.beanlib.provider.replicator.ImmutableReplicator;
+import net.sf.beanlib.provider.replicator.MapReplicator;
+import net.sf.beanlib.provider.replicator.ReplicatorTemplate;
+import net.sf.beanlib.provider.replicator.UnsupportedBlobReplicator;
 import net.sf.beanlib.spi.BeanTransformableSpi;
 import net.sf.beanlib.spi.CustomBeanTransformable;
 import net.sf.beanlib.spi.replicator.ArrayReplicatable;
@@ -33,13 +40,6 @@ import net.sf.beanlib.spi.replicator.BlobReplicatable;
 import net.sf.beanlib.spi.replicator.CollectionReplicatable;
 import net.sf.beanlib.spi.replicator.ImmutableReplicatable;
 import net.sf.beanlib.spi.replicator.MapReplicatable;
-import net.sf.beanlib.support.replicator.ArrayReplicator;
-import net.sf.beanlib.support.replicator.BeanReplicator;
-import net.sf.beanlib.support.replicator.CollectionReplicator;
-import net.sf.beanlib.support.replicator.ImmutableReplicator;
-import net.sf.beanlib.support.replicator.MapReplicator;
-import net.sf.beanlib.support.replicator.ReplicatorTemplate;
-import net.sf.beanlib.support.replicator.UnsupportedBlobReplicator;
 
 /**
  * Bean Transformer.
