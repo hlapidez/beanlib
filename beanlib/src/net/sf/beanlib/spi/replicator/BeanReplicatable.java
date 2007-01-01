@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.transform.spi;
+package net.sf.beanlib.spi.replicator;
+
+import net.sf.beanlib.spi.BeanTransformableSpi;
+
 
 /**
  * @author Joe D. Velopar
  */
 public interface BeanReplicatable 
 {
-    BeanReplicatable initBeanTransformableSpi(BeanTransformableSpi beanTransformableSpi);
+    public static interface Factory {
+        BeanReplicatable newReplicatable(BeanTransformableSpi beanTransformer);
+    }
     
     <V,T> T replicateBean(V fromBean, Class<T> toClass);
 }

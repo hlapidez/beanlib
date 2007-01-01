@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.transform.impl;
+package net.sf.beanlib.support.replicator;
 
 import static net.sf.beanlib.utils.ClassUtils.isJavaPackage;
 
@@ -25,19 +25,27 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import net.sf.beanlib.BeanlibException;
-import net.sf.beanlib.transform.spi.BeanTransformableSpi;
-import net.sf.beanlib.transform.spi.MapReplicatable;
+import net.sf.beanlib.spi.BeanTransformableSpi;
+import net.sf.beanlib.spi.replicator.MapReplicatable;
 
 /**
  * @author Joe D. Velopar
  */
 public class MapReplicator extends ReplicatorTemplate implements MapReplicatable
 {
+    public static final Factory factory = new Factory();
+    
+    public static class Factory implements MapReplicatable.Factory {
+        private Factory() {}
+        
+        public MapReplicatable newReplicatable(BeanTransformableSpi beanTransformer) {
+            return new MapReplicator(beanTransformer);
+        }
+    }
     // must be invoked as the first method on this object
-    public MapReplicatable initBeanTransformableSpi(BeanTransformableSpi beanTransformableSpi) 
+    private MapReplicator(BeanTransformableSpi beanTransformer) 
     {
-        super.setBeanTransformableSpi(beanTransformableSpi);
-        return this;
+        super(beanTransformer);
     }
     
     public <K,V,T> T replicateMap(Map<K,V> from, Class<T> toClass)

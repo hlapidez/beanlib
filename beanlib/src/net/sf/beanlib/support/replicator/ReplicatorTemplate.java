@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.transform.impl;
+package net.sf.beanlib.support.replicator;
 
 import static net.sf.beanlib.utils.ClassUtils.immutable;
 
@@ -31,7 +31,7 @@ import java.util.Map;
 
 import net.sf.beanlib.BeanPopulator;
 import net.sf.beanlib.BeanlibException;
-import net.sf.beanlib.transform.spi.BeanTransformableSpi;
+import net.sf.beanlib.spi.BeanTransformableSpi;
 
 import org.apache.commons.lang.ClassUtils;
 import org.apache.log4j.Logger;
@@ -39,15 +39,23 @@ import org.apache.log4j.Logger;
 /**
  * @author Joe D. Velopar
  */
-public class ReplicatorTemplate
+public abstract class ReplicatorTemplate
 {
     protected final Logger log = Logger.getLogger(getClass());
-    private BeanTransformableSpi beanTransformer;
+    private final BeanTransformableSpi beanTransformer;
     
-    protected void setBeanTransformableSpi(BeanTransformableSpi beanTransformer) 
-    {
+    protected ReplicatorTemplate(BeanTransformableSpi beanTransformer) {
         this.beanTransformer = beanTransformer;
     }
+
+    protected ReplicatorTemplate() {
+        this.beanTransformer = (BeanTransformableSpi)this;
+    }
+    
+//    protected void setBeanTransformableSpi(BeanTransformableSpi beanTransformer) 
+//    {
+//        this.beanTransformer = beanTransformer;
+//    }
     
     protected Object replicate(Object from)
     {

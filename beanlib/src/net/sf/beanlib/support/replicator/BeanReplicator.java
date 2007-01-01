@@ -13,22 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.transform.impl;
+package net.sf.beanlib.support.replicator;
 
 import net.sf.beanlib.BeanlibException;
-import net.sf.beanlib.transform.spi.BeanReplicatable;
-import net.sf.beanlib.transform.spi.BeanTransformableSpi;
+import net.sf.beanlib.spi.BeanTransformableSpi;
+import net.sf.beanlib.spi.replicator.BeanReplicatable;
 
 /**
  * @author Joe D. Velopar
  */
 public class BeanReplicator extends ReplicatorTemplate implements BeanReplicatable
 {
+    public static final Factory factory = new Factory();
+    
+    public static class Factory implements BeanReplicatable.Factory {
+        private Factory() {}
+        
+        public BeanReplicatable newReplicatable(BeanTransformableSpi beanTransformer) {
+            return new BeanReplicator(beanTransformer);
+        }
+    }
+    
     // must be invoked as the first method on this object
-    public BeanReplicatable initBeanTransformableSpi(BeanTransformableSpi beanTransformableSpi) 
+    private BeanReplicator(BeanTransformableSpi beanTransformer) 
     {
-        super.setBeanTransformableSpi(beanTransformableSpi);
-        return this;
+        super(beanTransformer);
     }
     
     public <V,T> T replicateBean(V from, Class<T> toClass)

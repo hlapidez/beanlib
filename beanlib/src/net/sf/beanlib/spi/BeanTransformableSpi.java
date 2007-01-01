@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.transform.spi;
+package net.sf.beanlib.spi;
 
 import java.util.Map;
 
@@ -23,6 +23,12 @@ import net.sf.beanlib.api.BeanPopulatable;
 import net.sf.beanlib.api.BeanSourceHandler;
 import net.sf.beanlib.api.DetailedBeanPopulatable;
 import net.sf.beanlib.api.Transformable;
+import net.sf.beanlib.spi.replicator.ArrayReplicatable;
+import net.sf.beanlib.spi.replicator.BeanReplicatable;
+import net.sf.beanlib.spi.replicator.BlobReplicatable;
+import net.sf.beanlib.spi.replicator.CollectionReplicatable;
+import net.sf.beanlib.spi.replicator.ImmutableReplicatable;
+import net.sf.beanlib.spi.replicator.MapReplicatable;
 
 /**
  * Bean Transformable SPI.
@@ -48,12 +54,13 @@ public interface BeanTransformableSpi extends Transformable {
     public boolean isDebug();
     
     public <K,V> Map<K,V> getClonedMap();
-    public BeanTransformableSpi initImmutableReplicatable(ImmutableReplicatable immutableReplicatable);
-    public BeanTransformableSpi initCollectionReplicatable(CollectionReplicatable collectionReplicatable);
-    public BeanTransformableSpi initMapReplicatable(MapReplicatable mapReplicatable);
-    public BeanTransformableSpi initArrayReplicatable(ArrayReplicatable arrayReplicatable);
-    public BeanTransformableSpi initBlobReplicatable(BlobReplicatable blobReplicatable);
-    public BeanTransformableSpi initObjectReplicatable(BeanReplicatable objectReplicatable);
+    public BeanTransformableSpi initImmutableReplicatable(ImmutableReplicatable.Factory immutableReplicatableFactory);
+    public BeanTransformableSpi initCollectionReplicatable(CollectionReplicatable.Factory collectionReplicatableFactory);
+    public BeanTransformableSpi initMapReplicatable(MapReplicatable.Factory mapReplicatableFactory);
+    public BeanTransformableSpi initArrayReplicatable(ArrayReplicatable.Factory arrayReplicatableFactory);
+    public BeanTransformableSpi initBlobReplicatable(BlobReplicatable.Factory blobReplicatableFactory);
+    public BeanTransformableSpi initObjectReplicatable(BeanReplicatable.Factory objectReplicatableFactory);
+    
     public ImmutableReplicatable getImmutableReplicatable();
     public CollectionReplicatable getCollectionReplicatable();
     public MapReplicatable getMapReplicatable();
