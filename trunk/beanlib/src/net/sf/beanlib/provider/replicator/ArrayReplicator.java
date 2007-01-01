@@ -19,25 +19,25 @@ import static net.sf.beanlib.utils.ClassUtils.immutable;
 
 import java.lang.reflect.Array;
 
-import net.sf.beanlib.spi.BeanTransformableSpi;
-import net.sf.beanlib.spi.replicator.ArrayReplicatable;
+import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
 
 /**
  * @author Joe D. Velopar
  */
-public class ArrayReplicator extends ReplicatorTemplate implements ArrayReplicatable 
+public class ArrayReplicator extends ReplicatorTemplate implements ArrayReplicatorSpi 
 {
     public static final Factory factory = new Factory();
     
-    public static class Factory implements ArrayReplicatable.Factory {
+    public static class Factory implements ArrayReplicatorSpi.Factory {
         private Factory() {}
         
-        public ArrayReplicatable newReplicatable(BeanTransformableSpi beanTransformer) {
+        public ArrayReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer) {
             return new ArrayReplicator(beanTransformer);
         }
     }
     
-    private ArrayReplicator(BeanTransformableSpi beanTransformer) {
+    private ArrayReplicator(BeanTransformerSpi beanTransformer) {
         super(beanTransformer);
     }
     

@@ -15,21 +15,17 @@
  */
 package net.sf.beanlib.spi.replicator;
 
-import java.util.Collection;
-
-import net.sf.beanlib.spi.BeanTransformableSpi;
+import net.sf.beanlib.spi.BeanTransformerSpi;
 
 
 /**
- * Replicator interface for Collection.
- *  
  * @author Joe D. Velopar
  */
-public interface CollectionReplicatable 
+public interface BeanReplicatorSpi 
 {
     public static interface Factory {
-        CollectionReplicatable newReplicatable(BeanTransformableSpi beanTransformer);
+        BeanReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
     }
     
-    <V,T> T replicateCollection(Collection<V> from, Class<T> toClass);
+    <V,T> T replicateBean(V fromBean, Class<T> toClass);
 }

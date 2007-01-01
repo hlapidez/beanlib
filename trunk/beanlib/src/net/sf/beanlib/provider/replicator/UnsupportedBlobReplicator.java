@@ -17,20 +17,20 @@ package net.sf.beanlib.provider.replicator;
 
 import java.sql.Blob;
 
-import net.sf.beanlib.spi.BeanTransformableSpi;
-import net.sf.beanlib.spi.replicator.BlobReplicatable;
+import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.replicator.BlobReplicatorSpi;
 
 /**
  * @author Joe D. Velopar
  */
-public class UnsupportedBlobReplicator implements BlobReplicatable 
+public class UnsupportedBlobReplicator implements BlobReplicatorSpi 
 {
     public static final Factory factory = new Factory();
     
-    public static class Factory implements BlobReplicatable.Factory {
+    public static class Factory implements BlobReplicatorSpi.Factory {
         private Factory() {}
         
-        public BlobReplicatable newReplicatable(BeanTransformableSpi beanTransformer) {
+        public BlobReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer) {
             return new UnsupportedBlobReplicator();
         }
     }

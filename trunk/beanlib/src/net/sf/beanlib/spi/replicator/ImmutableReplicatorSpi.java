@@ -15,22 +15,17 @@
  */
 package net.sf.beanlib.spi.replicator;
 
-import java.util.Map;
-
-import net.sf.beanlib.spi.BeanTransformableSpi;
+import net.sf.beanlib.spi.BeanTransformerSpi;
 
 
 /**
- * Replicator interface for Map.
- *  
  * @author Joe D. Velopar
  */
-public interface MapReplicatable 
+public interface ImmutableReplicatorSpi 
 {
     public static interface Factory {
-        public MapReplicatable newReplicatable(BeanTransformableSpi beanTransformer);
+        ImmutableReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
     }
-//    MapReplicatable initBeanTransformableSpi(BeanTransformableSpi beanTransformableSpi);
     
-    <K,V,T> T replicateMap(Map<K,V> from, Class<T> toClass);
+    <V,T> T replicateImmutable(V immutable, Class<T> toClass);
 }

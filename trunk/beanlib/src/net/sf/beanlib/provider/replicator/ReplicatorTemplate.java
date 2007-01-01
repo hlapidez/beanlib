@@ -31,7 +31,7 @@ import java.util.Map;
 
 import net.sf.beanlib.BeanPopulator;
 import net.sf.beanlib.BeanlibException;
-import net.sf.beanlib.spi.BeanTransformableSpi;
+import net.sf.beanlib.spi.BeanTransformerSpi;
 
 import org.apache.commons.lang.ClassUtils;
 import org.apache.log4j.Logger;
@@ -42,17 +42,17 @@ import org.apache.log4j.Logger;
 public abstract class ReplicatorTemplate
 {
     protected final Logger log = Logger.getLogger(getClass());
-    private final BeanTransformableSpi beanTransformer;
+    private final BeanTransformerSpi beanTransformer;
     
-    protected ReplicatorTemplate(BeanTransformableSpi beanTransformer) {
+    protected ReplicatorTemplate(BeanTransformerSpi beanTransformer) {
         this.beanTransformer = beanTransformer;
     }
 
     protected ReplicatorTemplate() {
-        this.beanTransformer = (BeanTransformableSpi)this;
+        this.beanTransformer = (BeanTransformerSpi)this;
     }
     
-//    protected void setBeanTransformableSpi(BeanTransformableSpi beanTransformer) 
+//    protected void setBeanTransformerSpi(BeanTransformerSpi beanTransformer) 
 //    {
 //        this.beanTransformer = beanTransformer;
 //    }

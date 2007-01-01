@@ -27,26 +27,26 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import net.sf.beanlib.BeanlibException;
-import net.sf.beanlib.spi.BeanTransformableSpi;
-import net.sf.beanlib.spi.replicator.CollectionReplicatable;
+import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
 
 /**
  * @author Joe D. Velopar
  */
-public class CollectionReplicator extends ReplicatorTemplate implements CollectionReplicatable 
+public class CollectionReplicator extends ReplicatorTemplate implements CollectionReplicatorSpi 
 {
     public static final Factory factory = new Factory();
     
-    public static class Factory implements CollectionReplicatable.Factory {
+    public static class Factory implements CollectionReplicatorSpi.Factory {
         private Factory() {}
         
-        public CollectionReplicatable newReplicatable(BeanTransformableSpi beanTransformer) {
+        public CollectionReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer) {
             return new CollectionReplicator(beanTransformer);
         }
     }
     
     // must be invoked as the first method on this object
-    private CollectionReplicator(BeanTransformableSpi beanTransformer) 
+    private CollectionReplicator(BeanTransformerSpi beanTransformer) 
     {
         super(beanTransformer);
     }

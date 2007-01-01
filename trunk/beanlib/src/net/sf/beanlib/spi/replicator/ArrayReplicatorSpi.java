@@ -15,17 +15,17 @@
  */
 package net.sf.beanlib.spi.replicator;
 
-import net.sf.beanlib.spi.BeanTransformableSpi;
+import net.sf.beanlib.spi.BeanTransformerSpi;
 
 
 /**
  * @author Joe D. Velopar
  */
-public interface BeanReplicatable 
+public interface ArrayReplicatorSpi 
 {
     public static interface Factory {
-        BeanReplicatable newReplicatable(BeanTransformableSpi beanTransformer);
+        ArrayReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
     }
     
-    <V,T> T replicateBean(V fromBean, Class<T> toClass);
+    <V,T> T replicateArray(V[] fromArray, Class<T> toClass);
 }

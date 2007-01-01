@@ -15,20 +15,20 @@
  */
 package net.sf.beanlib.provider.replicator;
 
-import net.sf.beanlib.spi.BeanTransformableSpi;
-import net.sf.beanlib.spi.replicator.ImmutableReplicatable;
+import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
 
 /**
  * @author Joe D. Velopar
  */
-public class ImmutableReplicator implements ImmutableReplicatable
+public class ImmutableReplicator implements ImmutableReplicatorSpi
 {
     public static final Factory factory = new Factory();
     
-    public static class Factory implements ImmutableReplicatable.Factory {
+    public static class Factory implements ImmutableReplicatorSpi.Factory {
         private Factory() {}
         
-        public ImmutableReplicatable newReplicatable(BeanTransformableSpi beanTransformer) {
+        public ImmutableReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer) {
             return new ImmutableReplicator();
         }
     }
