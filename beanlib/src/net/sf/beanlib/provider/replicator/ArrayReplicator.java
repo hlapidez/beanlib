@@ -43,6 +43,8 @@ public class ArrayReplicator extends ReplicatorTemplate implements ArrayReplicat
     
     public <V,T> T replicateArray(V[] from, Class<T> toClass)
     {
+        if (!toClass.isAssignableFrom(from.getClass()))
+            return null;
         Class fromClass = from.getClass();
         Class fromComponentType = fromClass.getComponentType();
         // primitive array

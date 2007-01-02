@@ -53,6 +53,8 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
     
     public <V,T> T replicateCollection(Collection<V> from, Class<T> toClass)
     {
+        if (!toClass.isAssignableFrom(from.getClass()))
+            return null;
         Collection<Object> toCollection;
         try {
             toCollection = this.createToCollection(from);

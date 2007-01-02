@@ -25,10 +25,10 @@ import net.sf.beanlib.api.Transformable;
  */
 public interface CustomBeanTransformerSpi extends Transformable {
 	public static final CustomBeanTransformerSpi NO_OP = new CustomBeanTransformerSpi() {
-		public boolean isTransformable(
+		public <T> boolean isTransformable(
                 @SuppressWarnings("unused") Object in, 
-                @SuppressWarnings("unused") Class toClass, 
-                @SuppressWarnings("unused") BeanTransformerSpi hibernateBeanTransformer) 
+                @SuppressWarnings("unused") Class<T> toClass, 
+                @SuppressWarnings("unused") BeanTransformerSpi beanTransformer) 
         { 
             return false; 
         }
@@ -43,5 +43,5 @@ public interface CustomBeanTransformerSpi extends Transformable {
 	 *  @param toClass target class to transform to
 	 *  @param hibernateBeanTransformer Hibernate Bean Transformer  
 	 */
-	public boolean isTransformable(Object from, Class toClass, BeanTransformerSpi hibernateBeanTransformer);
+	public <T> boolean isTransformable(Object from, Class<T> toClass, BeanTransformerSpi hibernateBeanTransformer);
 }
