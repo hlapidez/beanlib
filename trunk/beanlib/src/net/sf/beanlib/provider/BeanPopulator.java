@@ -177,13 +177,10 @@ public class BeanPopulator implements BeanPopulatorSpi
                     try {
                         return method.invoke(target, args);
                     } catch (IllegalArgumentException e) {
-                        log.error("", e);
                         throw new BeanlibException(e);
                     } catch (IllegalAccessException e) {
-                        log.error("", e);
                         throw new BeanlibException(e);
                     } catch (InvocationTargetException e) {
-                        log.error("", e.getTargetException());
                         throw new BeanlibException(e.getTargetException());
                     }
                 }

@@ -50,6 +50,8 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
     
     public <K,V,T> T replicateMap(Map<K,V> from, Class<T> toClass)
     {
+        if (!toClass.isAssignableFrom(from.getClass()))
+            return null;
         Map<Object, Object> toMap;
         try {
             toMap = createToMap(from);

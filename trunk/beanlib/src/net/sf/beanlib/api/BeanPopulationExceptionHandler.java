@@ -17,8 +17,6 @@ package net.sf.beanlib.api;
 
 import java.lang.reflect.Method;
 
-import net.sf.beanlib.BeanlibException;
-
 import org.apache.commons.logging.Log;
 
 /** 
@@ -28,32 +26,21 @@ import org.apache.commons.logging.Log;
  */
 public interface BeanPopulationExceptionHandler {
 	/** Exception handler which aborts by throwing or re-throwing a RuntimeException or Error. */
-	public static final BeanPopulationExceptionHandler ABORT = new BeanPopulationExceptionHandler() {
-		public void handleException(Throwable t, Log log) {
-			log.error("", t);
-			
-			if (t instanceof RuntimeException)
-				throw (RuntimeException)t;
-			if (t instanceof Error)
-				throw (Error)t;
-			throw new BeanlibException(t);
-		}
-		public BeanPopulationExceptionHandler initPropertyName(@SuppressWarnings("unused") String propertyName) {return this;}
-		public BeanPopulationExceptionHandler initFromBean(@SuppressWarnings("unused") Object fromBean) {return this;}
-		public BeanPopulationExceptionHandler initReaderMethod(@SuppressWarnings("unused") Method readerMethod) {return this;}
-		public BeanPopulationExceptionHandler initToBean(@SuppressWarnings("unused") Object toBean) {return this;}
-		public BeanPopulationExceptionHandler initSetterMethod(@SuppressWarnings("unused") Method setterMethod) {return this;}
-	};
+	public static final BeanPopulationExceptionHandler ABORT = new BeanPopulationExceptionHandlerAdapter();
 	/** Exception handler which always continue by logging and then igoring the exception or error. */
-	public static final BeanPopulationExceptionHandler CONTINUE = new BeanPopulationExceptionHandler() {
-		public void handleException(Throwable t, Log log) {
-			log.warn("", t);
+	public static final BeanPopulationExceptionHandler CONTINUE = new BeanPopulationExceptionHandlerAdapter() 
+    {
+		@Override
+        public void handleException(Throwable t, Log log) 
+        {
+            log.warn("\n" 
+                    + "propertyName=" + propertyName + "\n"
+                    + "readerMethod=" + readerMethod + "\n"
+                    + "setterMethod=" + setterMethod + "\n"
+                    + "fromBean=" + fromBean + "\n"
+                    + "toBean=" + toBean + "\n"
+                    , t);
 		}
-		public BeanPopulationExceptionHandler initPropertyName(@SuppressWarnings("unused") String propertyName) {return this;}
-		public BeanPopulationExceptionHandler initFromBean(@SuppressWarnings("unused") Object fromBean) {return this;}
-		public BeanPopulationExceptionHandler initReaderMethod(@SuppressWarnings("unused") Method readerMethod) {return this;}
-		public BeanPopulationExceptionHandler initToBean(@SuppressWarnings("unused") Object toBean) {return this;}
-		public BeanPopulationExceptionHandler initSetterMethod(@SuppressWarnings("unused") Method setterMethod) {return this;}
 	};
 	
 	/** Handles the exception thrown during the population of a bean property. */
