@@ -136,7 +136,7 @@ public abstract class ReplicatorTemplate
     
     protected <T> T replicateByBeanReplicatable(Object from, Class<T> toClass)
     {
-        return beanTransformer.getObjectReplicatable().replicateBean(from, toClass);
+        return beanTransformer.getBeanReplicatable().replicateBean(from, toClass);
     }
     
     /** 
