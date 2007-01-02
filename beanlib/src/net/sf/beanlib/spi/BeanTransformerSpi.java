@@ -20,6 +20,7 @@ import java.util.Map;
 import net.sf.beanlib.api.BeanMethodCollector;
 import net.sf.beanlib.api.BeanMethodFinder;
 import net.sf.beanlib.api.BeanPopulatable;
+import net.sf.beanlib.api.BeanPopulationExceptionHandler;
 import net.sf.beanlib.api.BeanSourceHandler;
 import net.sf.beanlib.api.DetailedBeanPopulatable;
 import net.sf.beanlib.api.Transformable;
@@ -42,22 +43,27 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
     }
     
     // Overrides here for co-variant return type.
+    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
 	public BeanTransformerSpi initBeanPopulatable(BeanPopulatable beanPopulatable);
+    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
 	public BeanTransformerSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable);
+    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
 	public BeanTransformerSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler);
+    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
 	public BeanTransformerSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder);
+    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
 	public BeanTransformerSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector);
+    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
+    public BeanTransformerSpi initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler beanPopulationExceptionHandler);
+    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
 	public BeanTransformerSpi initDebug(boolean debug);
+    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
+    public BeanTransformerSpi initBeanPopulatorBaseConfig(BeanPopulatorBaseConfig baseConfig);
 
-//  public BeanPopulatable getBeanPopulatable();
-//  public DetailedBeanPopulatable getDetailedBeanPopulatable();
-//  public BeanSourceHandler getBeanSourceHandler();
-//  public BeanMethodFinder getReaderMethodFinder();
-//  public BeanMethodCollector getSetterMethodCollector();
-//  public boolean isDebug();
+    /** Don't invoke this method, except from within the replicator implementation class. */
+    public BeanPopulatorBaseConfig getBeanPopulatorBaseConfig();
     
     public BeanTransformerSpi initCustomTransformer(CustomBeanTransformerSpi customTransformer);
-    public CustomBeanTransformerSpi getCustomTransformer();
     
     public void reset();
     

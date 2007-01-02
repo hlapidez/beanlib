@@ -169,15 +169,10 @@ public abstract class ReplicatorTemplate
     
     protected void populate(Object fromMember, Object toMember) {
         beanTransformer.getBeanPopulatorSpiFactory().newBeanPopulator(fromMember, toMember)
-//        new BeanPopulator(fromMember, toMember)
-                .initBeanPopulatable(beanTransformer.getBeanPopulatable())
-                .initBeanSourceHandler(beanTransformer.getBeanSourceHandler())
-                .initDebug(beanTransformer.isDebug())
-                .initDetailedBeanPopulatable(beanTransformer.getDetailedBeanPopulatable())
-                .initReaderMethodFinder(beanTransformer.getReaderMethodFinder())
-                .initSetterMethodCollector(beanTransformer.getSetterMethodCollector())
-                .initTransformer(beanTransformer)
-                .populate();
+                            .initBeanPopulatorBaseConfig(beanTransformer.getBeanPopulatorBaseConfig())
+                            .initTransformer(beanTransformer)
+                            .populate()
+                            ;
     }
     
     
