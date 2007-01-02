@@ -27,14 +27,18 @@ import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
  */
 public class ArrayReplicator extends ReplicatorTemplate implements ArrayReplicatorSpi 
 {
-    public static final Factory factory = new Factory();
+    private static final Factory factory = new Factory();
     
-    public static class Factory implements ArrayReplicatorSpi.Factory {
+    private static class Factory implements ArrayReplicatorSpi.Factory {
         private Factory() {}
         
         public ArrayReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
             return new ArrayReplicator(beanTransformer);
         }
+    }
+    
+    public static ArrayReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
+        return factory.newReplicatable(beanTransformer);
     }
     
     protected ArrayReplicator(BeanTransformerSpi beanTransformer) {

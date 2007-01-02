@@ -23,14 +23,18 @@ import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
  */
 public class ImmutableReplicator implements ImmutableReplicatorSpi
 {
-    public static final Factory factory = new Factory();
+    private static final Factory factory = new Factory();
     
-    public static class Factory implements ImmutableReplicatorSpi.Factory {
+    private static class Factory implements ImmutableReplicatorSpi.Factory {
         private Factory() {}
         
         public ImmutableReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
             return new ImmutableReplicator();
         }
+    }
+
+    public static ImmutableReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
+        return factory.newReplicatable(beanTransformer);
     }
     
     protected ImmutableReplicator() {}

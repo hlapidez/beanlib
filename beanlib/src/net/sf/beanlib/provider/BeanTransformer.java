@@ -50,15 +50,20 @@ import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
  */
 public class BeanTransformer extends ReplicatorTemplate implements BeanTransformerSpi
 {
-    public static final Factory factory = new Factory();
+    private static final Factory factory = new Factory();
     
-    public static class Factory implements BeanTransformerSpi.Factory {
+    private static class Factory implements BeanTransformerSpi.Factory {
         private Factory() {}
         
         public BeanTransformer newBeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) 
         {
             return new BeanTransformer(beanPopulatorFactory);
         }
+    }
+    
+    public static BeanTransformer newBeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory)
+    {
+        return factory.newBeanTransformer(beanPopulatorFactory);
     }
     
     private final BeanPopulatorSpi.Factory beanPopulatorFactory;
@@ -79,12 +84,12 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     /** Custom Transformer. */
     private CustomBeanTransformerSpi customTransformer = CustomBeanTransformerSpi.NO_OP;
     
-    private ImmutableReplicatorSpi immutableReplicatable = ImmutableReplicator.factory.newReplicatable(this);
-    private CollectionReplicatorSpi collectionReplicatable = CollectionReplicator.factory.newReplicatable(this);
-    private MapReplicatorSpi mapReplicatable = MapReplicator.factory.newReplicatable(this);
-    private ArrayReplicatorSpi arrayReplicatable = ArrayReplicator.factory.newReplicatable(this);
-    private BlobReplicatorSpi blobReplicatable = UnsupportedBlobReplicator.factory.newReplicatable(this);
-    private BeanReplicatorSpi beanReplicatable = BeanReplicator.factory.newReplicatable(this);
+    private ImmutableReplicatorSpi immutableReplicatable = ImmutableReplicator.newReplicatable(this);
+    private CollectionReplicatorSpi collectionReplicatable = CollectionReplicator.newReplicatable(this);
+    private MapReplicatorSpi mapReplicatable = MapReplicator.newReplicatable(this);
+    private ArrayReplicatorSpi arrayReplicatable = ArrayReplicator.newReplicatable(this);
+    private BlobReplicatorSpi blobReplicatable = UnsupportedBlobReplicator.newReplicatable(this);
+    private BeanReplicatorSpi beanReplicatable = BeanReplicator.newReplicatable(this);
     
     public final void reset() {
         clonedMap = new IdentityHashMap<Object,Object>();

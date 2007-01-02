@@ -55,6 +55,10 @@ public class BeanPopulator implements BeanPopulatorSpi
         }
     }
 
+    public static BeanPopulator newBeanPopulator(Object from, Object to) {
+        return factory.newBeanPopulator(from, to);
+    }
+
     private final Log log = LogFactory.getLog(this.getClass());
 
     private final Object fromBean;

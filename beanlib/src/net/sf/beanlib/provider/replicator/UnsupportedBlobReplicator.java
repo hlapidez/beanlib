@@ -25,14 +25,18 @@ import net.sf.beanlib.spi.replicator.BlobReplicatorSpi;
  */
 public class UnsupportedBlobReplicator implements BlobReplicatorSpi 
 {
-    public static final Factory factory = new Factory();
+    private static final Factory factory = new Factory();
     
-    public static class Factory implements BlobReplicatorSpi.Factory {
+    private static class Factory implements BlobReplicatorSpi.Factory {
         private Factory() {}
         
         public UnsupportedBlobReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
             return new UnsupportedBlobReplicator();
         }
+    }
+    
+    public static UnsupportedBlobReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
+        return factory.newReplicatable(beanTransformer);
     }
     
     private UnsupportedBlobReplicator() {}
