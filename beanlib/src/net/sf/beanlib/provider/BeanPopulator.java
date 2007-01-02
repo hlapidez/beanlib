@@ -49,7 +49,7 @@ public class BeanPopulator implements BeanPopulatorSpi
     public static class Factory implements BeanPopulatorSpi.Factory {
         private Factory() {}
         
-        public BeanPopulatorSpi newBeanPopulator(Object from, Object to)
+        public BeanPopulator newBeanPopulator(Object from, Object to)
         {
             return new BeanPopulator(from, to);
         }

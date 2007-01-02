@@ -73,14 +73,14 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
     public BeanTransformerSpi initMapReplicatable(MapReplicatorSpi.Factory mapReplicatableFactory);
     public BeanTransformerSpi initArrayReplicatable(ArrayReplicatorSpi.Factory arrayReplicatableFactory);
     public BeanTransformerSpi initBlobReplicatable(BlobReplicatorSpi.Factory blobReplicatableFactory);
-    public BeanTransformerSpi initObjectReplicatable(BeanReplicatorSpi.Factory objectReplicatableFactory);
+    public BeanTransformerSpi initBeanReplicatable(BeanReplicatorSpi.Factory beanReplicatableFactory);
     
     public ImmutableReplicatorSpi getImmutableReplicatable();
     public CollectionReplicatorSpi getCollectionReplicatable();
     public MapReplicatorSpi getMapReplicatable();
     public ArrayReplicatorSpi getArrayReplicatable();
     public BlobReplicatorSpi getBlobReplicatable();
-    public BeanReplicatorSpi getObjectReplicatable();
+    public BeanReplicatorSpi getBeanReplicatable();
     
     public BeanPopulatorSpi.Factory getBeanPopulatorSpiFactory();
 }
