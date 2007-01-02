@@ -29,7 +29,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 
-import net.sf.beanlib.BeanPopulator;
 import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 
@@ -169,7 +168,8 @@ public abstract class ReplicatorTemplate
     }
     
     protected void populate(Object fromMember, Object toMember) {
-        new BeanPopulator(fromMember, toMember)
+        beanTransformer.getBeanPopulatorSpiFactory().newBeanPopulator(fromMember, toMember)
+//        new BeanPopulator(fromMember, toMember)
                 .initBeanPopulatable(beanTransformer.getBeanPopulatable())
                 .initBeanSourceHandler(beanTransformer.getBeanSourceHandler())
                 .initDebug(beanTransformer.isDebug())
