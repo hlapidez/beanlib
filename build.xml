@@ -3,7 +3,7 @@
 <project name="beanlib" default="call">
 
   <property name="target" value="full"/>
-  <property name="version" value="3.3.0"/>
+  <property name="version" value="3.3.0beta1"/>
   <property name="published.javadoc.dir" value="${version}/api"/>
   <property name="published.cobertura.dir" value="${version}/cobertura"/>
 
@@ -35,37 +35,37 @@
   <target name="javadoc">
     <delete dir="${published.javadoc.dir}"/>
     <mkdir dir="${published.javadoc.dir}"/>
-	<javadoc 
-		access="private" 
-		author="true" 
-		destdir="${published.javadoc.dir}" 
-		doctitle="JavaBean Library ${version}" 
-		nodeprecated="false" 
-		nodeprecatedlist="false" 
-		noindex="false" 
-		nonavbar="false" 
-		notree="false" 
-		source="1.5"
-		splitindex="true" 
-		use="true" 
-		version="true"
-		packagenames="net.sf.beanlib.*"
-		sourcepath="beanlib/src;beanlib/javadoc;beanlib-hibernate/src;beanlib-hibernate/javadoc"
-	>
-		<classpath>
-			<fileset dir=".">
-				<include name="beanlib/lib/**/*.jar"/>
-				<include name="beanlib-hibernate/lib/**/*.jar"/>
-			</fileset>
-		</classpath>
-		<link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
-		<link href="http://www.hibernate.org/hib_docs/v3/api/"/>
-		<link href="http://jakarta.apache.org/commons/logging/apidocs/"/>
-		<link href="http://jakarta.apache.org/commons/lang/api/"/>
-		<link href="http://xstream.codehaus.org/javadoc/"/>
-		<link href="http://cglib.sourceforge.net/apidocs/" />
-		<link href="http://www.springframework.org/docs/api/" />
-	</javadoc>
+    <javadoc 
+        access="private" 
+        author="true" 
+        destdir="${published.javadoc.dir}" 
+        doctitle="JavaBean Library ${version}" 
+        nodeprecated="false" 
+        nodeprecatedlist="false" 
+        noindex="false" 
+        nonavbar="false" 
+        notree="false" 
+        source="1.5"
+        splitindex="true" 
+        use="true" 
+        version="true"
+        packagenames="net.sf.beanlib.*"
+        sourcepath="beanlib/src;beanlib/javadoc;beanlib-hibernate/src;beanlib-hibernate/javadoc"
+    >
+        <classpath>
+            <fileset dir=".">
+                <include name="beanlib/lib/**/*.jar"/>
+                <include name="beanlib-hibernate/lib/**/*.jar"/>
+            </fileset>
+        </classpath>
+        <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+        <link href="http://www.hibernate.org/hib_docs/v3/api/"/>
+        <link href="http://jakarta.apache.org/commons/logging/apidocs/"/>
+        <link href="http://jakarta.apache.org/commons/lang/api/"/>
+        <link href="http://xstream.codehaus.org/javadoc/"/>
+        <link href="http://cglib.sourceforge.net/apidocs/" />
+        <link href="http://www.springframework.org/docs/api/" />
+    </javadoc>
   </target>
 
   <property name="cobertura.report.dir" value="beanlib-hibernate-test/target/coverage-report" />
@@ -76,100 +76,100 @@
   <echo message="cobertura.reports.dir.available=${cobertura.reports.dir.available}" />
 
   <target name="conditional-build" unless="cobertura.report.dir.available">
-	  <echo message="conditonal-build..." />
+      <echo message="conditonal-build..." />
     <available property="cobertura.reports.dir.available.2" type="dir" file="${cobertura.report.dir}" />
   </target>
 
   <target name="move-cobertura-dir-or-not">
-	  <condition property="do.move.cobertura.dir">
-		  <or>
-			  <isset property="cobertura.report.dir.available"/>
-			  <isset property="cobertura.report.dir.available.2"/>
-		  </or>
-	  </condition>
+      <condition property="do.move.cobertura.dir">
+          <or>
+              <isset property="cobertura.report.dir.available"/>
+              <isset property="cobertura.report.dir.available.2"/>
+          </or>
+      </condition>
   </target>
   -->
 
   <target name="move-cobertura">
     <move todir="${published.cobertura.dir}">
-	    <fileset dir="${cobertura.report.dir}" />
-    </move> 	
+        <fileset dir="${cobertura.report.dir}" />
+    </move>     
   </target>
 
   <property name="release.doc.file" value="${version}-doc.tar.gz" />
   <property name="release.file" value="beanlib-${version}.tar.gz" />
 
   <target name="release-bundle"
-	  depends="javadoc,jar,move-cobertura"
+      depends="javadoc,jar,move-cobertura"
   >
     <tar destfile="${release.doc.file}" basedir="." 
-	  includes="${version}/**" longfile="gnu" compression="gzip" />
+      includes="${version}/**" longfile="gnu" compression="gzip" />
     <tar destfile="${release.file}" basedir="." 
-	  includes="beanlib-${version}/**" longfile="gnu" compression="gzip" />
+      includes="beanlib-${version}/**" longfile="gnu" compression="gzip" />
   </target>
 
   <target name="jar">
-	<delete dir="beanlib-${version}"/>
-	<mkdir dir="beanlib-${version}"/>
+    <delete dir="beanlib-${version}"/>
+    <mkdir dir="beanlib-${version}"/>
 
-	<jar destfile="beanlib-${version}/beanlib-${version}.jar" basedir="beanlib/target/classes" />
-	<jar destfile="beanlib-${version}/beanlib-hibernate-${version}.jar" basedir="beanlib-hibernate/target/classes" />
+    <jar destfile="beanlib-${version}/beanlib-${version}.jar" basedir="beanlib/target/classes" />
+    <jar destfile="beanlib-${version}/beanlib-hibernate-${version}.jar" basedir="beanlib-hibernate/target/classes" />
 
-	<jar destfile="beanlib-${version}/beanlib-${version}-sources.jar">
-		<fileset dir="beanlib" excludes="doc/api/**,target,target/**,.*/**" />
-		<fileset dir="beanlib-test" excludes="target,target/**,.*/**" />
-	</jar>
+    <jar destfile="beanlib-${version}/beanlib-${version}-sources.jar">
+        <fileset dir="beanlib" excludes="doc/api/**,target,target/**,.*/**" />
+        <fileset dir="beanlib-test" excludes="target,target/**,.*/**" />
+    </jar>
 
-	<jar destfile="beanlib-${version}/beanlib-hibernate-${version}-sources.jar">
-		<fileset dir="beanlib-hibernate" excludes="doc/api/**,target,target/**,.*/**" />
-		<fileset dir="beanlib-hibernate-test" excludes="target,target/**,.*/**" />
-	</jar>
+    <jar destfile="beanlib-${version}/beanlib-hibernate-${version}-sources.jar">
+        <fileset dir="beanlib-hibernate" excludes="doc/api/**,target,target/**,.*/**" />
+        <fileset dir="beanlib-hibernate-test" excludes="target,target/**,.*/**" />
+    </jar>
   </target>
 
   <target name="jar-maven">
-	<delete dir="beanlib-${version}"/>
-	<mkdir dir="beanlib-${version}"/>
+    <delete dir="beanlib-${version}"/>
+    <mkdir dir="beanlib-${version}"/>
 
-	<jar destfile="beanlib-${version}/beanlib-${version}.jar" basedir="beanlib/target/classes" />
-	<jar destfile="beanlib-${version}/beanlib-hibernate-${version}.jar" basedir="beanlib-hibernate/target/classes" />
+    <jar destfile="beanlib-${version}/beanlib-${version}.jar" basedir="beanlib/target/classes" />
+    <jar destfile="beanlib-${version}/beanlib-hibernate-${version}.jar" basedir="beanlib-hibernate/target/classes" />
 
-	<jar destfile="beanlib-${version}/beanlib-${version}-sources.jar">
-		<fileset dir="beanlib" excludes="doc,doc/**,lib,lib/**,target,target/**,.*/**" />
-		<fileset dir="beanlib-test" excludes="lib,lib/**,target,target/**,.*/**" />
-	</jar>
+    <jar destfile="beanlib-${version}/beanlib-${version}-sources.jar">
+        <fileset dir="beanlib" excludes="doc,doc/**,lib,lib/**,target,target/**,.*/**" />
+        <fileset dir="beanlib-test" excludes="lib,lib/**,target,target/**,.*/**" />
+    </jar>
 
-	<jar destfile="beanlib-${version}/beanlib-hibernate-${version}-sources.jar">
-		<fileset dir="beanlib-hibernate" excludes="doc,doc/**,lib,lib/**,target,target/**,.*/**" />
-		<fileset dir="beanlib-hibernate-test" excludes="target,target/**,.*/**" />
-	</jar>
+    <jar destfile="beanlib-${version}/beanlib-hibernate-${version}-sources.jar">
+        <fileset dir="beanlib-hibernate" excludes="doc,doc/**,lib,lib/**,target,target/**,.*/**" />
+        <fileset dir="beanlib-hibernate-test" excludes="target,target/**,.*/**" />
+    </jar>
 
-	<jar destfile="beanlib-${version}/beanlib-${version}-javadoc.jar" basedir="beanlib/doc/api" />
-	<jar destfile="beanlib-${version}/beanlib-hibernate-${version}-javadoc.jar" basedir="beanlib-hibernate/doc/api" />
+    <jar destfile="beanlib-${version}/beanlib-${version}-javadoc.jar" basedir="beanlib/doc/api" />
+    <jar destfile="beanlib-${version}/beanlib-hibernate-${version}-javadoc.jar" basedir="beanlib-hibernate/doc/api" />
 
-	<jar destfile="beanlib-${version}.jar">
-		<fileset dir="beanlib-${version}" excludes="beanlib-hibernate-*"/>
-		<fileset dir="beanlib" includes="pom.xml"/>
-	</jar>
+    <jar destfile="beanlib-${version}.jar">
+        <fileset dir="beanlib-${version}" excludes="beanlib-hibernate-*"/>
+        <fileset dir="beanlib" includes="pom.xml"/>
+    </jar>
 
-	<jar destfile="beanlib-hibernate-${version}.jar">
-		<fileset dir="beanlib-${version}" includes="beanlib-hibernate-*"/>
-		<fileset dir="beanlib-hibernate" includes="pom.xml"/>
-	</jar>
+    <jar destfile="beanlib-hibernate-${version}.jar">
+        <fileset dir="beanlib-${version}" includes="beanlib-hibernate-*"/>
+        <fileset dir="beanlib-hibernate" includes="pom.xml"/>
+    </jar>
   </target>
 
   <property environment="env" />
 
   <target name="release">
     <!-- 
-	 Copy file to be released over to sourceforge. 
-	 Ant requires Commons Net library from http://jakarta.apache.org/site/downloads/downloads_commons.html 
+     Copy file to be released over to sourceforge. 
+     Ant requires Commons Net library from http://jakarta.apache.org/site/downloads/downloads_commons.html 
     -->
     <ftp server="upload.sourceforge.net"
-	 userid="anonymous"
-	 password="joe_emporium@sourceforge.net"
-	 remotedir="/incoming"
-	 binary="yes"
-	 verbose="yes"
+     userid="anonymous"
+     password="joe_emporium@sourceforge.net"
+     remotedir="/incoming"
+     binary="yes"
+     verbose="yes"
     >
       <fileset dir="." includes="${release.file}" />
     </ftp>
@@ -177,14 +177,14 @@
          Copy document to be released over to sourceforge. 
 
          1) Ant requires jsch library from http://www.jcraft.com/jsch/index.html 
-	 2) Also requires set up of ssh public/private key pairs.
-	    See: http://sourceforge.net/docs/F02/en/#keygen_openssh
+     2) Also requires set up of ssh public/private key pairs.
+        See: http://sourceforge.net/docs/F02/en/#keygen_openssh
     -->
     <scp localFile="${release.doc.file}" 
          remoteToDir="joe_emporium@shell.sf.net:/home/groups/b/be/beanlib/" 
-	 passphrase=""
-	 keyfile="${env.HOME}/.ssh/id_dsa"
-	 trust="true"
+     passphrase=""
+     keyfile="${env.HOME}/.ssh/id_dsa"
+     trust="true"
      />
   </target>
 </project>

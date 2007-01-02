@@ -1,3 +1,13 @@
+beanlib 3.3.0beta1
+------------------
+* Provide a generic transformation/replication SPI framework
+* Move BeanPopulator to the SPI framework
+* Support population via Jaxb2 Fluent API
+* Improved exception reporting
+
+* TODO: yet to convert the existing HibernateBeanTransformer 
+  to share the same SPI framework
+
 beanlib 3.2.10
 --------------
 * Make consistent by returning an empty map instead of null when replicating 
