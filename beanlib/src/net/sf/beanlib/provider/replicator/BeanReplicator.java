@@ -29,13 +29,12 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
     public static class Factory implements BeanReplicatorSpi.Factory {
         private Factory() {}
         
-        public BeanReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer) {
+        public BeanReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
             return new BeanReplicator(beanTransformer);
         }
     }
     
-    // must be invoked as the first method on this object
-    private BeanReplicator(BeanTransformerSpi beanTransformer) 
+    protected BeanReplicator(BeanTransformerSpi beanTransformer) 
     {
         super(beanTransformer);
     }

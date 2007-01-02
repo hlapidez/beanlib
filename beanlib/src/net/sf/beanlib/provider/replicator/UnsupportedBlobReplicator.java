@@ -30,7 +30,7 @@ public class UnsupportedBlobReplicator implements BlobReplicatorSpi
     public static class Factory implements BlobReplicatorSpi.Factory {
         private Factory() {}
         
-        public BlobReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer) {
+        public UnsupportedBlobReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
             return new UnsupportedBlobReplicator();
         }
     }

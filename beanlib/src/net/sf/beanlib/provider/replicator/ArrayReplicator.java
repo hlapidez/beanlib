@@ -32,12 +32,12 @@ public class ArrayReplicator extends ReplicatorTemplate implements ArrayReplicat
     public static class Factory implements ArrayReplicatorSpi.Factory {
         private Factory() {}
         
-        public ArrayReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer) {
+        public ArrayReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
             return new ArrayReplicator(beanTransformer);
         }
     }
     
-    private ArrayReplicator(BeanTransformerSpi beanTransformer) {
+    protected ArrayReplicator(BeanTransformerSpi beanTransformer) {
         super(beanTransformer);
     }
     
