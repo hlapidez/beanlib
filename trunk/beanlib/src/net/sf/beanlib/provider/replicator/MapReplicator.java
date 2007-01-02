@@ -38,12 +38,12 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
     public static class Factory implements MapReplicatorSpi.Factory {
         private Factory() {}
         
-        public MapReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer) {
+        public MapReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
             return new MapReplicator(beanTransformer);
         }
     }
-    // must be invoked as the first method on this object
-    private MapReplicator(BeanTransformerSpi beanTransformer) 
+
+    protected MapReplicator(BeanTransformerSpi beanTransformer) 
     {
         super(beanTransformer);
     }

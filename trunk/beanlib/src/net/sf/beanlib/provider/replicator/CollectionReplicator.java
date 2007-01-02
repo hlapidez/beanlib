@@ -40,13 +40,12 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
     public static class Factory implements CollectionReplicatorSpi.Factory {
         private Factory() {}
         
-        public CollectionReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer) {
+        public CollectionReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
             return new CollectionReplicator(beanTransformer);
         }
     }
     
-    // must be invoked as the first method on this object
-    private CollectionReplicator(BeanTransformerSpi beanTransformer) 
+    protected CollectionReplicator(BeanTransformerSpi beanTransformer) 
     {
         super(beanTransformer);
     }

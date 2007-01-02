@@ -51,11 +51,6 @@ public abstract class ReplicatorTemplate
         this.beanTransformer = (BeanTransformerSpi)this;
     }
     
-//    protected void setBeanTransformerSpi(BeanTransformerSpi beanTransformer) 
-//    {
-//        this.beanTransformer = beanTransformer;
-//    }
-    
     protected Object replicate(Object from)
     {
         if (from == null)

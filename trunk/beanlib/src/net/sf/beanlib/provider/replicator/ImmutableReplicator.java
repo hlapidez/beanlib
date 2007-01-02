@@ -28,12 +28,12 @@ public class ImmutableReplicator implements ImmutableReplicatorSpi
     public static class Factory implements ImmutableReplicatorSpi.Factory {
         private Factory() {}
         
-        public ImmutableReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer) {
+        public ImmutableReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
             return new ImmutableReplicator();
         }
     }
     
-    private ImmutableReplicator() {}
+    protected ImmutableReplicator() {}
 
     public <V, T> T replicateImmutable(V immutableFrom, Class<T> toClass) 
     {
