@@ -35,23 +35,31 @@ import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
  * 
  * @author Joe D. Velopar
  */
-public interface BeanTransformerSpi extends Transformable {
+public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi 
+{
+    public static interface Factory {
+        public BeanTransformerSpi newBeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory);
+    }
+    
+    // Overrides here for co-variant return type.
 	public BeanTransformerSpi initBeanPopulatable(BeanPopulatable beanPopulatable);
 	public BeanTransformerSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable);
 	public BeanTransformerSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler);
 	public BeanTransformerSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder);
 	public BeanTransformerSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector);
-	public BeanTransformerSpi initCustomTransformer(CustomBeanTransformerSpi customTransformer);
 	public BeanTransformerSpi initDebug(boolean debug);
-	public void reset();
+
+//  public BeanPopulatable getBeanPopulatable();
+//  public DetailedBeanPopulatable getDetailedBeanPopulatable();
+//  public BeanSourceHandler getBeanSourceHandler();
+//  public BeanMethodFinder getReaderMethodFinder();
+//  public BeanMethodCollector getSetterMethodCollector();
+//  public boolean isDebug();
     
-    public BeanPopulatable getBeanPopulatable();
-    public DetailedBeanPopulatable getDetailedBeanPopulatable();
-    public BeanSourceHandler getBeanSourceHandler();
-    public BeanMethodFinder getReaderMethodFinder();
-    public BeanMethodCollector getSetterMethodCollector();
+    public BeanTransformerSpi initCustomTransformer(CustomBeanTransformerSpi customTransformer);
     public CustomBeanTransformerSpi getCustomTransformer();
-    public boolean isDebug();
+    
+    public void reset();
     
     public <K,V> Map<K,V> getClonedMap();
     public BeanTransformerSpi initImmutableReplicatable(ImmutableReplicatorSpi.Factory immutableReplicatableFactory);
@@ -67,4 +75,6 @@ public interface BeanTransformerSpi extends Transformable {
     public ArrayReplicatorSpi getArrayReplicatable();
     public BlobReplicatorSpi getBlobReplicatable();
     public BeanReplicatorSpi getObjectReplicatable();
+    
+    public BeanPopulatorSpi.Factory getBeanPopulatorSpiFactory();
 }

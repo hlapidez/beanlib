@@ -32,6 +32,7 @@ import net.sf.beanlib.provider.replicator.ImmutableReplicator;
 import net.sf.beanlib.provider.replicator.MapReplicator;
 import net.sf.beanlib.provider.replicator.ReplicatorTemplate;
 import net.sf.beanlib.provider.replicator.UnsupportedBlobReplicator;
+import net.sf.beanlib.spi.BeanPopulatorSpi;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
@@ -48,6 +49,27 @@ import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
  */
 public class BeanTransformer extends ReplicatorTemplate implements BeanTransformerSpi
 {
+    public static final Factory factory = new Factory();
+    
+    public static class Factory implements BeanTransformerSpi.Factory {
+        private Factory() {}
+        
+        public BeanTransformerSpi newBeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) 
+        {
+            return new BeanTransformer(beanPopulatorFactory);
+        }
+    }
+    
+    private final BeanPopulatorSpi.Factory beanPopulatorFactory;
+    
+    private BeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) {
+        this.beanPopulatorFactory = beanPopulatorFactory;
+    }
+    
+    public BeanPopulatorSpi.Factory getBeanPopulatorSpiFactory() {
+        return this.beanPopulatorFactory;
+    }
+    
     // Contains those objects that have been replicated.
     private Map<Object,Object> clonedMap = new IdentityHashMap<Object,Object>();
     
@@ -68,9 +90,6 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     private ArrayReplicatorSpi arrayReplicatable = ArrayReplicator.factory.newReplicatable(this);
     private BlobReplicatorSpi blobReplicatable = UnsupportedBlobReplicator.factory.newReplicatable(this);
     private BeanReplicatorSpi objectReplicatable = BeanReplicator.factory.newReplicatable(this);
-    
-    public BeanTransformer() {
-    }
     
     public final void reset() {
         clonedMap = new IdentityHashMap<Object,Object>();

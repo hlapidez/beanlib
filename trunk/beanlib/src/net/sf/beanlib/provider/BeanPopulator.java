@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib;
+package net.sf.beanlib.provider;
 
 import java.beans.Introspector;
 import java.lang.reflect.InvocationTargetException;
@@ -22,6 +22,9 @@ import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import net.sf.beanlib.BeanlibException;
+import net.sf.beanlib.PublicReaderMethodFinder;
+import net.sf.beanlib.PublicSetterMethodCollector;
 import net.sf.beanlib.api.BeanMethodCollector;
 import net.sf.beanlib.api.BeanMethodFinder;
 import net.sf.beanlib.api.BeanPopulatable;
@@ -29,6 +32,7 @@ import net.sf.beanlib.api.BeanPopulationExceptionHandler;
 import net.sf.beanlib.api.BeanSourceHandler;
 import net.sf.beanlib.api.DetailedBeanPopulatable;
 import net.sf.beanlib.api.Transformable;
+import net.sf.beanlib.spi.BeanPopulatorSpi;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,8 +42,20 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author Joe D. Velopar
  */
-public class BeanPopulator {
-	private final Log log = LogFactory.getLog(this.getClass());
+public class BeanPopulator implements BeanPopulatorSpi 
+{
+    public static final Factory factory = new Factory();
+    
+    public static class Factory implements BeanPopulatorSpi.Factory {
+        private Factory() {}
+        
+        public BeanPopulatorSpi newBeanPopulator(Object from, Object to)
+        {
+            return new BeanPopulator(from, to);
+        }
+    }
+
+    private final Log log = LogFactory.getLog(this.getClass());
 
 	private final Object fromBean;
 	private final Object toBean;
@@ -61,7 +77,7 @@ public class BeanPopulator {
 	 * @param fromBean from bean
 	 * @param toBean to bean
 	 */
-	public BeanPopulator(Object fromBean, Object toBean ) {
+	private BeanPopulator(Object fromBean, Object toBean ) {
 		this.fromBean = fromBean;
 		this.toBean = toBean;
 	}
