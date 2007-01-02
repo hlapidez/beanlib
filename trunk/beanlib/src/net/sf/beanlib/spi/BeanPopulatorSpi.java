@@ -18,6 +18,7 @@ package net.sf.beanlib.spi;
 import net.sf.beanlib.api.BeanMethodCollector;
 import net.sf.beanlib.api.BeanMethodFinder;
 import net.sf.beanlib.api.BeanPopulatable;
+import net.sf.beanlib.api.BeanPopulationExceptionHandler;
 import net.sf.beanlib.api.BeanSourceHandler;
 import net.sf.beanlib.api.DetailedBeanPopulatable;
 import net.sf.beanlib.api.Transformable;
@@ -45,6 +46,8 @@ public interface BeanPopulatorSpi extends BeanPopulatorBaseSpi
     public BeanPopulatorSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder);
     public BeanPopulatorSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector);
     public BeanPopulatorSpi initDebug(boolean debug);
+    public BeanPopulatorSpi initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler beanPopulationExceptionHandler);
+    public BeanPopulatorSpi initBeanPopulatorBaseConfig(BeanPopulatorBaseConfig baseConfig);
     
-    public Object populate(); 
+    public <T> T populate(); 
 }

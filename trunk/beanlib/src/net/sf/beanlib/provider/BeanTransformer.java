@@ -19,10 +19,10 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import net.sf.beanlib.BeanlibException;
-import net.sf.beanlib.ProtectedSetterMethodCollector;
 import net.sf.beanlib.api.BeanMethodCollector;
 import net.sf.beanlib.api.BeanMethodFinder;
 import net.sf.beanlib.api.BeanPopulatable;
+import net.sf.beanlib.api.BeanPopulationExceptionHandler;
 import net.sf.beanlib.api.BeanSourceHandler;
 import net.sf.beanlib.api.DetailedBeanPopulatable;
 import net.sf.beanlib.provider.replicator.ArrayReplicator;
@@ -32,6 +32,7 @@ import net.sf.beanlib.provider.replicator.ImmutableReplicator;
 import net.sf.beanlib.provider.replicator.MapReplicator;
 import net.sf.beanlib.provider.replicator.ReplicatorTemplate;
 import net.sf.beanlib.provider.replicator.UnsupportedBlobReplicator;
+import net.sf.beanlib.spi.BeanPopulatorBaseConfig;
 import net.sf.beanlib.spi.BeanPopulatorSpi;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
@@ -73,16 +74,10 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     // Contains those objects that have been replicated.
     private Map<Object,Object> clonedMap = new IdentityHashMap<Object,Object>();
     
-    private DetailedBeanPopulatable detailedBeanPopulatable;
-    private BeanPopulatable beanPopulatable; 
-    private BeanSourceHandler beanSourceHandler;
-    private BeanMethodFinder readerMethodFinder;
-    private BeanMethodCollector setterMethodCollector = ProtectedSetterMethodCollector.inst;
+    private BeanPopulatorBaseConfig baseConfig = new BeanPopulatorBaseConfig();
     
     /** Custom Transformer. */
     private CustomBeanTransformerSpi customTransformer = CustomBeanTransformerSpi.NO_OP;
-
-    private boolean debug;
     
     private ImmutableReplicatorSpi immutableReplicatable = ImmutableReplicator.factory.newReplicatable(this);
     private CollectionReplicatorSpi collectionReplicatable = CollectionReplicator.factory.newReplicatable(this);
@@ -104,10 +99,6 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
             throw new BeanlibException(e);
         }
     }
-
-    public final BeanPopulatable getBeanPopulatable() {
-        return beanPopulatable;
-    }
     
     public final BeanTransformerSpi initCustomTransformer(CustomBeanTransformerSpi customTransformer) {
         this.customTransformer = customTransformer;
@@ -115,43 +106,33 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     }
     
     public final BeanTransformerSpi initBeanPopulatable(BeanPopulatable beanPopulatable) {
-        this.beanPopulatable = beanPopulatable;
+        baseConfig.setBeanPopulatable(beanPopulatable);
         return this;
     }
-    public final BeanSourceHandler getBeanSourceHandler() {
-        return beanSourceHandler;
-    }
+
     public final BeanTransformerSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler) {
-        this.beanSourceHandler = beanSourceHandler;
+        baseConfig.setBeanSourceHandler(beanSourceHandler);
         return this;
     }
-    public final boolean isDebug() {
-        return debug;
-    }
+
     public final BeanTransformerSpi initDebug(boolean debug) {
-        this.debug = debug;
+        baseConfig.setDebug(debug);
         return this;
     }
-    public final DetailedBeanPopulatable getDetailedBeanPopulatable() {
-        return detailedBeanPopulatable;
-    }
+
     public final BeanTransformerSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable) 
     {
-        this.detailedBeanPopulatable = detailedBeanPopulatable;
+        baseConfig.setDetailedBeanPopulatable(detailedBeanPopulatable);
         return this;
     }
-    public final BeanMethodFinder getReaderMethodFinder() {
-        return readerMethodFinder;
-    }
+
     public final BeanTransformerSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder) {
-        this.readerMethodFinder = readerMethodFinder;
+        baseConfig.setReaderMethodFinder(readerMethodFinder);
         return this;
     }
-    public final BeanMethodCollector getSetterMethodCollector() {
-        return setterMethodCollector;
-    }
+
     public final BeanTransformerSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector) {
-        this.setterMethodCollector = setterMethodCollector;
+        baseConfig.setSetterMethodCollector(setterMethodCollector);
         return this;
     }
     
@@ -177,10 +158,7 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     public <K,V> Map<K,V> getClonedMap() {
         return (Map<K,V>)clonedMap;
     }
-    public CustomBeanTransformerSpi getCustomTransformer() {
-        return customTransformer;
-    }
-
+    
     public BeanTransformerSpi initImmutableReplicatable(ImmutableReplicatorSpi.Factory immutableReplicatableFactory) 
     {
         this.immutableReplicatable = immutableReplicatableFactory.newReplicatable(this);
@@ -216,5 +194,20 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
 
     public BeanReplicatorSpi getObjectReplicatable() {
         return objectReplicatable;
+    }
+
+    public BeanTransformerSpi initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler beanPopulationExceptionHandler) {
+        baseConfig.setBeanPopulationExceptionHandler(beanPopulationExceptionHandler);
+        return this;
+    }
+
+    public BeanTransformerSpi initBeanPopulatorBaseConfig(BeanPopulatorBaseConfig baseConfig) 
+    {
+        this.baseConfig = baseConfig;
+        return this;
+    }
+
+    public BeanPopulatorBaseConfig getBeanPopulatorBaseConfig() {
+        return baseConfig;
     }
 }

@@ -16,7 +16,7 @@
 package net.sf.beanlib.jaxb2;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sf.beanlib.BeanPopulator;
+import net.sf.beanlib.provider.BeanPopulator;
 
 import org.junit.Test;
 
@@ -29,7 +29,7 @@ public class JaxbBeanPopulatorTest
     public void test() {
         Object from = new Object();
         Object to = new Object();
-        new BeanPopulator(from, to)
+        BeanPopulator.factory.newBeanPopulator(from, to)
             .initDetailedBeanPopulatable(null)  // always populate
             .initSetterMethodCollector(FluentSetterMethodCollector.inst)
             .initTransformer(null)  // TODO

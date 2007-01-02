@@ -44,13 +44,13 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import net.sf.beanlib.BeanPopulator;
 import net.sf.beanlib.ProtectedSetterMethodCollector;
 import net.sf.beanlib.api.BeanMethodCollector;
 import net.sf.beanlib.api.BeanMethodFinder;
 import net.sf.beanlib.api.BeanPopulatable;
 import net.sf.beanlib.api.BeanSourceHandler;
 import net.sf.beanlib.api.DetailedBeanPopulatable;
+import net.sf.beanlib.provider.BeanPopulator;
 import net.sf.beanlib.utils.BlobUtils;
 import net.sf.cglib.proxy.Enhancer;
 
@@ -320,7 +320,7 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
     }
 
     private void populate(Object fromMember, Object toMember) {
-        new BeanPopulator(fromMember, toMember)
+        BeanPopulator.factory.newBeanPopulator(fromMember, toMember)
                 .initBeanPopulatable(beanPopulatable)
                 .initBeanSourceHandler(beanSourceHandler)
                 .initDebug(debug)

@@ -18,6 +18,7 @@ package net.sf.beanlib.spi;
 import net.sf.beanlib.api.BeanMethodCollector;
 import net.sf.beanlib.api.BeanMethodFinder;
 import net.sf.beanlib.api.BeanPopulatable;
+import net.sf.beanlib.api.BeanPopulationExceptionHandler;
 import net.sf.beanlib.api.BeanSourceHandler;
 import net.sf.beanlib.api.DetailedBeanPopulatable;
 
@@ -28,17 +29,13 @@ import net.sf.beanlib.api.DetailedBeanPopulatable;
  */
 public interface BeanPopulatorBaseSpi 
 {
-	public BeanPopulatorBaseSpi initBeanPopulatable(BeanPopulatable beanPopulatable);
-	public BeanPopulatorBaseSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable);
-	public BeanPopulatorBaseSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler);
-	public BeanPopulatorBaseSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder);
-	public BeanPopulatorBaseSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector);
-	public BeanPopulatorBaseSpi initDebug(boolean debug);
+    public BeanPopulatorBaseSpi initBeanPopulatable(BeanPopulatable beanPopulatable);
+    public BeanPopulatorBaseSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable);
+    public BeanPopulatorBaseSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler);
+    public BeanPopulatorBaseSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder);
+    public BeanPopulatorBaseSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector);
+    public BeanPopulatorBaseSpi initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler beanPopulationExceptionHandler);
+    public BeanPopulatorBaseSpi initDebug(boolean debug);
     
-    public BeanPopulatable getBeanPopulatable();
-    public DetailedBeanPopulatable getDetailedBeanPopulatable();
-    public BeanSourceHandler getBeanSourceHandler();
-    public BeanMethodFinder getReaderMethodFinder();
-    public BeanMethodCollector getSetterMethodCollector();
-    public boolean isDebug();
+    public BeanPopulatorBaseSpi initBeanPopulatorBaseConfig(BeanPopulatorBaseConfig baseConfig);
 }
