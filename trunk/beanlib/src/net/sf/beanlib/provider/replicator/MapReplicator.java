@@ -33,14 +33,18 @@ import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
  */
 public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSpi
 {
-    public static final Factory factory = new Factory();
+    private static final Factory factory = new Factory();
     
-    public static class Factory implements MapReplicatorSpi.Factory {
+    private static class Factory implements MapReplicatorSpi.Factory {
         private Factory() {}
         
         public MapReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
             return new MapReplicator(beanTransformer);
         }
+    }
+
+    public static MapReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
+        return factory.newReplicatable(beanTransformer);
     }
 
     protected MapReplicator(BeanTransformerSpi beanTransformer) 

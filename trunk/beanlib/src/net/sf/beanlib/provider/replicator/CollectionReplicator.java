@@ -35,14 +35,18 @@ import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
  */
 public class CollectionReplicator extends ReplicatorTemplate implements CollectionReplicatorSpi 
 {
-    public static final Factory factory = new Factory();
+    private static final Factory factory = new Factory();
     
-    public static class Factory implements CollectionReplicatorSpi.Factory {
+    private static class Factory implements CollectionReplicatorSpi.Factory {
         private Factory() {}
         
         public CollectionReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
             return new CollectionReplicator(beanTransformer);
         }
+    }
+    
+    public static CollectionReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
+        return factory.newReplicatable(beanTransformer);
     }
     
     protected CollectionReplicator(BeanTransformerSpi beanTransformer) 
