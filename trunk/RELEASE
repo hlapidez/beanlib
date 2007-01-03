@@ -1,3 +1,16 @@
+beanlib 3.3.0beta2
+------------------
+* Better support for immutable objects with better API
+* Better subclass API of ReplicatorTemplate
+* Change the default of BeanPopulator to use a default transformer, 
+  instead of no transformer
+* Improved robustness when there is access privilege exception
+* Simplify with factory methods for BeanPopulator and BeanTransformer
+* Refactor more into the SPI framework
+* More tests
+* More Javadoc
+* Include the jcip annotation jar
+
 beanlib 3.3.0beta1
 ------------------
 * Provide a generic transformation/replication SPI framework

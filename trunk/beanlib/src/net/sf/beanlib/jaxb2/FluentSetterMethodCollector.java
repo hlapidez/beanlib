@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.beanlib.api.BeanMethodCollector;
+import net.sf.beanlib.spi.BeanMethodCollector;
 
 /**
  * Supports collecting Jaxb 2 fluent api setter methods.

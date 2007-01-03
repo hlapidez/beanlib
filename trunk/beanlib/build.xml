@@ -16,6 +16,7 @@
         <pathelement location="${beanlib.location}/lib/xstream-1.1.2.jar"/>
         <pathelement location="${beanlib.location}/lib/cglib-2.1_3.jar"/>
         <pathelement location="${beanlib.location}/lib/aopalliance-1.0.jar"/>
+        <pathelement location="${beanlib.location}/lib/jcip-annotations.jar"/>
     </path>
     <target name="init">
         <mkdir dir="target/classes"/>

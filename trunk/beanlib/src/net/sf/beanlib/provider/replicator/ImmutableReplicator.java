@@ -19,12 +19,19 @@ import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
 
 /**
+ * Default implementation of {@link net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi}.
+ * 
  * @author Joe D. Velopar
  */
 public class ImmutableReplicator implements ImmutableReplicatorSpi
 {
     private static final Factory factory = new Factory();
     
+    /**
+     * Factory for {@link ImmutableReplicator}
+     * 
+     * @author Joe D. Velopar
+     */
     private static class Factory implements ImmutableReplicatorSpi.Factory {
         private Factory() {}
         

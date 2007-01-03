@@ -25,11 +25,11 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sf.beanlib.CollectionPropertyName;
-import net.sf.beanlib.api.BeanPopulatable;
+import net.sf.beanlib.spi.BeanPopulatable;
 
 /**
  * The default implemenation to determine if a Hibernate JavaBean property should be populated.
- * Each population decision can be vetoed by plugging in a custom {@link net.sf.beanlib.api.BeanPopulatable vetoer}.
+ * Each population decision can be vetoed by plugging in a custom {@link net.sf.beanlib.spi.BeanPopulatable vetoer}.
  *
  * @author Joe D. Velopar
  */
@@ -52,7 +52,7 @@ public class HibernateBeanPopulatableSupport implements BeanPopulatable
         this.vetoer = vetoer;
     }
     /**
-     * @see net.sf.beanlib.api.BeanPopulatable#shouldPopulate(String, Method)
+     * @see net.sf.beanlib.spi.BeanPopulatable#shouldPopulate(String, Method)
      * 
      * @param propertyName property name.
      * @param readerMethod reader method of the property.

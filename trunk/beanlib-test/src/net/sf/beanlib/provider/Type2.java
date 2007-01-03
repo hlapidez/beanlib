@@ -13,20 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.api;
+package net.sf.beanlib.provider;
 
 /**
- * Object Transformer.
- * 
  * @author Joe D. Velopar
  */
-public interface Transformable {
-	/**
-	 * Returns an object transformed from the input object with the given target class.
-	 * 
-	 * @param in the input object to be transformed.
-	 * @param toClass the target class to be transformed to.
-	 * @return the transformed object.
-	 */
-	public <T> T transform(Object in, Class<T> toClass);
+public class Type2 {
+	private String f1;
+	private String f2;
+	private Type1 type;
+	
+	public String getF1() {
+		return f1;
+	}
+	public void setF1(String f1) {
+		this.f1 = f1;
+	}
+	public String getF2() {
+		return f2;
+	}
+	public void setF2(String f2) {
+		this.f2 = f2;
+	}
+	public Type1 getType() {
+		return type;
+	}
+	public void setType(Type1 type) {
+		this.type = type;
+	}
 }

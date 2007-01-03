@@ -18,11 +18,11 @@ package net.sf.beanlib.hibernate;
 import java.sql.Blob;
 import java.util.Map;
 
-import net.sf.beanlib.api.BeanMethodCollector;
-import net.sf.beanlib.api.BeanMethodFinder;
-import net.sf.beanlib.api.BeanPopulatable;
-import net.sf.beanlib.api.BeanSourceHandler;
-import net.sf.beanlib.api.DetailedBeanPopulatable;
+import net.sf.beanlib.spi.BeanMethodCollector;
+import net.sf.beanlib.spi.BeanMethodFinder;
+import net.sf.beanlib.spi.BeanPopulatable;
+import net.sf.beanlib.spi.BeanSourceHandler;
+import net.sf.beanlib.spi.DetailedBeanPopulatable;
 
 /**
  * Hibernate Bean Transformable Serivce Provider Interface.

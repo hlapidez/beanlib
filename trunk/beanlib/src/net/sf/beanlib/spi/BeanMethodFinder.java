@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.api;
+package net.sf.beanlib.spi;
 
 import java.lang.reflect.Method;
 
-/**
- * Used to control if a JavaBean property should be populated.
+/** 
+ * Used to find a method from a JavaBean.
  * 
- * @author Joe D. Velopar
+ *  @author Joe D. Velopar
  */
-public interface BeanPopulatable {
+public interface BeanMethodFinder {
 	/**
-	 * Returns true if the given JavaBean property should be populated;
-	 * false otherwise.
-	 * @param propertyName JavaBean property name.
-	 * @param readerMethod reader method of the JavaBean property name.
-	 * @return true if the given JavaBean property should be populated.
+	 * @param propertyName property name related to the method to be found. 
+	 * @param target JavaBean instance.
+	 * @return the method found or null if not found.
 	 */
-	public boolean shouldPopulate(String propertyName, Method readerMethod);
+	public Method find(String propertyName, Object target);
 }

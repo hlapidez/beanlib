@@ -15,15 +15,6 @@
  */
 package net.sf.beanlib.spi;
 
-import net.sf.beanlib.api.BeanMethodCollector;
-import net.sf.beanlib.api.BeanMethodFinder;
-import net.sf.beanlib.api.BeanPopulatable;
-import net.sf.beanlib.api.BeanPopulationExceptionHandler;
-import net.sf.beanlib.api.BeanSourceHandler;
-import net.sf.beanlib.api.DetailedBeanPopulatable;
-import net.sf.beanlib.api.Transformable;
-
-
 /**
  * Bean Populator SPI.
  * 
@@ -31,6 +22,11 @@ import net.sf.beanlib.api.Transformable;
  */
 public interface BeanPopulatorSpi extends BeanPopulatorBaseSpi 
 {
+    /**
+     * Bean Populator Factory SPI.
+     * 
+     * @author Joe D. Velopar
+     */
     public static interface Factory {
         public BeanPopulatorSpi newBeanPopulator(Object from, Object to);
     }

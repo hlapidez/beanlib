@@ -21,12 +21,21 @@ import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.BlobReplicatorSpi;
 
 /**
+ * Default implementation of {@link net.sf.beanlib.spi.replicator.BlobReplicatorSpi}.
+ * <p>
+ * A placeholder for the yet-to-be-supported Blob replicator implementation.
+ * 
  * @author Joe D. Velopar
  */
 public class UnsupportedBlobReplicator implements BlobReplicatorSpi 
 {
     private static final Factory factory = new Factory();
     
+    /**
+     * Factory for {@link UnsupportedBlobReplicator}
+     * 
+     * @author Joe D. Velopar
+     */
     private static class Factory implements BlobReplicatorSpi.Factory {
         private Factory() {}
         

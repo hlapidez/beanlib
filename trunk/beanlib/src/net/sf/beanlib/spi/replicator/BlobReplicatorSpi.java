@@ -19,15 +19,28 @@ import java.sql.Blob;
 
 import net.sf.beanlib.spi.BeanTransformerSpi;
 
-
 /**
+ * Blob Replicator SPI.
+ * 
  * @author Joe D. Velopar
  */
 public interface BlobReplicatorSpi 
 {
+    /**
+     * Blob Replicator Factory SPI.
+     * 
+     * @author Joe D. Velopar
+     */
     public static interface Factory {
         BlobReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
     }
     
-    <T> T replicateBlob(Blob fromBlob, Class<T> toClass);
+    /** 
+     * Returns a replicated Blob. 
+     * 
+     * @param <T> target class type
+     * @param fromBlob from Blob
+     * @param toClass target class
+     */
+    public <T> T replicateBlob(Blob fromBlob, Class<T> toClass);
 }

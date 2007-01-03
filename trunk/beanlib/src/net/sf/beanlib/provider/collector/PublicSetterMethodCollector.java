@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib;
+package net.sf.beanlib.provider.collector;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.beanlib.api.BeanMethodCollector;
+import net.sf.beanlib.spi.BeanMethodCollector;
 
 /**
  * Supports collecting JavaBean public setter methods.

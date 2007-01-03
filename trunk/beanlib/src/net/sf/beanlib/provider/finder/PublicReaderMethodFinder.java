@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib;
+package net.sf.beanlib.provider.finder;
 
 import java.lang.reflect.Method;
 
-import net.sf.beanlib.api.BeanMethodFinder;
+import net.sf.beanlib.spi.BeanMethodFinder;
 
 /**
  * Supports finding JavaBean public reader method.

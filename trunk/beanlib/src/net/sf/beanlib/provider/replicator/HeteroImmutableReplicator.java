@@ -23,12 +23,19 @@ import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
 
 /**
+ * Immutable Object Replicator that supports replication across heterogeneous enums.
+ * 
  * @author Joe D. Velopar
  */
 public class HeteroImmutableReplicator extends ImmutableReplicator
 {
     public static final Factory factory = new Factory();
     
+    /**
+     * Factory for {@link HeteroImmutableReplicator}
+     * 
+     * @author Joe D. Velopar
+     */
     public static class Factory implements ImmutableReplicatorSpi.Factory {
         private Factory() {}
         

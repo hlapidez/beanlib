@@ -15,7 +15,6 @@
  */
 package net.sf.beanlib.spi;
 
-import net.sf.beanlib.api.Transformable;
 
 /**
  * Interface for Custom Bean Transformer.

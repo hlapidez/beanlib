@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sf.beanlib.CollectionPropertyName;
-import net.sf.beanlib.api.BeanPopulatable;
+import net.sf.beanlib.spi.BeanPopulatable;
 
 /**
  * Used by {@link Hibernate3DtoCopier} to dynamically expand the set of 
@@ -71,7 +71,7 @@ class Hibernate3DtoPopulator implements BeanPopulatable {
     }
     
     /**
-     * @see net.sf.beanlib.api.BeanPopulatable#shouldPopulate(java.lang.String, java.lang.reflect.Method)
+     * @see net.sf.beanlib.spi.BeanPopulatable#shouldPopulate(java.lang.String, java.lang.reflect.Method)
      * 
      * @param propertyName property name.
      * @param readerMethod reader method of the property.

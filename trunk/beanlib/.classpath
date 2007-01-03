@@ -9,5 +9,6 @@
 	<classpathentry sourcepath="C:/Playground/xstream/1.1.2/src/java" kind="lib" path="lib/xstream-1.1.2.jar"/>
 	<classpathentry sourcepath="C:/Playground/cglib/2.1_3/src" kind="lib" path="lib/cglib-2.1_3.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/jcip-annotations.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

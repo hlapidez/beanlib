@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib;
+package net.sf.beanlib.provider.handler;
 
 import java.lang.reflect.Method;
 
-import net.sf.beanlib.api.BeanPopulationExceptionHandler;
+import net.sf.beanlib.spi.BeanPopulationExceptionHandler;
 
 /** 
  * Can be used as a convenient adaptor class for implementing 

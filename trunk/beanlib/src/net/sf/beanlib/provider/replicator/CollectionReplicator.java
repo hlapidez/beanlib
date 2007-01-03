@@ -31,12 +31,19 @@ import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
 
 /**
+ * Default implementation of {@link net.sf.beanlib.spi.replicator.CollectionReplicatorSpi}.
+ * 
  * @author Joe D. Velopar
  */
 public class CollectionReplicator extends ReplicatorTemplate implements CollectionReplicatorSpi 
 {
     private static final Factory factory = new Factory();
     
+    /**
+     * Factory for {@link CollectionReplicator}
+     * 
+     * @author Joe D. Velopar
+     */
     private static class Factory implements CollectionReplicatorSpi.Factory {
         private Factory() {}
         

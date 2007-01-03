@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib;
+package net.sf.beanlib.provider;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import junit.framework.JUnit4TestAdapter;
-import net.sf.beanlib.provider.BeanPopulator;
+import net.sf.beanlib.provider.collector.ProtectedSetterMethodCollector;
 
 import org.junit.Test;
 

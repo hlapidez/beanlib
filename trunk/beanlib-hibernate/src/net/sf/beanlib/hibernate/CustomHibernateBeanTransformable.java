@@ -15,7 +15,7 @@
  */
 package net.sf.beanlib.hibernate;
 
-import net.sf.beanlib.api.Transformable;
+import net.sf.beanlib.spi.Transformable;
 
 /**
  * Custom Hibernate Bean Transformable.
