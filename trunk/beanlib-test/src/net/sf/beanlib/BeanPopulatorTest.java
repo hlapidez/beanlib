@@ -31,99 +31,222 @@ import org.junit.Test;
 public class BeanPopulatorTest {
     @Test
     public void test() {
-        Foo from = new Foo("from");
-        from.setBoo(true);
-        from.setString("foo");
-        Foo to = new Foo("to");
-        assertFalse(from.equals(to));
-        BeanPopulator.factory.newBeanPopulator(from, to).initDebug(false).populate();
-        assertEquals(from.getString(), to.getString());
-        assertFalse(from.getProtectedSetString().equals(to.getProtectedSetString()));
+        // No transformer
+        {
+            Foo from = new Foo("from");
+            from.setBoo(true);
+            from.setString("foo");
+            Foo to = new Foo("to");
+            assertFalse(from.equals(to));
+            BeanPopulator.newBeanPopulator(from, to)
+                         .populate();
+            assertEquals(from.getString(), to.getString());
+            assertFalse(from.getProtectedSetString().equals(to.getProtectedSetString()));
+        }
+        // Default transformer
+        {
+            Foo from = new Foo("from");
+            from.setBoo(true);
+            from.setString("foo");
+            Foo to = new Foo("to");
+            assertFalse(from.equals(to));
+            BeanPopulator.newBeanPopulator(from, to)
+                         .initDefaultTransformer()
+                         .populate();
+            assertEquals(from.getString(), to.getString());
+            assertFalse(from.getProtectedSetString().equals(to.getProtectedSetString()));
+        }
     }
     
     @Test
     public void test2() {
-        Foo from = new Foo("from");
-        from.setBoo(true);
-        from.setString("foo");
-        Foo to = new Foo("to");
-        assertFalse(from.equals(to));
-        BeanPopulator.factory.newBeanPopulator(from, to).initDebug(false).populate();
-        assertFalse(from.equals(to));
-        assertFalse(from.getProtectedSetString().equals(to.getProtectedSetString()));
-        assertEquals(from.getString(), to.getString());
-        assertEquals(from.isBoo(), to.isBoo());
+        // No transformer
+        {
+            Foo from = new Foo("from");
+            from.setBoo(true);
+            from.setString("foo");
+            Foo to = new Foo("to");
+            assertFalse(from.equals(to));
+            BeanPopulator.newBeanPopulator(from, to)
+                         .populate();
+            assertFalse(from.equals(to));
+            assertFalse(from.getProtectedSetString().equals(to.getProtectedSetString()));
+            assertEquals(from.getString(), to.getString());
+            assertEquals(from.isBoo(), to.isBoo());
+        }
+        {
+            // Default transformer
+            Foo from = new Foo("from");
+            from.setBoo(true);
+            from.setString("foo");
+            Foo to = new Foo("to");
+            assertFalse(from.equals(to));
+            BeanPopulator.newBeanPopulator(from, to)
+                         .initDefaultTransformer()
+                         .populate();
+            assertFalse(from.equals(to));
+            assertFalse(from.getProtectedSetString().equals(to.getProtectedSetString()));
+            assertEquals(from.getString(), to.getString());
+            assertEquals(from.isBoo(), to.isBoo());
+        }
     }
 
     @Test
     public void test4() {
-        Bar from = new Bar("from");
-        from.setBoo(true);
-        from.setString("foo");
-        from.setBarString("barString");
-        from.setBar(from);
-        Bar to = new Bar("to");
-        BeanPopulator.factory.newBeanPopulator(from, to).initDebug(false).populate();
-        assertFalse(from.getProtectedSetString().equals(to.getProtectedSetString()));
-        assertEquals(from.getString(), to.getString());
-        assertEquals(from.isBoo(), to.isBoo());
-        assertEquals(from.getBarString(), to.getBarString());
-        assertSame(from.getBar(), to.getBar());
+        // No transformer
+        {
+            Bar from = new Bar("from");
+            from.setBoo(true);
+            from.setString("foo");
+            from.setBarString("barString");
+            from.setBar(from);
+            Bar to = new Bar("to");
+            BeanPopulator.newBeanPopulator(from, to)
+                .populate();
+            assertFalse(from.getProtectedSetString().equals(to.getProtectedSetString()));
+            assertEquals(from.getString(), to.getString());
+            assertEquals(from.isBoo(), to.isBoo());
+            assertEquals(from.getBarString(), to.getBarString());
+            // Note this is different than if the default transformer is used.
+            assertSame(from.getBar(), to.getBar());
+        }
+        // Default transformer
+        {
+            Bar from = new Bar("from");
+            from.setBoo(true);
+            from.setString("foo");
+            from.setBarString("barString");
+            from.setBar(from);
+            Bar to = new Bar("to");
+            BeanPopulator.newBeanPopulator(from, to)
+                .initDefaultTransformer()
+                .populate();
+            assertFalse(from.getProtectedSetString().equals(to.getProtectedSetString()));
+            assertEquals(from.getString(), to.getString());
+            assertEquals(from.isBoo(), to.isBoo());
+            assertEquals(from.getBarString(), to.getBarString());
+            // Note this is different than if no transformer is used.
+            assertSame(to, to.getBar());
+        }
     }
+
     
     @Test
     public void testProtected() {
-        Foo from = new Foo("from");
-        from.setBoo(true);
-        from.setString("foo");
-        Foo to = new Foo("to");
-        assertFalse(from.equals(to));
-        BeanPopulator.factory.newBeanPopulator(from, to)
-            .initDebug(false)
-            .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
-            .populate();
-        assertEquals(from.getString(), to.getString());
-        assertEquals(from.getProtectedSetString(), to.getProtectedSetString());
-        assertEquals(from, to);
+        // No transformer
+        {
+            Foo from = new Foo("from");
+            from.setBoo(true);
+            from.setString("foo");
+            Foo to = new Foo("to");
+            assertFalse(from.equals(to));
+            BeanPopulator.newBeanPopulator(from, to)
+                .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
+                .populate();
+            assertEquals(from.getString(), to.getString());
+            assertEquals(from.getProtectedSetString(), to.getProtectedSetString());
+            assertEquals(from, to);
+        }
+        // Default transformer
+        {
+            Foo from = new Foo("from");
+            from.setBoo(true);
+            from.setString("foo");
+            Foo to = new Foo("to");
+            assertFalse(from.equals(to));
+            BeanPopulator.newBeanPopulator(from, to)
+                .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
+                .initDefaultTransformer()
+                .populate();
+            assertEquals(from.getString(), to.getString());
+            assertEquals(from.getProtectedSetString(), to.getProtectedSetString());
+            assertEquals(from, to);
+        }
     }
 
     @Test
     public void testProtected4() {
-        Bar from = new Bar("from");
-        from.setBoo(true);
-        from.setString("foo");
-        from.setBarString("barString");
-        from.setBar(from);
-        Bar to = new Bar("to");
-        assertFalse(from.equals(to));
-        BeanPopulator.factory.newBeanPopulator(from, to)
-            .initDebug(false)
-            .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
-            .populate();
-        assertEquals(from.getProtectedSetString(), to.getProtectedSetString());
-        assertEquals(from.getString(), to.getString());
-        assertEquals(from.isBoo(), to.isBoo());
-        assertEquals(from.getBarString(), to.getBarString());
-        assertSame(from.getBar(), to.getBar());
+        // No transformer
+        {
+            Bar from = new Bar("from");
+            from.setBoo(true);
+            from.setString("foo");
+            from.setBarString("barString");
+            from.setBar(from);
+            Bar to = new Bar("to");
+            assertFalse(from.equals(to));
+            BeanPopulator.newBeanPopulator(from, to)
+                .initDebug(false)
+                .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
+                .populate();
+            assertEquals(from.getProtectedSetString(), to.getProtectedSetString());
+            assertEquals(from.getString(), to.getString());
+            assertEquals(from.isBoo(), to.isBoo());
+            assertEquals(from.getBarString(), to.getBarString());
+            // Note this is different than if the default transformer is used.
+            assertSame(from.getBar(), to.getBar());
+        }
+        // Default transformer
+        {
+            Bar from = new Bar("from");
+            from.setBoo(true);
+            from.setString("foo");
+            from.setBarString("barString");
+            from.setBar(from);
+            Bar to = new Bar("to");
+            assertFalse(from.equals(to));
+            BeanPopulator.newBeanPopulator(from, to)
+                .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
+                .initDefaultTransformer()
+                .populate();
+            assertEquals(from.getProtectedSetString(), to.getProtectedSetString());
+            assertEquals(from.getString(), to.getString());
+            assertEquals(from.isBoo(), to.isBoo());
+            assertEquals(from.getBarString(), to.getBarString());
+            // Note this is different than if no transformer is used.
+            assertSame(to, to.getBar());
+        }
     }
     
     @Test
     public void testDeepCopyRegardless() {
-        Type1 t1 = new Type1();
-        t1.setF1("f1 of type1");
-        t1.setF2("f2 of type1");
-        Type2 type = new Type2();
-        type.setF1("f1 of typ2");
-        type.setF2("f2 of typ2");
-        t1.setType(type);
-        
-        Type2 t2 = new Type2();
-        BeanPopulator.factory.newBeanPopulator(t1, t2)
-            .populate();
-        assertEquals(t1.getF1(), t2.getF1());
-        assertEquals(t1.getF2(), t2.getF2());
-        assertNotNull(t1.getType());
-        assertNull(t2.getType());
+        // No transformer
+        {
+            Type1 t1 = new Type1();
+            t1.setF1("f1 of type1");
+            t1.setF2("f2 of type1");
+            Type2 type = new Type2();
+            type.setF1("f1 of typ2");
+            type.setF2("f2 of typ2");
+            t1.setType(type);
+            
+            Type2 t2 = new Type2();
+            BeanPopulator.newBeanPopulator(t1, t2)
+                .populate();
+            assertEquals(t1.getF1(), t2.getF1());
+            assertEquals(t1.getF2(), t2.getF2());
+            assertNotNull(t1.getType());
+            assertNull(t2.getType());
+        }
+        // Default transformer
+        {
+            Type1 t1 = new Type1();
+            t1.setF1("f1 of type1");
+            t1.setF2("f2 of type1");
+            Type2 type = new Type2();
+            type.setF1("f1 of typ2");
+            type.setF2("f2 of typ2");
+            t1.setType(type);
+            
+            Type2 t2 = new Type2();
+            BeanPopulator.newBeanPopulator(t1, t2)
+                .initDefaultTransformer()
+                .populate();
+            assertEquals(t1.getF1(), t2.getF1());
+            assertEquals(t1.getF2(), t2.getF2());
+            assertNotNull(t1.getType());
+            assertNull(t2.getType());
+        }
     }
 
     public static junit.framework.Test suite() {

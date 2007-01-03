@@ -29,7 +29,7 @@ public class JaxbBeanPopulatorTest
     public void test() {
         Object from = new Object();
         Object to = new Object();
-        BeanPopulator.factory.newBeanPopulator(from, to)
+        BeanPopulator.newBeanPopulator(from, to)
             .initDetailedBeanPopulatable(null)  // always populate
             .initSetterMethodCollector(FluentSetterMethodCollector.inst)
             .initTransformer(null)  // TODO
