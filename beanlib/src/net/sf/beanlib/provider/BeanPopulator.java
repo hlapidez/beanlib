@@ -77,7 +77,7 @@ public class BeanPopulator implements BeanPopulatorSpi
         this.toBean = toBean;
     }
 
-    private BeanTransformerSpi getBeanTransformer() {
+    private BeanTransformerSpi getTransformerSpi() {
         return (BeanTransformerSpi)(transformer instanceof BeanTransformerSpi ? transformer : null); 
     }
     /** 
@@ -87,6 +87,8 @@ public class BeanPopulator implements BeanPopulatorSpi
     @SuppressWarnings("unchecked")
     public <T> T populate() 
     {
+        if (getTransformerSpi() != null)
+            getTransformerSpi().getClonedMap().put(fromBean, toBean);
         // invoking all declaring setter methods of toBean from all matching getter methods of fromBean
         for (Method m : baseConfig.getSetterMethodCollector().collect(toBean))
             processSetterMethod(m);
@@ -172,8 +174,15 @@ public class BeanPopulator implements BeanPopulatorSpi
     private Object invokeMethodAsPrivileged(final Object target, final Method method, final Object[] args) 
         throws InvocationTargetException, IllegalAccessException 
     {
-        if (Modifier.isPublic(method.getModifiers()))
-            return method.invoke(target, args);
+        if (Modifier.isPublic(method.getModifiers())) {
+            try {
+                return method.invoke(target, args);
+            } catch(RuntimeException ex) {
+                // the try-catch is unnecessary i know, 
+                // but just so we can set a break point here
+                throw ex;
+            }
+        }
         return AccessController.doPrivileged(
             new PrivilegedAction<Object>() {
                 public Object run() {
@@ -197,8 +206,8 @@ public class BeanPopulator implements BeanPopulatorSpi
     public BeanPopulator initBeanPopulatable(BeanPopulatable beanPopulatable) {
         baseConfig.setBeanPopulatable(beanPopulatable);
 
-        if (this.getBeanTransformer() != null)
-            this.getBeanTransformer().initBeanPopulatable(beanPopulatable);
+        if (this.getTransformerSpi() != null)
+            this.getTransformerSpi().initBeanPopulatable(beanPopulatable);
         return this;
     }
     
@@ -208,8 +217,8 @@ public class BeanPopulator implements BeanPopulatorSpi
     public BeanPopulator initBeanSourceHandler(BeanSourceHandler beanSourceHandler) {
         baseConfig.setBeanSourceHandler(beanSourceHandler);
         
-        if (this.getBeanTransformer() != null)
-            this.getBeanTransformer().initBeanSourceHandler(beanSourceHandler);
+        if (this.getTransformerSpi() != null)
+            this.getTransformerSpi().initBeanSourceHandler(beanSourceHandler);
         return this;
     }
     
@@ -219,8 +228,8 @@ public class BeanPopulator implements BeanPopulatorSpi
     public BeanPopulator initDebug(boolean debug) {
         baseConfig.setDebug(debug);
 
-        if (this.getBeanTransformer() != null)
-            this.getBeanTransformer().initDebug(debug);
+        if (this.getTransformerSpi() != null)
+            this.getTransformerSpi().initDebug(debug);
         return this;
     }
     
@@ -231,8 +240,8 @@ public class BeanPopulator implements BeanPopulatorSpi
     {
         baseConfig.setDetailedBeanPopulatable(detailedBeanPopulatable);
 
-        if (this.getBeanTransformer() != null)
-            this.getBeanTransformer().initDetailedBeanPopulatable(detailedBeanPopulatable);
+        if (this.getTransformerSpi() != null)
+            this.getTransformerSpi().initDetailedBeanPopulatable(detailedBeanPopulatable);
         return this;
     }
     
@@ -240,8 +249,8 @@ public class BeanPopulator implements BeanPopulatorSpi
         if (readerMethodFinder != null) {
             baseConfig.setReaderMethodFinder(readerMethodFinder);
 
-            if (this.getBeanTransformer() != null)
-                this.getBeanTransformer().initReaderMethodFinder(readerMethodFinder);
+            if (this.getTransformerSpi() != null)
+                this.getTransformerSpi().initReaderMethodFinder(readerMethodFinder);
         }
         return this;
     }
@@ -250,8 +259,8 @@ public class BeanPopulator implements BeanPopulatorSpi
         if (setterMethodCollector != null) {
             baseConfig.setSetterMethodCollector(setterMethodCollector);
 
-            if (this.getBeanTransformer() != null)
-                this.getBeanTransformer().initSetterMethodCollector(setterMethodCollector);
+            if (this.getTransformerSpi() != null)
+                this.getTransformerSpi().initSetterMethodCollector(setterMethodCollector);
         }
         return this;
     }
@@ -266,16 +275,20 @@ public class BeanPopulator implements BeanPopulatorSpi
     public BeanPopulator initTransformer(Transformable transformer) {
         this.transformer = transformer;
         
-        if (this.getBeanTransformer() != null)
-            this.getBeanTransformer().initBeanPopulatorBaseConfig(baseConfig);
+        if (this.getTransformerSpi() != null)
+            this.getTransformerSpi().initBeanPopulatorBaseConfig(baseConfig);
         return this;
+    }
+    
+    public BeanPopulator initDefaultTransformer() {
+        return initTransformer(BeanTransformer.newBeanTransformer(factory));
     }
     
     public BeanPopulator initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler beanPopulationExceptionHandler) {
         baseConfig.setBeanPopulationExceptionHandler(beanPopulationExceptionHandler);
         
-        if (this.getBeanTransformer() != null)
-            this.getBeanTransformer().initBeanPopulationExceptionHandler(beanPopulationExceptionHandler);
+        if (this.getTransformerSpi() != null)
+            this.getTransformerSpi().initBeanPopulationExceptionHandler(beanPopulationExceptionHandler);
         return this;
     }
 

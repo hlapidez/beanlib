@@ -41,10 +41,47 @@ public class ImmutableReplicator implements ImmutableReplicatorSpi
 
     public <V, T> T replicateImmutable(V immutableFrom, Class<T> toClass) 
     {
-        if (immutableFrom == null)
-            return null;
-        if (toClass.isAssignableFrom(immutableFrom.getClass()))
-            return toClass.cast(immutableFrom);
-        return null;
+        if (toClass.isPrimitive()) 
+        {
+//            if (immutableFrom == null)
+//                return getDefaultPrimitiveValue(toClass);
+            if (sameType(toClass, immutableFrom.getClass()))
+                return (T)immutableFrom;
+            // from & to are of totally different types
+            return getDefaultPrimitiveValue(toClass);
+        }
+//        // toClass is not primitive.
+//        if (immutableFrom == null)
+//            return null;
+        // immutableFrom is not null, but could be a primitive.
+        Class fromClass = immutableFrom.getClass();
+        
+        if (fromClass.isPrimitive()) 
+        {
+            if (sameType(fromClass, toClass))
+                return (T)immutableFrom;
+            return getDefaultPrimitiveValue(toClass);
+        }
+        // from and to are both not primitives.
+        return toClass.isAssignableFrom(immutableFrom.getClass())
+             ? toClass.cast(immutableFrom)
+             : null
+             ;
+    }
+    
+    public static <T> T getDefaultPrimitiveValue(Class<T> primitiveClass) {
+        return (T)(primitiveClass == boolean.class ? Boolean.FALSE : new Byte((byte)0));
+    }
+    
+    private static boolean sameType(Class lhs, Class rhs) {
+        return lhs == boolean.class && rhs == Boolean.class
+            || lhs == byte.class && rhs == Byte.class
+            || lhs == char.class && rhs == Character.class
+            || lhs == short.class && rhs == Short.class
+            || lhs == int.class && rhs == Integer.class
+            || lhs == long.class && rhs == Long.class
+            || lhs == float.class && rhs == Float.class
+            || lhs == double.class && rhs == Double.class
+            ;
     }
 }

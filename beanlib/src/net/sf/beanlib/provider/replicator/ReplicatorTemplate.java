@@ -71,19 +71,23 @@ public abstract class ReplicatorTemplate
     protected <T> T replicate(Object from, Class<T> toClass) 
         throws SecurityException 
     {
-        if (from == null)
-            return null;
-        Class<?> fromClass = from.getClass();
-
-        if (immutable(toClass))
-            return beanTransformer.getImmutableReplicatable().replicateImmutable(from, toClass);
+        if (from == null) 
+        {
+            return toClass.isPrimitive()
+                 ? ImmutableReplicator.getDefaultPrimitiveValue(toClass)
+                 : null;
+        }
         T to = (T)beanTransformer.getClonedMap().get(from);
         
         if (to != null) {
-            if (!toClass.isAssignableFrom(fromClass))
-                return null;
+//            if (!toClass.isAssignableFrom(fromClass))
+//                return null;
             return to;    // already transformed.
         }
+        Class<?> fromClass = from.getClass();
+
+        if (immutable(from.getClass()))
+            return beanTransformer.getImmutableReplicatable().replicateImmutable(from, toClass);
         // Collection
         if (from instanceof Collection)
             return beanTransformer.getCollectionReplicatable().replicateCollection((Collection<?>)from, toClass);

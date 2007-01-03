@@ -206,7 +206,7 @@ public class HibernateBeanReplicatorTest
         t1.setType(type);
         
         Type2 t2 = new Type2();
-        BeanPopulator.factory.newBeanPopulator(t1, t2)
+        BeanPopulator.newBeanPopulator(t1, t2)
             .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
             .initTransformer(new Hibernate3BeanTransformer())
             .populate();

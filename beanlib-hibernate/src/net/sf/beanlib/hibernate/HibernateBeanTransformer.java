@@ -320,7 +320,7 @@ public abstract class HibernateBeanTransformer implements HibernateBeanTransform
     }
 
     private void populate(Object fromMember, Object toMember) {
-        BeanPopulator.factory.newBeanPopulator(fromMember, toMember)
+        BeanPopulator.newBeanPopulator(fromMember, toMember)
                 .initBeanPopulatable(beanPopulatable)
                 .initBeanSourceHandler(beanSourceHandler)
                 .initDebug(debug)
