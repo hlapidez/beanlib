@@ -66,7 +66,7 @@ public class BeanPopulator implements BeanPopulatorSpi
 
     private BeanPopulatorBaseConfig baseConfig = new BeanPopulatorBaseConfig();
     
-    private Transformable transformer;
+    private Transformable transformer = BeanTransformer.newBeanTransformer(factory);
     
     /**
      * @param fromBean from bean
@@ -281,10 +281,6 @@ public class BeanPopulator implements BeanPopulatorSpi
         if (this.getTransformerSpi() != null)
             this.getTransformerSpi().initBeanPopulatorBaseConfig(baseConfig);
         return this;
-    }
-    
-    public BeanPopulator initDefaultTransformer() {
-        return initTransformer(BeanTransformer.newBeanTransformer(factory));
     }
     
     public BeanPopulator initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler beanPopulationExceptionHandler) {
