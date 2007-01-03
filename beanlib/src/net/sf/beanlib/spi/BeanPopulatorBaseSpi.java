@@ -15,12 +15,6 @@
  */
 package net.sf.beanlib.spi;
 
-import net.sf.beanlib.api.BeanMethodCollector;
-import net.sf.beanlib.api.BeanMethodFinder;
-import net.sf.beanlib.api.BeanPopulatable;
-import net.sf.beanlib.api.BeanPopulationExceptionHandler;
-import net.sf.beanlib.api.BeanSourceHandler;
-import net.sf.beanlib.api.DetailedBeanPopulatable;
 
 /**
  * The base of the Bean Populator SPI.

@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sf.beanlib.api.BeanPopulatable;
+import net.sf.beanlib.spi.BeanPopulatable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

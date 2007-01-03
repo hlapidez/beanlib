@@ -15,16 +15,12 @@
  */
 package net.sf.beanlib.spi;
 
-import net.sf.beanlib.PublicReaderMethodFinder;
-import net.sf.beanlib.PublicSetterMethodCollector;
-import net.sf.beanlib.api.BeanMethodCollector;
-import net.sf.beanlib.api.BeanMethodFinder;
-import net.sf.beanlib.api.BeanPopulatable;
-import net.sf.beanlib.api.BeanPopulationExceptionHandler;
-import net.sf.beanlib.api.BeanSourceHandler;
-import net.sf.beanlib.api.DetailedBeanPopulatable;
+import net.sf.beanlib.provider.collector.PublicSetterMethodCollector;
+import net.sf.beanlib.provider.finder.PublicReaderMethodFinder;
 
 /**
+ * Base configuration for a Bean Populator.
+ * 
  * @author Joe D. Velopar
  */
 public class BeanPopulatorBaseConfig implements Cloneable

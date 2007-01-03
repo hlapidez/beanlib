@@ -17,13 +17,6 @@ package net.sf.beanlib.spi;
 
 import java.util.Map;
 
-import net.sf.beanlib.api.BeanMethodCollector;
-import net.sf.beanlib.api.BeanMethodFinder;
-import net.sf.beanlib.api.BeanPopulatable;
-import net.sf.beanlib.api.BeanPopulationExceptionHandler;
-import net.sf.beanlib.api.BeanSourceHandler;
-import net.sf.beanlib.api.DetailedBeanPopulatable;
-import net.sf.beanlib.api.Transformable;
 import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BlobReplicatorSpi;
@@ -32,12 +25,17 @@ import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
 import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
 
 /**
- * Bean Transformable SPI.
+ * Bean Transformer SPI.
  * 
  * @author Joe D. Velopar
  */
 public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi 
 {
+    /**
+     * Bean Transformer Factory SPI.
+     * 
+     * @author Joe D. Velopar
+     */
     public static interface Factory {
         public BeanTransformerSpi newBeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory);
     }

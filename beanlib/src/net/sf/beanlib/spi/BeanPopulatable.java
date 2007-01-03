@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.api;
+package net.sf.beanlib.spi;
 
 import java.lang.reflect.Method;
 
-/** 
- * Used to collect methods from a JavaBean.
+/**
+ * Used to control if a JavaBean property should be populated.
  * 
- *  @author Joe D. Velopar
+ * @author Joe D. Velopar
  */
-public interface BeanMethodCollector {
-	public Method[] collect(Object bean);
-    public String getMethodPrefix();
+public interface BeanPopulatable {
+	/**
+	 * Returns true if the given JavaBean property should be populated;
+	 * false otherwise.
+	 * @param propertyName JavaBean property name.
+	 * @param readerMethod reader method of the JavaBean property name.
+	 * @return true if the given JavaBean property should be populated.
+	 */
+	public boolean shouldPopulate(String propertyName, Method readerMethod);
 }

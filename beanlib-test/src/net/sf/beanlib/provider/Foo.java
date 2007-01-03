@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib;
+package net.sf.beanlib.provider;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -21,41 +21,45 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * @author Joe D. Velopar
  */
-public class Bar extends Foo {
-	private String barString;
+public class Foo {
+	private String string;
+	private boolean boo;
 	
-	private Bar bar;
-
-	public Bar() {
+	private String protectedSetString;
+	
+	public Foo() {
 	}
-	
-	public Bar(String protectedSetString) {
-		super(protectedSetString);
+
+	public Foo(String protectedSetString) {
+		this.protectedSetString = protectedSetString;
+	}
+	public boolean isBoo() {
+		return boo;
+	}
+	public void setBoo(boolean boo) {
+		this.boo = boo;
+	}
+	public String getString() {
+		return string;
+	}
+	public void setString(String string) {
+		this.string = string;
 	}
 	
 	@Override
     public boolean equals(Object that) {
 		return EqualsBuilder.reflectionEquals(this, that);
 	}
+	public String getProtectedSetString() {
+		return protectedSetString;
+	}
+	
+	protected void setProtectedSetString(String protectedSetString) {
+		this.protectedSetString = protectedSetString;
+	}
 	
 	@Override
     public String toString() {
 		return ToStringBuilder.reflectionToString(this);
-	}
-
-	public String getBarString() {
-		return barString;
-	}
-
-	public void setBarString(String barString) {
-		this.barString = barString;
-	}
-
-	public Bar getBar() {
-		return bar;
-	}
-
-	public void setBar(Bar bar) {
-		this.bar = bar;
 	}
 }

@@ -19,12 +19,12 @@ import java.util.Collections;
 import java.util.Set;
 
 import net.sf.beanlib.CollectionPropertyName;
-import net.sf.beanlib.ProtectedSetterMethodCollector;
-import net.sf.beanlib.api.BeanMethodCollector;
-import net.sf.beanlib.api.BeanMethodFinder;
-import net.sf.beanlib.api.BeanPopulatable;
-import net.sf.beanlib.api.BeanSourceHandler;
-import net.sf.beanlib.api.DetailedBeanPopulatable;
+import net.sf.beanlib.provider.collector.ProtectedSetterMethodCollector;
+import net.sf.beanlib.spi.BeanMethodCollector;
+import net.sf.beanlib.spi.BeanMethodFinder;
+import net.sf.beanlib.spi.BeanPopulatable;
+import net.sf.beanlib.spi.BeanSourceHandler;
+import net.sf.beanlib.spi.DetailedBeanPopulatable;
 
 
 /**

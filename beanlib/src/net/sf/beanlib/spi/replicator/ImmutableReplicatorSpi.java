@@ -17,15 +17,29 @@ package net.sf.beanlib.spi.replicator;
 
 import net.sf.beanlib.spi.BeanTransformerSpi;
 
-
 /**
+ * Immutable Object Replicator SPI.
+ *  
  * @author Joe D. Velopar
  */
 public interface ImmutableReplicatorSpi 
 {
+    /**
+     * Immutable Object Replicator Factory SPI.
+     *  
+     * @author Joe D. Velopar
+     */
     public static interface Factory {
-        ImmutableReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
+        public ImmutableReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
     }
     
-    <V,T> T replicateImmutable(V immutable, Class<T> toClass);
+    /** 
+     * Returns a replicated immutable object. 
+     * 
+     * @param <V> source immutable object type
+     * @param <T> target class type
+     * @param immutable source immutable object
+     * @param toClass target class
+     */
+    public <V,T> T replicateImmutable(V immutable, Class<T> toClass);
 }

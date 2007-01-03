@@ -13,32 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package net.sf.beanlib;
+package net.sf.beanlib.spi;
 
 /**
+ * Exception thrown from Beanlib.
+ * 
  * @author Joe D. Velopar
  */
-public class Type1 {
-	private String f1;
-	private String f2;
-	private Type2 type;
-	
-	public String getF1() {
-		return f1;
+public class BeanlibException extends RuntimeException {
+    static final long serialVersionUID = 1;
+	public BeanlibException() {
+    }
+	public BeanlibException(String message) {
+		super(message);
 	}
-	public void setF1(String f1) {
-		this.f1 = f1;
-	}
-	public String getF2() {
-		return f2;
-	}
-	public void setF2(String f2) {
-		this.f2 = f2;
-	}
-	public Type2 getType() {
-		return type;
-	}
-	public void setType(Type2 type) {
-		this.type = type;
-	}
+    public BeanlibException(String message, Throwable cause) {
+        super(message, cause);
+    }
+    public BeanlibException(Throwable cause) {
+        super(cause);
+    }
 }

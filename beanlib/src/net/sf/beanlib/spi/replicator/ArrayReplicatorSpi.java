@@ -17,15 +17,29 @@ package net.sf.beanlib.spi.replicator;
 
 import net.sf.beanlib.spi.BeanTransformerSpi;
 
-
 /**
+ * Array Replicator SPI.
+ * 
  * @author Joe D. Velopar
  */
 public interface ArrayReplicatorSpi 
 {
+    /**
+     * Array Replicator Factory SPI.
+     * 
+     * @author Joe D. Velopar
+     */
     public static interface Factory {
         ArrayReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
     }
-    
-    <V,T> T replicateArray(V[] fromArray, Class<T> toClass);
+
+    /** 
+     * Returns a replicated array. 
+     * 
+     * @param <V> component type of the from array
+     * @param <T> target class type
+     * @param fromArray from array
+     * @param toClass target class
+     */
+    public <V,T> T replicateArray(V[] fromArray, Class<T> toClass);
 }

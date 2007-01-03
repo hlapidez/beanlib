@@ -21,13 +21,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import junit.framework.JUnit4TestAdapter;
-import net.sf.beanlib.Bar;
-import net.sf.beanlib.Foo;
-import net.sf.beanlib.Type1;
-import net.sf.beanlib.Type2;
-import net.sf.beanlib.api.DetailedBeanPopulatable;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
+import net.sf.beanlib.provider.Bar;
 import net.sf.beanlib.provider.BeanPopulator;
+import net.sf.beanlib.provider.Foo;
+import net.sf.beanlib.provider.Type1;
+import net.sf.beanlib.provider.Type2;
+import net.sf.beanlib.spi.DetailedBeanPopulatable;
 
 import org.junit.Test;
 

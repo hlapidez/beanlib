@@ -19,17 +19,29 @@ import java.util.Collection;
 
 import net.sf.beanlib.spi.BeanTransformerSpi;
 
-
 /**
- * Replicator interface for Collection.
+ * Collection Replicator API.
  *  
  * @author Joe D. Velopar
  */
 public interface CollectionReplicatorSpi 
 {
+    /**
+     * Collection Replicator Factory API.
+     *  
+     * @author Joe D. Velopar
+     */
     public static interface Factory {
         CollectionReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
     }
     
-    <V,T> T replicateCollection(Collection<V> from, Class<T> toClass);
+    /** 
+     * Returns a replicated collection. 
+     * 
+     * @param <V> component type of the from collection
+     * @param <T> target class type
+     * @param fromCollection from collection
+     * @param toClass target class
+     */
+    public <V,T> T replicateCollection(Collection<V> fromCollection, Class<T> toClass);
 }

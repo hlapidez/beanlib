@@ -18,13 +18,9 @@ package net.sf.beanlib.provider;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import net.jcip.annotations.NotThreadSafe;
+import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.BeanlibException;
-import net.sf.beanlib.api.BeanMethodCollector;
-import net.sf.beanlib.api.BeanMethodFinder;
-import net.sf.beanlib.api.BeanPopulatable;
-import net.sf.beanlib.api.BeanPopulationExceptionHandler;
-import net.sf.beanlib.api.BeanSourceHandler;
-import net.sf.beanlib.api.DetailedBeanPopulatable;
 import net.sf.beanlib.provider.replicator.ArrayReplicator;
 import net.sf.beanlib.provider.replicator.BeanReplicator;
 import net.sf.beanlib.provider.replicator.CollectionReplicator;
@@ -32,10 +28,16 @@ import net.sf.beanlib.provider.replicator.ImmutableReplicator;
 import net.sf.beanlib.provider.replicator.MapReplicator;
 import net.sf.beanlib.provider.replicator.ReplicatorTemplate;
 import net.sf.beanlib.provider.replicator.UnsupportedBlobReplicator;
+import net.sf.beanlib.spi.BeanMethodCollector;
+import net.sf.beanlib.spi.BeanMethodFinder;
+import net.sf.beanlib.spi.BeanPopulatable;
+import net.sf.beanlib.spi.BeanPopulationExceptionHandler;
 import net.sf.beanlib.spi.BeanPopulatorBaseConfig;
 import net.sf.beanlib.spi.BeanPopulatorSpi;
+import net.sf.beanlib.spi.BeanSourceHandler;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
+import net.sf.beanlib.spi.DetailedBeanPopulatable;
 import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BlobReplicatorSpi;
@@ -48,10 +50,17 @@ import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
  * 
  * @author Joe D. Velopar
  */
+@NotThreadSafe
 public class BeanTransformer extends ReplicatorTemplate implements BeanTransformerSpi
 {
     private static final Factory factory = new Factory();
     
+    /**
+     * Bean Transformer Factory.
+     * 
+     * @author Joe D. Velopar
+     */
+    @ThreadSafe
     private static class Factory implements BeanTransformerSpi.Factory {
         private Factory() {}
         

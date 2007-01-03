@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.api;
+package net.sf.beanlib.spi;
 
 import java.lang.reflect.Method;
 
-import net.sf.beanlib.JavaBeanPopulatableSupport;
+import net.sf.beanlib.provider.JavaBeanPopulatableSupport;
 
 /**
  * Used to control if a JavaBean property should be populated.

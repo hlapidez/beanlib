@@ -17,15 +17,29 @@ package net.sf.beanlib.spi.replicator;
 
 import net.sf.beanlib.spi.BeanTransformerSpi;
 
-
 /**
+ * Java Bean Replicator SPI.
+ * 
  * @author Joe D. Velopar
  */
 public interface BeanReplicatorSpi 
 {
+    /**
+     * Java Bean Replicator Factory SPI.
+     * 
+     * @author Joe D. Velopar
+     */
     public static interface Factory {
         BeanReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
     }
     
-    <V,T> T replicateBean(V fromBean, Class<T> toClass);
+    /** 
+     * Returns a replicated Java Bean. 
+     * 
+     * @param <V> source Java Bean type
+     * @param <T> target class type
+     * @param fromBean from Java Bean
+     * @param toClass target class
+     */
+    public <V,T> T replicateBean(V fromBean, Class<T> toClass);
 }

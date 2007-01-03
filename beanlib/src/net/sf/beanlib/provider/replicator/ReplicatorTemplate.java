@@ -36,6 +36,8 @@ import org.apache.commons.lang.ClassUtils;
 import org.apache.log4j.Logger;
 
 /**
+ * A useful base class for the replicator implementations.
+ * 
  * @author Joe D. Velopar
  */
 public abstract class ReplicatorTemplate

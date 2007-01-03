@@ -19,18 +19,30 @@ import java.util.Map;
 
 import net.sf.beanlib.spi.BeanTransformerSpi;
 
-
 /**
- * Replicator interface for Map.
+ * Map Replicator SPI.
  *  
  * @author Joe D. Velopar
  */
 public interface MapReplicatorSpi 
 {
+    /**
+     * Map Replicator Factory SPI.
+     *  
+     * @author Joe D. Velopar
+     */
     public static interface Factory {
         public MapReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
     }
-//    MapReplicatable initBeanTransformerSpi(BeanTransformerSpi BeanTransformerSpi);
     
-    <K,V,T> T replicateMap(Map<K,V> from, Class<T> toClass);
+    /** 
+     * Returns a replicated map. 
+     * 
+     * @param <K> key type of the from map
+     * @param <V> value type of the from map
+     * @param <T> target class type
+     * @param fromMap from map
+     * @param toClass target class
+     */
+    public <K,V,T> T replicateMap(Map<K,V> fromMap, Class<T> toClass);
 }

@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Set;
 
 import net.sf.beanlib.CollectionPropertyName;
-import net.sf.beanlib.ProtectedSetterMethodCollector;
-import net.sf.beanlib.api.BeanPopulatable;
-import net.sf.beanlib.api.DetailedBeanPopulatable;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
+import net.sf.beanlib.provider.collector.ProtectedSetterMethodCollector;
+import net.sf.beanlib.spi.BeanPopulatable;
+import net.sf.beanlib.spi.DetailedBeanPopulatable;
 
 import org.apache.commons.lang.ArrayUtils;
 

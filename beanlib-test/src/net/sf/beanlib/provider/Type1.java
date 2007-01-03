@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib;
+ package net.sf.beanlib.provider;
 
 /**
  * @author Joe D. Velopar
  */
-public class Type2 {
+public class Type1 {
 	private String f1;
 	private String f2;
-	private Type1 type;
+	private Type2 type;
 	
 	public String getF1() {
 		return f1;
@@ -35,10 +35,10 @@ public class Type2 {
 	public void setF2(String f2) {
 		this.f2 = f2;
 	}
-	public Type1 getType() {
+	public Type2 getType() {
 		return type;
 	}
-	public void setType(Type1 type) {
+	public void setType(Type2 type) {
 		this.type = type;
 	}
 }

@@ -22,30 +22,39 @@ import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import net.jcip.annotations.NotThreadSafe;
+import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.BeanlibException;
-import net.sf.beanlib.api.BeanMethodCollector;
-import net.sf.beanlib.api.BeanMethodFinder;
-import net.sf.beanlib.api.BeanPopulatable;
-import net.sf.beanlib.api.BeanPopulationExceptionHandler;
-import net.sf.beanlib.api.BeanSourceHandler;
-import net.sf.beanlib.api.DetailedBeanPopulatable;
-import net.sf.beanlib.api.Transformable;
+import net.sf.beanlib.spi.BeanMethodCollector;
+import net.sf.beanlib.spi.BeanMethodFinder;
+import net.sf.beanlib.spi.BeanPopulatable;
+import net.sf.beanlib.spi.BeanPopulationExceptionHandler;
 import net.sf.beanlib.spi.BeanPopulatorBaseConfig;
 import net.sf.beanlib.spi.BeanPopulatorSpi;
+import net.sf.beanlib.spi.BeanSourceHandler;
 import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.DetailedBeanPopulatable;
+import net.sf.beanlib.spi.Transformable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Bean Populator.  Not thread safe.
+ * Bean Populator.
  * 
  * @author Joe D. Velopar
  */
+@NotThreadSafe
 public class BeanPopulator implements BeanPopulatorSpi 
 {
     public static final Factory factory = new Factory();
     
+    /**
+     * Bean Populator Factory.
+     * 
+     * @author Joe D. Velopar
+     */
+    @ThreadSafe
     public static class Factory implements BeanPopulatorSpi.Factory {
         private Factory() {}
         

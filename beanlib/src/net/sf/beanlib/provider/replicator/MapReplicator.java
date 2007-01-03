@@ -29,12 +29,19 @@ import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
 
 /**
+ * Default implementation of {@link net.sf.beanlib.spi.replicator.MapReplicatorSpi}.
+ * 
  * @author Joe D. Velopar
  */
 public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSpi
 {
     private static final Factory factory = new Factory();
     
+    /**
+     * Factory for {@link MapReplicator}
+     * 
+     * @author Joe D. Velopar
+     */
     private static class Factory implements MapReplicatorSpi.Factory {
         private Factory() {}
         

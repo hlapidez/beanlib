@@ -18,9 +18,9 @@ package net.sf.beanlib.provider.replicator;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import junit.framework.JUnit4TestAdapter;
-import net.sf.beanlib.api.DetailedBeanPopulatable;
 import net.sf.beanlib.provider.BeanPopulator;
 import net.sf.beanlib.provider.BeanTransformer;
+import net.sf.beanlib.spi.DetailedBeanPopulatable;
 
 import org.junit.Test;
 

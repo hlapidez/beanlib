@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.api;
+package net.sf.beanlib.spi;
 
 import java.lang.reflect.Method;
 
@@ -22,6 +22,8 @@ import net.sf.beanlib.BeanlibException;
 import org.apache.commons.logging.Log;
 
 /**
+ * Adapter class for {@link BeanPopulationExceptionHandler}.
+ * 
  * @author Joe D. Velopar
  */
 public class BeanPopulationExceptionHandlerAdapter implements BeanPopulationExceptionHandler 

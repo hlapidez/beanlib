@@ -23,12 +23,19 @@ import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
 
 /**
+ * Default implementation of {@link net.sf.beanlib.spi.replicator.ArrayReplicatorSpi}.
+ * 
  * @author Joe D. Velopar
  */
 public class ArrayReplicator extends ReplicatorTemplate implements ArrayReplicatorSpi 
 {
     private static final Factory factory = new Factory();
     
+    /**
+     * Factory for {@link ArrayReplicator}
+     * 
+     * @author Joe D. Velopar
+     */
     private static class Factory implements ArrayReplicatorSpi.Factory {
         private Factory() {}
         
