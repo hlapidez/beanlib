@@ -59,7 +59,7 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
         }
         putTargetCloned(from, to);
         // recursively populate member objects.
-        populate(from, to);
+        populateBean(from, to);
         return to;
     }
     
