@@ -162,7 +162,11 @@ public abstract class ReplicatorTemplate
         return newInstanceAsPrivileged(toClass);
     }
     
-    protected void populate(Object fromMember, Object toMember) {
+    protected <T> T transform(Object in, Class<T> toClass) {
+        return beanTransformer.transform(in, toClass);
+    }
+    
+    protected void populateBean(Object fromMember, Object toMember) {
         beanTransformer.getBeanPopulatorSpiFactory().newBeanPopulator(fromMember, toMember)
                             .initBeanPopulatorBaseConfig(beanTransformer.getBeanPopulatorBaseConfig())
                             .initTransformer(beanTransformer)
