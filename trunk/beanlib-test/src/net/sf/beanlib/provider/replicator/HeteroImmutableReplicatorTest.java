@@ -92,6 +92,7 @@ public class HeteroImmutableReplicatorTest {
             
             BeanPopulator.newBeanPopulator(from, to)
                 .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
+                .initTransformer(null)
                 .populate();
             assertTrue(to.getEnumMember() == from.getEnumMember());
         }
@@ -127,6 +128,7 @@ public class HeteroImmutableReplicatorTest {
             
             BeanPopulator.newBeanPopulator(from, to)
                 .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
+                .initTransformer(null)
                 .populate();
             assertTrue(to.getEnumMember() == from.getEnumMember());
         }
@@ -145,7 +147,6 @@ public class HeteroImmutableReplicatorTest {
             
             BeanPopulator.newBeanPopulator(from, to)
                 .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
-                .initDefaultTransformer()
                 .populate();
             assertTrue(to.getEnumMember() == null);
         }
