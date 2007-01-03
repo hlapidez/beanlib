@@ -171,12 +171,15 @@ public class BeanPopulator implements BeanPopulatorSpi
      * @throws IllegalAccessException 
      * @throws IllegalArgumentException 
      */
-    private Object invokeMethodAsPrivileged(final Object target, final Method method, final Object[] args) 
-        throws InvocationTargetException, IllegalAccessException 
+    private Object invokeMethodAsPrivileged(final Object target, final Method method, final Object[] args)
     {
         if (Modifier.isPublic(method.getModifiers())) {
             try {
                 return method.invoke(target, args);
+            } catch(IllegalAccessException ex) {
+                // drop thru to try again
+            } catch (InvocationTargetException e) {
+                throw new BeanlibException(e.getTargetException());
             } catch(RuntimeException ex) {
                 // the try-catch is unnecessary i know, 
                 // but just so we can set a break point here

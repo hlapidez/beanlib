@@ -18,6 +18,7 @@ package net.sf.beanlib.jaxb2;
 import junit.framework.JUnit4TestAdapter;
 import net.sf.beanlib.provider.BeanPopulator;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -25,15 +26,116 @@ import org.junit.Test;
  */
 public class JaxbBeanPopulatorTest 
 {
+    public static interface Stuffable {
+        public String getStuff();
+    }
+    
     @Test
-    public void test() {
-        Object from = new Object();
-        Object to = new Object();
+    public void testFluentSetter() {
+        Stuffable from = new Stuffable() {
+            public String getStuff() {
+                return "Foo";
+            }
+        };
+        
+        Stuffable to = new Stuffable() {
+            private String stuff;
+            
+            public String getStuff() {
+                return stuff;
+            }
+            
+            public Stuffable withStuff(String stuff) {
+                this.stuff = stuff;
+                return this;
+            }
+        };
+        
         BeanPopulator.newBeanPopulator(from, to)
-            .initDetailedBeanPopulatable(null)  // always populate
             .initSetterMethodCollector(FluentSetterMethodCollector.inst)
-            .initTransformer(null)  // TODO
+            .populate()
             ;
+        Assert.assertEquals("Foo",to.getStuff());
+    }
+    
+    @Test
+    public void testFluentBeanWithJavaBeanSetter() {
+        Stuffable from = new Stuffable() {
+            public String getStuff() {
+                return "Foo";
+            }
+        };
+        
+        Stuffable to = new Stuffable() {
+            private String stuff;
+            
+            public String getStuff() {
+                return stuff;
+            }
+            
+            public Stuffable withStuff(String stuff) {
+                this.stuff = stuff;
+                return this;
+            }
+        };
+        
+        BeanPopulator.newBeanPopulator(from, to)
+            .populate()
+            ;
+        Assert.assertNull(to.getStuff());
+    }
+    
+    @Test
+    public void testJavaBeanSetter() {
+        Stuffable from = new Stuffable() {
+            public String getStuff() {
+                return "Foo";
+            }
+        };
+        
+        Stuffable to = new Stuffable() {
+            private String stuff;
+            
+            public String getStuff() {
+                return stuff;
+            }
+            
+            public void setStuff(String stuff) {
+                this.stuff = stuff;
+            }
+        };
+        
+        BeanPopulator.newBeanPopulator(from, to)
+            .populate()
+            ;
+        Assert.assertEquals("Foo",to.getStuff());
+    }
+    
+    @Test
+    public void testJavaBeanWithFluentSetter() {
+        Stuffable from = new Stuffable() {
+            public String getStuff() {
+                return "Foo";
+            }
+        };
+        
+        Stuffable to = new Stuffable() {
+            private String stuff;
+            
+            public String getStuff() {
+                return stuff;
+            }
+            
+            public void setStuff(String stuff) {
+                this.stuff = stuff;
+            }
+        };
+        
+        BeanPopulator.newBeanPopulator(from, to)
+            .initSetterMethodCollector(FluentSetterMethodCollector.inst)
+            .populate()
+            ;
+        Assert.assertNull(to.getStuff());
     }
 
     public static junit.framework.Test suite() {
