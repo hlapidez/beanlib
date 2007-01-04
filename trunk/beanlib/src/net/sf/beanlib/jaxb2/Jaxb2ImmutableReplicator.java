@@ -36,7 +36,7 @@ public class Jaxb2ImmutableReplicator extends ImmutableReplicator
     public static final Factory factory = new Factory();
     
     /**
-     * Factory for {@link Jaxb2ImmutableReplicator}
+     * Factory for {@link Jaxb2ImmutableReplicator}.
      * 
      * @author Hanson Char
      */
