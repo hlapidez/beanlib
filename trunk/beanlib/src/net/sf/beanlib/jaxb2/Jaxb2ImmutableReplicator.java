@@ -25,6 +25,9 @@ import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
 
 /**
+ * Implementation of {@link net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi}
+ * with support of Jaxb2 generated enums.
+ * 
  * @author Hanson Char
  */
 public class Jaxb2ImmutableReplicator extends ImmutableReplicator
@@ -32,6 +35,11 @@ public class Jaxb2ImmutableReplicator extends ImmutableReplicator
     @SuppressWarnings("hiding")
     public static final Factory factory = new Factory();
     
+    /**
+     * Factory for {@link Jaxb2ImmutableReplicator}
+     * 
+     * @author Hanson Char
+     */
     @ThreadSafe
     public static class Factory implements ImmutableReplicatorSpi.Factory {
         private Factory() {}
@@ -45,7 +53,7 @@ public class Jaxb2ImmutableReplicator extends ImmutableReplicator
         return factory.newImmutableReplicatable(beanTransformer);
     }
         
-    private Jaxb2ImmutableReplicator() {}
+    protected Jaxb2ImmutableReplicator() {}
     
     @Override
     public <V, T> T replicateImmutable(V immutableFrom, Class<T> toClass) 
