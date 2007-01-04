@@ -75,7 +75,7 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         return factory.newBeanTransformer(beanPopulatorFactory);
     }
     
-    /** Convenient factory method that defaults to use {@link BeanPopulator.factory}. */
+    /** Convenient factory method that defaults to use {@link BeanPopulator#factory}. */
     public static BeanTransformer newBeanTransformer()
     {
         return factory.newBeanTransformer(BeanPopulator.factory);
