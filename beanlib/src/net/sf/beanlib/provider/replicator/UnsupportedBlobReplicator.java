@@ -17,6 +17,7 @@ package net.sf.beanlib.provider.replicator;
 
 import java.sql.Blob;
 
+import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.BlobReplicatorSpi;
 
@@ -29,23 +30,24 @@ import net.sf.beanlib.spi.replicator.BlobReplicatorSpi;
  */
 public class UnsupportedBlobReplicator implements BlobReplicatorSpi 
 {
-    private static final Factory factory = new Factory();
+    public static final Factory factory = new Factory();
     
     /**
      * Factory for {@link UnsupportedBlobReplicator}
      * 
      * @author Joe D. Velopar
      */
+    @ThreadSafe
     private static class Factory implements BlobReplicatorSpi.Factory {
         private Factory() {}
         
-        public UnsupportedBlobReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
+        public UnsupportedBlobReplicator newBlobReplicatable(BeanTransformerSpi beanTransformer) {
             return new UnsupportedBlobReplicator();
         }
     }
     
-    public static UnsupportedBlobReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
-        return factory.newReplicatable(beanTransformer);
+    public static UnsupportedBlobReplicator newBlobReplicatable(BeanTransformerSpi beanTransformer) {
+        return factory.newBlobReplicatable(beanTransformer);
     }
     
     private UnsupportedBlobReplicator() {}

@@ -27,12 +27,12 @@ import net.sf.beanlib.spi.BeanTransformerSpi;
 public interface CollectionReplicatorSpi 
 {
     /**
-     * Collection Replicator Factory API.
+     * Collection Replicator Factory SPI.
      *  
      * @author Joe D. Velopar
      */
     public static interface Factory {
-        CollectionReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
+        CollectionReplicatorSpi newCollectionReplicatable(BeanTransformerSpi beanTransformer);
     }
     
     /** 

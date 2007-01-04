@@ -30,7 +30,7 @@ public interface BeanReplicatorSpi
      * @author Joe D. Velopar
      */
     public static interface Factory {
-        BeanReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
+        BeanReplicatorSpi newBeanReplicatable(BeanTransformerSpi beanTransformer);
     }
     
     /** 

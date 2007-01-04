@@ -61,7 +61,7 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
     /** Don't invoke this method, except from within the replicator implementation class. */
     public BeanPopulatorBaseConfig getBeanPopulatorBaseConfig();
     
-    public BeanTransformerSpi initCustomTransformer(CustomBeanTransformerSpi customTransformer);
+    public BeanTransformerSpi initCustomTransformer(CustomBeanTransformerSpi.Factory customTransformerFactory);
     
     public void reset();
     

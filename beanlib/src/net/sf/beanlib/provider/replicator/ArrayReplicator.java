@@ -19,6 +19,7 @@ import static net.sf.beanlib.utils.ClassUtils.immutable;
 
 import java.lang.reflect.Array;
 
+import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
 
@@ -36,16 +37,17 @@ public class ArrayReplicator extends ReplicatorTemplate implements ArrayReplicat
      * 
      * @author Joe D. Velopar
      */
+    @ThreadSafe
     private static class Factory implements ArrayReplicatorSpi.Factory {
         private Factory() {}
         
-        public ArrayReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
+        public ArrayReplicator newArrayReplicatable(BeanTransformerSpi beanTransformer) {
             return new ArrayReplicator(beanTransformer);
         }
     }
     
-    public static ArrayReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
-        return factory.newReplicatable(beanTransformer);
+    public static ArrayReplicator newArrayReplicatable(BeanTransformerSpi beanTransformer) {
+        return factory.newArrayReplicatable(beanTransformer);
     }
     
     protected ArrayReplicator(BeanTransformerSpi beanTransformer) {

@@ -32,7 +32,7 @@ public interface MapReplicatorSpi
      * @author Joe D. Velopar
      */
     public static interface Factory {
-        public MapReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
+        public MapReplicatorSpi newMapReplicatable(BeanTransformerSpi beanTransformer);
     }
     
     /** 

@@ -32,7 +32,7 @@ public interface BlobReplicatorSpi
      * @author Joe D. Velopar
      */
     public static interface Factory {
-        BlobReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
+        BlobReplicatorSpi newBlobReplicatable(BeanTransformerSpi beanTransformer);
     }
     
     /** 

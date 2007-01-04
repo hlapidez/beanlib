@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
@@ -35,23 +36,24 @@ import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
  */
 public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSpi
 {
-    private static final Factory factory = new Factory();
+    public static final Factory factory = new Factory();
     
     /**
      * Factory for {@link MapReplicator}
      * 
      * @author Joe D. Velopar
      */
+    @ThreadSafe
     private static class Factory implements MapReplicatorSpi.Factory {
         private Factory() {}
         
-        public MapReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
+        public MapReplicator newMapReplicatable(BeanTransformerSpi beanTransformer) {
             return new MapReplicator(beanTransformer);
         }
     }
 
-    public static MapReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
-        return factory.newReplicatable(beanTransformer);
+    public static MapReplicator newMapReplicatable(BeanTransformerSpi beanTransformer) {
+        return factory.newMapReplicatable(beanTransformer);
     }
 
     protected MapReplicator(BeanTransformerSpi beanTransformer) 
