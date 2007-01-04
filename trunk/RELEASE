@@ -1,3 +1,8 @@
+beanlib 3.3.0beta3
+------------------
+* Tidy up factory method methods
+* Add Jaxb2 specific Immutable Replicator support
+
 beanlib 3.3.0beta2
 ------------------
 * Better support for immutable objects with better API

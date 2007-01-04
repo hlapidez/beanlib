@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
+import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
@@ -44,16 +45,17 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
      * 
      * @author Joe D. Velopar
      */
+    @ThreadSafe
     private static class Factory implements CollectionReplicatorSpi.Factory {
         private Factory() {}
         
-        public CollectionReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
+        public CollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
             return new CollectionReplicator(beanTransformer);
         }
     }
     
-    public static CollectionReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
-        return factory.newReplicatable(beanTransformer);
+    public static CollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
+        return factory.newCollectionReplicatable(beanTransformer);
     }
     
     protected CollectionReplicator(BeanTransformerSpi beanTransformer) 

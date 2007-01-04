@@ -15,6 +15,7 @@
  */
 package net.sf.beanlib.provider.replicator;
 
+import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
 
@@ -25,41 +26,39 @@ import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
  */
 public class ImmutableReplicator implements ImmutableReplicatorSpi
 {
-    private static final Factory factory = new Factory();
+    public static final Factory factory = new Factory();
     
     /**
      * Factory for {@link ImmutableReplicator}
      * 
      * @author Joe D. Velopar
      */
+    @ThreadSafe
     private static class Factory implements ImmutableReplicatorSpi.Factory {
         private Factory() {}
         
-        public ImmutableReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
+        public ImmutableReplicator newImmutableReplicatable(BeanTransformerSpi beanTransformer) {
             return new ImmutableReplicator();
         }
     }
 
-    public static ImmutableReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
-        return factory.newReplicatable(beanTransformer);
+    public static ImmutableReplicator newImmutableReplicatable(BeanTransformerSpi beanTransformer) {
+        return factory.newImmutableReplicatable(beanTransformer);
     }
     
     protected ImmutableReplicator() {}
 
+    @SuppressWarnings("unchecked")
     public <V, T> T replicateImmutable(V immutableFrom, Class<T> toClass) 
     {
         if (toClass.isPrimitive()) 
         {
-//            if (immutableFrom == null)
-//                return getDefaultPrimitiveValue(toClass);
             if (sameType(toClass, immutableFrom.getClass()))
                 return (T)immutableFrom;
             // from & to are of totally different types
             return getDefaultPrimitiveValue(toClass);
         }
-//        // toClass is not primitive.
-//        if (immutableFrom == null)
-//            return null;
+        // toClass is not primitive.
         // immutableFrom is not null, but could be a primitive.
         Class fromClass = immutableFrom.getClass();
         
@@ -76,6 +75,7 @@ public class ImmutableReplicator implements ImmutableReplicatorSpi
              ;
     }
     
+    @SuppressWarnings("unchecked")
     public static <T> T getDefaultPrimitiveValue(Class<T> primitiveClass) {
         return (T)(primitiveClass == boolean.class ? Boolean.FALSE : new Byte((byte)0));
     }

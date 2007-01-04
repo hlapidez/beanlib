@@ -15,6 +15,7 @@
  */
 package net.sf.beanlib.provider.replicator;
 
+import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
@@ -33,16 +34,17 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
      * 
      * @author Joe D. Velopar
      */
+    @ThreadSafe
     private static class Factory implements BeanReplicatorSpi.Factory {
         private Factory() {}
         
-        public BeanReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
+        public BeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
             return new BeanReplicator(beanTransformer);
         }
     }
 
-    public static BeanReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
-        return factory.newReplicatable(beanTransformer);
+    public static BeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
+        return factory.newBeanReplicatable(beanTransformer);
     }
     
     protected BeanReplicator(BeanTransformerSpi beanTransformer) 

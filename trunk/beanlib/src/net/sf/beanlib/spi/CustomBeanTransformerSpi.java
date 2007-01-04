@@ -15,10 +15,10 @@
  */
 package net.sf.beanlib.spi;
 
-
 /**
- * Interface for Custom Bean Transformer.
- * Can be used to customize the transformation process provided by {@link BeanTransformerSpi}.
+ * Custom Bean Transformer SPI.
+ * <p>
+ * Used to customize the transformation process provided by {@link BeanTransformerSpi}.
  * 
  * @author Joe D. Velopar
  */
@@ -26,21 +26,29 @@ public interface CustomBeanTransformerSpi extends Transformable {
 	public static final CustomBeanTransformerSpi NO_OP = new CustomBeanTransformerSpi() {
 		public <T> boolean isTransformable(
                 @SuppressWarnings("unused") Object in, 
-                @SuppressWarnings("unused") Class<T> toClass, 
-                @SuppressWarnings("unused") BeanTransformerSpi beanTransformer) 
+                @SuppressWarnings("unused") Class<T> toClass) 
         { 
             return false; 
         }
 		public <T> T transform(@SuppressWarnings("unused") Object in, @SuppressWarnings("unused") Class<T> toClass) { return null; }
 	};
+    
+    /**
+     * Custom Bean Transformer Factory SPI.
+     *  
+     * @author Joe D. Velopar
+     */
+    public static interface Factory {
+        public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi beanTransformer);
+    }
 	
-	/** 
-	 * Returns true if the given object is to be transformed by this transformer;
-	 * false otherwise.
-	 * 
-	 *  @param from given object to be transformed
-	 *  @param toClass target class to transform to
-	 *  @param hibernateBeanTransformer Hibernate Bean Transformer  
-	 */
-	public <T> boolean isTransformable(Object from, Class<T> toClass, BeanTransformerSpi hibernateBeanTransformer);
+    /**
+     * Returns true if the given object is to be transformed by this transformer;
+     * false otherwise.
+     * 
+     * @param <T> target class type
+     * @param from source object
+     * @param toClass target class
+     */
+    public <T> boolean isTransformable(Object from, Class<T> toClass);
 }

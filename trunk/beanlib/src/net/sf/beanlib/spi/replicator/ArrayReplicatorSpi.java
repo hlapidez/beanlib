@@ -30,7 +30,7 @@ public interface ArrayReplicatorSpi
      * @author Joe D. Velopar
      */
     public static interface Factory {
-        ArrayReplicatorSpi newReplicatable(BeanTransformerSpi beanTransformer);
+        ArrayReplicatorSpi newArrayReplicatable(BeanTransformerSpi beanTransformer);
     }
 
     /** 

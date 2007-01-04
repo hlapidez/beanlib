@@ -19,6 +19,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
 
@@ -29,6 +30,7 @@ import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
  */
 public class HeteroImmutableReplicator extends ImmutableReplicator
 {
+    @SuppressWarnings("hiding")
     public static final Factory factory = new Factory();
     
     /**
@@ -36,15 +38,20 @@ public class HeteroImmutableReplicator extends ImmutableReplicator
      * 
      * @author Joe D. Velopar
      */
-    public static class Factory implements ImmutableReplicatorSpi.Factory {
+    @ThreadSafe
+    private static class Factory implements ImmutableReplicatorSpi.Factory {
         private Factory() {}
         
-        public HeteroImmutableReplicator newReplicatable(BeanTransformerSpi beanTransformer) {
+        public HeteroImmutableReplicator newImmutableReplicatable(BeanTransformerSpi beanTransformer) {
             return new HeteroImmutableReplicator();
         }
     }
+
+    public static HeteroImmutableReplicator newImmutableReplicatable(BeanTransformerSpi beanTransformer) {
+        return HeteroImmutableReplicator.factory.newImmutableReplicatable(beanTransformer);
+    }
     
-    private HeteroImmutableReplicator() {}
+    protected HeteroImmutableReplicator() {}
     
     @Override
     public <V, T> T replicateImmutable(V immutableFrom, Class<T> toClass) 
