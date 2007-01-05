@@ -54,6 +54,18 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
     
     public <V,T> T replicateBean(V from, Class<T> toClass)
     {
+        Class fromClass = from.getClass();
+        String fromClassName = fromClass.getName();
+        
+        if (fromClassName.startsWith("net.sf.cglib.")) {
+            // Want to skip the cglib stuff.
+            return null;
+        }
+        if (fromClassName.startsWith("java.")) {
+            if (!toClass.isAssignableFrom(fromClass))
+                return null;
+            // Sorry, don't really know what it is ... soldier on...
+        }
         T to;
         try {
             to = createToInstance(chooseClass(from.getClass(), toClass));
