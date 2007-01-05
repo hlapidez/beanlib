@@ -1,3 +1,7 @@
+beanlib 3.3.0beta4
+------------------
+* complete the replicator SPI with the Date Replicator
+
 beanlib 3.3.0beta3
 ------------------
 * Tidy up factory method methods
