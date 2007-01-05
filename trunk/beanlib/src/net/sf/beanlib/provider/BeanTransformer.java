@@ -24,6 +24,7 @@ import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.provider.replicator.ArrayReplicator;
 import net.sf.beanlib.provider.replicator.BeanReplicator;
 import net.sf.beanlib.provider.replicator.CollectionReplicator;
+import net.sf.beanlib.provider.replicator.DateReplicator;
 import net.sf.beanlib.provider.replicator.ImmutableReplicator;
 import net.sf.beanlib.provider.replicator.MapReplicator;
 import net.sf.beanlib.provider.replicator.ReplicatorTemplate;
@@ -42,6 +43,7 @@ import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BlobReplicatorSpi;
 import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
+import net.sf.beanlib.spi.replicator.DateReplicatorSpi;
 import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
 import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
 
@@ -104,6 +106,7 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     private MapReplicatorSpi mapReplicatable = MapReplicator.newMapReplicatable(this);
     private ArrayReplicatorSpi arrayReplicatable = ArrayReplicator.newArrayReplicatable(this);
     private BlobReplicatorSpi blobReplicatable = UnsupportedBlobReplicator.newBlobReplicatable(this);
+    private DateReplicatorSpi dateReplicatable = DateReplicator.newDateReplicatable(this);
     private BeanReplicatorSpi beanReplicatable = BeanReplicator.newBeanReplicatable(this);
     
     public final void reset() {
@@ -216,6 +219,15 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
 
     public BeanReplicatorSpi getBeanReplicatable() {
         return beanReplicatable;
+    }
+
+    public BeanTransformerSpi initDateReplicatable(DateReplicatorSpi.Factory dateReplicatableFactory) {
+        this.dateReplicatable = dateReplicatableFactory.newDateReplicatable(this);
+        return this;
+    }
+
+    public DateReplicatorSpi getDateReplicatable() {
+        return dateReplicatable;
     }
 
     public BeanTransformer initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler beanPopulationExceptionHandler) {

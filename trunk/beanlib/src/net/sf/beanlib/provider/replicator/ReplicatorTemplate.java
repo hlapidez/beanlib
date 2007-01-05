@@ -23,7 +23,6 @@ import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.sql.Blob;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
@@ -32,7 +31,6 @@ import java.util.Map;
 import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 
-import org.apache.commons.lang.ClassUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -81,68 +79,40 @@ public abstract class ReplicatorTemplate
         }
         T to = (T)beanTransformer.getClonedMap().get(from);
         
-        if (to != null) {
-//            if (!toClass.isAssignableFrom(fromClass))
-//                return null;
+        if (to != null)
             return to;    // already transformed.
-        }
-        Class<?> fromClass = from.getClass();
-
+        // Immutable e.g. String, Enum, primitvies, BigDecimal, etc.
         if (immutable(from.getClass()))
-            return beanTransformer.getImmutableReplicatable().replicateImmutable(from, toClass);
+            return beanTransformer.getImmutableReplicatable()
+                                  .replicateImmutable(from, toClass);
         // Collection
         if (from instanceof Collection)
-            return beanTransformer.getCollectionReplicatable().replicateCollection((Collection<?>)from, toClass);
+            return beanTransformer.getCollectionReplicatable()
+                                  .replicateCollection((Collection<?>)from, toClass);
         // Array
-        if (fromClass.isArray()) {
-            if (!toClass.isAssignableFrom(fromClass))
-                return null;
-            // both are arrays
-            return beanTransformer.getArrayReplicatable().replicateArray((Object[])from, toClass);
-        }
+        if (from.getClass().isArray())
+            return beanTransformer.getArrayReplicatable()
+                                  .replicateArray((Object[])from, toClass);
         // Map
         if (from instanceof Map)
-            return (T)beanTransformer.getMapReplicatable().replicateMap((Map)from, toClass);
-        // Timestamp
-        if (from instanceof Timestamp) {
-            if (!toClass.isAssignableFrom(fromClass))
-                return null;
-            Timestamp ts = (Timestamp)from;
-            Timestamp toTimeStamp = new Timestamp(ts.getTime());
-            beanTransformer.getClonedMap().put(from, toTimeStamp);
-            return (T)toTimeStamp;
-        }
-        // Date
-        if (from instanceof Date) {
-            if (!toClass.isAssignableFrom(fromClass))
-                return null;
-            Date date = (Date)from;
-            Date toDate = new Date(date.getTime());
-            beanTransformer.getClonedMap().put(from, toDate);
-            return (T)toDate;
-        }
-        String fromPackageName = ClassUtils.getPackageName(from.getClass());
-    
-        if (fromPackageName.startsWith("java.")) {
-            if (!toClass.isAssignableFrom(fromClass))
-                return null;
-            // Sorry, don't really know what it is ... soldier on...
-        }
-        
-        if (fromPackageName.startsWith("net.sf.cglib.")) {
-            // Want to skip the cglib stuff.
-            return null;
-        }
+            return (T)beanTransformer.getMapReplicatable()
+                                     .replicateMap((Map)from, toClass);
+        // Date or Timestamp
+        if (from instanceof Date)
+            return beanTransformer.getDateReplicatable()
+                                  .replicateDate((Date)from, toClass);
         // Blob
         if (from instanceof Blob)
-            return beanTransformer.getBlobReplicatable().replicateBlob((Blob)from, toClass);
-        to = replicateByBeanReplicatable(from, toClass);
-        return to;
+            return beanTransformer.getBlobReplicatable()
+                                  .replicateBlob((Blob)from, toClass);
+        // Other objects
+        return replicateByBeanReplicatable(from, toClass);
     }
     
     protected <T> T replicateByBeanReplicatable(Object from, Class<T> toClass)
     {
-        return beanTransformer.getBeanReplicatable().replicateBean(from, toClass);
+        return beanTransformer.getBeanReplicatable()
+                              .replicateBean(from, toClass);
     }
     
     /** 
@@ -173,11 +143,12 @@ public abstract class ReplicatorTemplate
     }
     
     protected void populateBean(Object fromMember, Object toMember) {
-        beanTransformer.getBeanPopulatorSpiFactory().newBeanPopulator(fromMember, toMember)
-                            .initBeanPopulatorBaseConfig(beanTransformer.getBeanPopulatorBaseConfig())
-                            .initTransformer(beanTransformer)
-                            .populate()
-                            ;
+        beanTransformer.getBeanPopulatorSpiFactory()
+                       .newBeanPopulator(fromMember, toMember)
+                       .initBeanPopulatorBaseConfig(
+                                    beanTransformer.getBeanPopulatorBaseConfig())
+                       .initTransformer(beanTransformer)
+                       .populate();
     }
     
     

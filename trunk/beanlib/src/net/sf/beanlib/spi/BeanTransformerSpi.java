@@ -21,6 +21,7 @@ import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BlobReplicatorSpi;
 import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
+import net.sf.beanlib.spi.replicator.DateReplicatorSpi;
 import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
 import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
 
@@ -71,6 +72,7 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
     public BeanTransformerSpi initMapReplicatable(MapReplicatorSpi.Factory mapReplicatableFactory);
     public BeanTransformerSpi initArrayReplicatable(ArrayReplicatorSpi.Factory arrayReplicatableFactory);
     public BeanTransformerSpi initBlobReplicatable(BlobReplicatorSpi.Factory blobReplicatableFactory);
+    public BeanTransformerSpi initDateReplicatable(DateReplicatorSpi.Factory dateReplicatableFactory);
     public BeanTransformerSpi initBeanReplicatable(BeanReplicatorSpi.Factory beanReplicatableFactory);
     
     public ImmutableReplicatorSpi getImmutableReplicatable();
@@ -78,6 +80,7 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
     public MapReplicatorSpi getMapReplicatable();
     public ArrayReplicatorSpi getArrayReplicatable();
     public BlobReplicatorSpi getBlobReplicatable();
+    public DateReplicatorSpi getDateReplicatable();
     public BeanReplicatorSpi getBeanReplicatable();
     
     public BeanPopulatorSpi.Factory getBeanPopulatorSpiFactory();
