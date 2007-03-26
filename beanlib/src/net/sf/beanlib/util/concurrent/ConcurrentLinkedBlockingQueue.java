@@ -96,26 +96,44 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
      */
     public E take() throws InterruptedException 
     {
+        ThreadMarker m = null;
+        
         for (;;) {
             E e = q.poll();
 
-            if (e != null)
-                return e;
-            ThreadMarker m = new ThreadMarker(Thread.currentThread());
-            
-            if (Thread.interrupted())
-            {   // avoid the parkq.offer(m) if already interrupted
-                throw new InterruptedException();
-            }
-            parkq.offer(m);
-            // check again in case there is data race
-            e = q.poll();
-
-            if (e != null)
-            {   // data race indeed
-                m.parked = false;
+            if (e != null) 
+            {
+                if (m != null)
+                {   // previously parked
+                    m.parked = false;
+                }
                 return e;
             }
+//          else
+//          {   // q is empty
+//          }
+            if (m == null) 
+            {   // thread has never been marked
+                m = new ThreadMarker(Thread.currentThread());
+                
+                if (Thread.interrupted())
+                {   // avoid the parkq.offer(m) if already interrupted
+                    throw new InterruptedException();
+                }
+                parkq.offer(m);
+                // check again in case there is data race
+                e = q.poll();
+    
+                if (e != null)
+                {   // data race indeed
+                    m.parked = false;
+                    return e;
+                }
+            }
+//          else 
+//          {   // thread has already been parked previously
+//              // but was waken up for whatever or no reason
+//          }
             LockSupport.park();
             
             if (Thread.interrupted()) 
@@ -140,36 +158,60 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
      *         waiting time elapses before an element is available
      * @throws InterruptedException if interrupted while waiting
      */
-    public E poll(long timeout, TimeUnit unit) throws InterruptedException 
+    public E poll(final long timeout, final TimeUnit unit) throws InterruptedException 
     {
         if (timeout < 0)
             return take();  // treat -ve timeout same as to wait forever
-        long t0=0;
+        final long t1 = System.nanoTime() + unit.toNanos(timeout);
+        ThreadMarker m = null;
         
         for (;;) {
             E e = q.poll();
 
             if (e != null)
+            {
+                if (m != null)
+                {   // previously parked
+                    m.parked = false;
+                }
                 return e;
-            if (t0 > 0 && System.nanoTime() >= (t0 + unit.toNanos(timeout)))
-                return null;    // time out
-            ThreadMarker m = new ThreadMarker(Thread.currentThread());
+            }
+//          else
+//          {   // q is empty
+//          }
+            final long duration = t1 - System.nanoTime();
             
-            if (Thread.interrupted())
-            {   // avoid the parkq.offer(m) if already interrupted
-                throw new InterruptedException();
+            if (duration <= 0) 
+            {   // timed out
+                if (m != null)
+                {   // previously parked
+                    m.parked = false;
+                }
+                return null;
             }
-            parkq.offer(m);
-            // check again in case there is data race
-            e = q.poll();
-
-            if (e != null)
-            {   // data race indeed
-                m.parked = false;
-                return e;
+            if (m == null)
+            {   // thread has never been marked
+                m = new ThreadMarker(Thread.currentThread());
+                
+                if (Thread.interrupted())
+                {   // avoid the parkq.offer(m) if already interrupted
+                    throw new InterruptedException();
+                }
+                parkq.offer(m);
+                // check again in case there is data race
+                e = q.poll();
+    
+                if (e != null)
+                {   // data race indeed
+                    m.parked = false;
+                    return e;
+                }
             }
-            t0 = System.nanoTime();
-            LockSupport.parkNanos(unit.toNanos(timeout));
+//          else 
+//          {   // thread has already been parked previously
+//              // but was waken up for whatever or no reason
+//          }
+            LockSupport.parkNanos(duration);
             
             if (Thread.interrupted()) 
             {
