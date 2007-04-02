@@ -130,12 +130,12 @@ public class BeanPopulator implements BeanPopulatorSpi
         String propertyName = Introspector.decapitalize(propertyString);
         try {
             doit(setterMethod, readerMethod, paramType, propertyName);
-        } catch (InvocationTargetException ex) {
-            baseConfig.getBeanPopulationExceptionHandler()
-                .initFromBean(fromBean).initToBean(toBean)
-                .initPropertyName(propertyName)
-                .initReaderMethod(readerMethod).initSetterMethod(setterMethod)
-                .handleException(ex.getTargetException(), log);
+//        } catch (InvocationTargetException ex) {
+//            baseConfig.getBeanPopulationExceptionHandler()
+//                .initFromBean(fromBean).initToBean(toBean)
+//                .initPropertyName(propertyName)
+//                .initReaderMethod(readerMethod).initSetterMethod(setterMethod)
+//                .handleException(ex.getTargetException(), log);
         } catch (Exception ex) {
             baseConfig.getBeanPopulationExceptionHandler()
                 .initFromBean(fromBean).initToBean(toBean)
@@ -145,8 +145,8 @@ public class BeanPopulator implements BeanPopulatorSpi
         } 
     }
 
-    private <T> void doit(Method setterMethod, Method readerMethod, Class<T> paramType, String propertyName) 
-        throws InvocationTargetException, IllegalAccessException 
+    private <T> void doit(Method setterMethod, Method readerMethod, Class<T> paramType, String propertyName)
+//        throws InvocationTargetException, IllegalAccessException 
     {
         if (baseConfig.getDetailedBeanPopulatable() != null) {
             if (!baseConfig.getDetailedBeanPopulatable()
