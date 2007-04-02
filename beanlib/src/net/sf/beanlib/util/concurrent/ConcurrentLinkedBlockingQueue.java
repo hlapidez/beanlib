@@ -117,12 +117,10 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
                 return e;
             }
             LockSupport.park();
+            m.parked = false;
             
             if (Thread.interrupted()) 
-            {
-                m.parked = false;
                 throw new InterruptedException();
-            }
         }
     }
     
@@ -140,18 +138,20 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
      *         waiting time elapses before an element is available
      * @throws InterruptedException if interrupted while waiting
      */
-    public E poll(long timeout, TimeUnit unit) throws InterruptedException 
+    public E poll(final long timeout, final TimeUnit unit) throws InterruptedException 
     {
         if (timeout < 0)
             return take();  // treat -ve timeout same as to wait forever
-        long t0=0;
+        final long t1 = System.nanoTime() + unit.toNanos(timeout);
         
         for (;;) {
             E e = q.poll();
 
             if (e != null)
                 return e;
-            if (t0 > 0 && System.nanoTime() >= (t0 + unit.toNanos(timeout)))
+            final long duration = t1 - System.nanoTime();
+            
+            if (duration <= 0)
                 return null;    // time out
             ThreadMarker m = new ThreadMarker(Thread.currentThread());
             
@@ -168,14 +168,11 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
                 m.parked = false;
                 return e;
             }
-            t0 = System.nanoTime();
-            LockSupport.parkNanos(unit.toNanos(timeout));
+            LockSupport.parkNanos(duration);
+            m.parked = false;
             
             if (Thread.interrupted()) 
-            {
-                m.parked = false;
                 throw new InterruptedException();
-            }
         }
     }
 }
