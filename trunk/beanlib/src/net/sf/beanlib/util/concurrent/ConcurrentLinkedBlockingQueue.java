@@ -7,6 +7,7 @@ package net.sf.beanlib.util.concurrent;
 import java.util.AbstractQueue;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
@@ -25,7 +26,7 @@ import java.util.concurrent.locks.LockSupport;
  * @param <E> the type of elements held in this collection
  */
 public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
-        implements java.io.Serializable 
+        implements java.io.Serializable, BlockingQueue<E>
 {
     private static final long serialVersionUID = -191767472599610115L;
 
@@ -174,5 +175,35 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
             if (Thread.interrupted()) 
                 throw new InterruptedException();
         }
+    }
+    public void put(E e) throws InterruptedException {
+        q.add(e);
+    }
+
+    public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
+        q.add(e);
+        return true;
+    }
+
+    public int remainingCapacity() {
+        return Integer.MAX_VALUE;
+    }
+
+    public int drainTo(Collection<? super E> c) {
+        int i = 0;
+        E e;
+
+        for (; (e=q.poll()) != null; i++)
+            c.add(e);
+        return i; 
+    }
+
+    public int drainTo(Collection<? super E> c, int maxElements) {
+        int i = 0;
+        E e;
+
+        for (; i < maxElements && (e=q.poll()) != null; i++)
+            c.add(e);
+        return i; 
     }
 }
