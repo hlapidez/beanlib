@@ -18,6 +18,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class LinkedBlockingQueueTestMain extends AbstractBlockingQueueTestMain 
 {
     private final LinkedBlockingQueue<Integer> q = new LinkedBlockingQueue<Integer>();
+
+    public LinkedBlockingQueueTestMain(float wcRatio, int numConsumer, int numProducer) 
+    {
+        super(wcRatio, numConsumer, numProducer);
+    }
+    
+    public LinkedBlockingQueueTestMain()
+    {
+    }
     
     @Override
     protected Queue<Integer> getQueue() {
@@ -25,12 +34,12 @@ public class LinkedBlockingQueueTestMain extends AbstractBlockingQueueTestMain
     }
     
     @Override
-    protected Callable<Void> newConumerCallable() {
+    protected Callable<Void> newConumerCallable(final int max) {
         return new Callable<Void>()
         {
             public Void call() throws InterruptedException 
             {
-                for (int count=0; count < TOTAL; count++)
+                for (int count=0; count < max; count++)
                     q.take();
                 return null;
             }
