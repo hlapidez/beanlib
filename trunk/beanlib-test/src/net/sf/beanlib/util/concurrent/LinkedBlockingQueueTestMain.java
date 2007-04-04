@@ -5,6 +5,7 @@
 package net.sf.beanlib.util.concurrent;
 
 import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -44,6 +45,11 @@ public class LinkedBlockingQueueTestMain extends AbstractBlockingQueueTestMain
                 return null;
             }
         };
+    }
+
+    @Override
+    protected BlockingQueue<Runnable> newThreadPoolBlockingQueue() {
+        return new LinkedBlockingQueue<Runnable>();
     }
     
     public static void main(String[] args) throws InterruptedException, ExecutionException
