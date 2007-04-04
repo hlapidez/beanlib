@@ -37,7 +37,8 @@ public abstract class AbstractBlockingQueueTestMain implements Callable<Void>
     protected final float wcRatio;
     protected final int numConsumer;
     protected final int numProducer;
-    private final int threadPoolSize;
+    private final int producerThreadPoolSize;
+    private final int consumerThreadPoolSize;
     private final int batchSize;
     protected final int totalSize;
     
@@ -46,14 +47,22 @@ public abstract class AbstractBlockingQueueTestMain implements Callable<Void>
         this.wcRatio = wcRatio < 0 ? 0 : wcRatio;
         this.numConsumer = numConsumer < 1 ? 1 : numConsumer;
         this.numProducer = numProducer < 1 ? 1 : numProducer;
-        this.threadPoolSize = (int)(Runtime.getRuntime().availableProcessors() * (1 + this.wcRatio) + 1);
+        final int numProcessors = Runtime.getRuntime().availableProcessors();
+        // JCiP section 8.2 - Sizing thread pools
+        int threadPoolSize = (int)(numProcessors * (1 + this.wcRatio));
+        
+        if (threadPoolSize == numProcessors)
+            threadPoolSize++;
+        this.producerThreadPoolSize = numProducer > threadPoolSize ? threadPoolSize : numProducer; 
+        this.consumerThreadPoolSize = numConsumer > threadPoolSize ? threadPoolSize : numConsumer; 
         this.batchSize = TOTAL / this.numProducer;
         this.totalSize = this.batchSize * this.numProducer;
         
         System.out.println("wcRatio:" + this.wcRatio);
         System.out.println("numConsumer:" + this.numConsumer);
         System.out.println("numProducer:" + this.numProducer);
-        System.out.println("threadPoolSize:" + this.threadPoolSize);
+        System.out.println("producerThreadPoolSize:" + producerThreadPoolSize);
+        System.out.println("consumerThreadPoolSize:" + consumerThreadPoolSize);
         System.out.println("batchSize:" + this.batchSize);
         System.out.println("totalSize:" + this.totalSize);
         System.out.println();
@@ -88,7 +97,8 @@ public abstract class AbstractBlockingQueueTestMain implements Callable<Void>
         long average = totalDuration / REPEAT;
         System.out.println();
         System.out.println(getClass().getName());
-        System.out.println("Thread pool size is " + threadPoolSize);
+        System.out.println("Producer thread pool size is " + producerThreadPoolSize);
+        System.out.println("Consumer thread pool size is " + consumerThreadPoolSize);
         System.out.println("Total items per test: " + TOTAL
                         + ", Tested: " + REPEAT + " times"
                         + "\nAvg: " + average + " ms"
@@ -103,9 +113,9 @@ public abstract class AbstractBlockingQueueTestMain implements Callable<Void>
     {
         int takeSize = this.totalSize / numConsumer;
         int takeExtra = this.totalSize - takeSize*numConsumer;
-        final ExecutorService consumerExecutorService = Executors.newFixedThreadPool(threadPoolSize);
+        final ExecutorService producerExecutorService = Executors.newFixedThreadPool(producerThreadPoolSize);
+        final ExecutorService consumerExecutorService = Executors.newFixedThreadPool(consumerThreadPoolSize);
         List<Future<Void>> consumerFutures = new ArrayList<Future<Void>>(numConsumer+1);
-        final ExecutorService producerExecutorService = Executors.newFixedThreadPool(threadPoolSize);
         List<Future<Void>> producerFutures = new ArrayList<Future<Void>>(numProducer);
         
         final long t0 = System.nanoTime();
