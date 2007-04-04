@@ -19,18 +19,27 @@ public class ConcurrentLinkedBlockingQueueTestMain extends AbstractBlockingQueue
     private final ConcurrentLinkedBlockingQueue<Integer> q = 
         new ConcurrentLinkedBlockingQueue<Integer>();
     
+    public ConcurrentLinkedBlockingQueueTestMain(float wcRatio, int numConsumer, int numProducer) 
+    {
+        super(wcRatio, numConsumer, numProducer);
+    }
+    
+    public ConcurrentLinkedBlockingQueueTestMain()
+    {
+    }
+    
     @Override
     protected Queue<Integer> getQueue() {
         return q;
     }
     
     @Override
-    protected Callable<Void> newConumerCallable() {
+    protected Callable<Void> newConumerCallable(final int max) {
         return new Callable<Void>()
         {
             public Void call() throws InterruptedException 
             {
-                for (int count=0; count < TOTAL; count++)
+                for (int count=0; count < max; count++)
                     q.take();
                 return null;
             }

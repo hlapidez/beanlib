@@ -20,15 +20,29 @@ public class TestMain
     public static void main(String[] args) 
         throws InterruptedException, ExecutionException
     {
+        final float wcRatio = floatValue("wcRatio", "0.0");
+        final int numConsumer = intValue("numConsumer", "1");
+        final int numProducer = intValue("numProducer", "10");
+        
         for (int i=0; i < 10; i++)
         {
-            new ConcurrentLinkedBlockingQueueTestMain().call();
+            new ConcurrentLinkedBlockingQueueTestMain(wcRatio, numConsumer, numProducer).call();
             // try to minimize residual memory effect
             System.gc();
-            new LinkedBlockingQueueTestMain().call();
+            new LinkedBlockingQueueTestMain(wcRatio, numConsumer, numProducer).call();
             // try to minimize residual memory effect
             System.gc();
         }
         System.exit(0);
+    }
+    
+    private static int intValue(String key, String def) {
+        String val = System.getProperty(key, def);
+        return Integer.parseInt(val);
+    }
+    
+    private static float floatValue(String key, String def) {
+        String val = System.getProperty(key, def);
+        return Float.parseFloat(val);
     }
 }
