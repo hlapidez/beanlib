@@ -7,11 +7,13 @@ package net.sf.beanlib.util.concurrent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Base class for testing the performance of 
@@ -76,6 +78,7 @@ public abstract class AbstractBlockingQueueTestMain implements Callable<Void>
     
     protected abstract Queue<Integer> getQueue();
     protected abstract Callable<Void> newConumerCallable(int max);
+    protected abstract BlockingQueue<Runnable> newThreadPoolBlockingQueue();
     
     public Void call() throws InterruptedException, ExecutionException
     {
@@ -113,8 +116,8 @@ public abstract class AbstractBlockingQueueTestMain implements Callable<Void>
     {
         int takeSize = this.totalSize / numConsumer;
         int takeExtra = this.totalSize - takeSize*numConsumer;
-        final ExecutorService producerExecutorService = Executors.newFixedThreadPool(producerThreadPoolSize);
-        final ExecutorService consumerExecutorService = Executors.newFixedThreadPool(consumerThreadPoolSize);
+        final ExecutorService producerExecutorService = newFixedThreadPool(producerThreadPoolSize);
+        final ExecutorService consumerExecutorService = newFixedThreadPool(consumerThreadPoolSize);
         List<Future<Void>> consumerFutures = new ArrayList<Future<Void>>(numConsumer+1);
         List<Future<Void>> producerFutures = new ArrayList<Future<Void>>(numProducer);
         
@@ -139,6 +142,12 @@ public abstract class AbstractBlockingQueueTestMain implements Callable<Void>
         producerExecutorService.shutdownNow();
         consumerExecutorService.shutdownNow();
         return duration;
+    }
+
+    private ExecutorService newFixedThreadPool(int nThreads) {
+        return new ThreadPoolExecutor(nThreads, nThreads,
+                                      0L, TimeUnit.MILLISECONDS,
+                                      newThreadPoolBlockingQueue());
     }
     
     /** 

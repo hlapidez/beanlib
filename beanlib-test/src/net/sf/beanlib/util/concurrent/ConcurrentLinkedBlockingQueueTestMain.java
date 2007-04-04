@@ -5,6 +5,7 @@
 package net.sf.beanlib.util.concurrent;
 
 import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
@@ -44,6 +45,11 @@ public class ConcurrentLinkedBlockingQueueTestMain extends AbstractBlockingQueue
                 return null;
             }
         };
+    }
+
+    @Override
+    protected BlockingQueue<Runnable> newThreadPoolBlockingQueue() {
+        return new ConcurrentLinkedBlockingQueue<Runnable>();
     }
     
     public static void main(String[] args) 
