@@ -13,9 +13,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
 /**
- * A {@link java.util.concurrent.ConcurrentLinkedQueue ConcurrentLinkedQueue} 
- * that additionally supports operations
- * that wait for the queue to become non-empty when retrieving an element.
+ * An unbounded concurrent blocking queue implemented upon 
+ * {@link java.util.concurrent.ConcurrentLinkedQueue ConcurrentLinkedQueue}.
  * <p>
  * Note there is currently no such class in Java 6.
  * <p>
@@ -30,7 +29,7 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
 {
     private static final long serialVersionUID = -191767472599610115L;
 
-    private static class ThreadMarker {
+    protected static class ThreadMarker {
         final Thread thread;
         // assumed parked until found otherwise.
         volatile boolean parked = true;
@@ -64,18 +63,18 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
     }
 
     public boolean offer(E e) {
-        boolean b = q.offer(e);
+        q.offer(e);
         
         for (;;)
         {
             ThreadMarker marker = parkq.poll();
             
             if (marker == null)
-                return b;
+                return true;
             if (marker.parked) 
             {
                 LockSupport.unpark(marker.thread);
-                return b;
+                return true;
             }
         }
     }
@@ -176,13 +175,13 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
                 throw new InterruptedException();
         }
     }
+    
     public void put(E e) throws InterruptedException {
         q.add(e);
     }
 
     public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
-        q.add(e);
-        return true;
+        return this.offer(e);
     }
 
     public int remainingCapacity() {
