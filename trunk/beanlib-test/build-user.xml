@@ -80,6 +80,7 @@
     	manifest="etc/QTEST-MANIFEST.MF"
    	>
       <fileset dir="../beanlib/target/classes" includes="**/*ConcurrentLinkedBlockingQueue*.class"/>
+      <fileset dir="../beanlib/target/classes" includes="**/*ConcurrentLinkedBoundedBlockingQueue*.class"/>
       <fileset dir="target/classes" includes="**/*TestMain*.class,**/CallableWithCount.class"/>
     </jar>
   </target>

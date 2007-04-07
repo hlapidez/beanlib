@@ -20,9 +20,9 @@ public class LinkedBlockingQueueTestMain extends AbstractBlockingQueueTestMain
 {
     private final LinkedBlockingQueue<Integer> q = new LinkedBlockingQueue<Integer>();
 
-    public LinkedBlockingQueueTestMain(float wcRatio, int numConsumer, int numProducer) 
+    public LinkedBlockingQueueTestMain(float wcRatio, int numConsumer, int numProducer, Integer capacity)
     {
-        super(wcRatio, numConsumer, numProducer);
+        super(wcRatio, numConsumer, numProducer, capacity);
     }
     
     public LinkedBlockingQueueTestMain()
@@ -48,8 +48,11 @@ public class LinkedBlockingQueueTestMain extends AbstractBlockingQueueTestMain
     }
 
     @Override
-    protected BlockingQueue<Runnable> newThreadPoolBlockingQueue() {
-        return new LinkedBlockingQueue<Runnable>();
+    protected BlockingQueue<Runnable> newThreadPoolBlockingQueue(Integer capacity) {
+        return capacity == null 
+             ? new LinkedBlockingQueue<Runnable>() 
+             : new LinkedBlockingQueue<Runnable>(capacity)
+             ;
     }
     
     public static void main(String[] args) throws InterruptedException, ExecutionException
