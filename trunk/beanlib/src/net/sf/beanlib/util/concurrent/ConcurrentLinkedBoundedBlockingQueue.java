@@ -54,7 +54,7 @@ public class ConcurrentLinkedBoundedBlockingQueue<E> extends ConcurrentLinkedBlo
             
             if (capacity == 0)
                 return false;
-        } while (!this.capacity.weakCompareAndSet(capacity, capacity-1));
+        } while (!this.capacity.compareAndSet(capacity, capacity-1));
         
         return true;
     }
