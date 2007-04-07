@@ -23,13 +23,14 @@ public class TestMain
         final float wcRatio = floatValue("wcRatio", "0.0");
         final int numConsumer = intValue("numConsumer", "1");
         final int numProducer = intValue("numProducer", "10");
+        final Integer capacity = integerValue("capacity");
         
         for (int i=0; i < 10; i++)
         {
-            new ConcurrentLinkedBlockingQueueTestMain(wcRatio, numConsumer, numProducer).call();
+            new ConcurrentLinkedBlockingQueueTestMain(wcRatio, numConsumer, numProducer, capacity).call();
             // try to minimize residual memory effect
             System.gc();
-            new LinkedBlockingQueueTestMain(wcRatio, numConsumer, numProducer).call();
+            new LinkedBlockingQueueTestMain(wcRatio, numConsumer, numProducer, capacity).call();
             // try to minimize residual memory effect
             System.gc();
         }
@@ -39,6 +40,11 @@ public class TestMain
     private static int intValue(String key, String def) {
         String val = System.getProperty(key, def);
         return Integer.parseInt(val);
+    }
+    
+    private static Integer integerValue(String key) {
+        String val = System.getProperty(key);
+        return val == null ? null : new Integer(val);
     }
     
     private static float floatValue(String key, String def) {

@@ -39,16 +39,20 @@ public abstract class AbstractBlockingQueueTestMain implements Callable<Void>
     protected final float wcRatio;
     protected final int numConsumer;
     protected final int numProducer;
+    protected final Integer capacity;
+    
     private final int producerThreadPoolSize;
     private final int consumerThreadPoolSize;
     private final int batchSize;
     protected final int totalSize;
     
-    protected AbstractBlockingQueueTestMain(float wcRatio, int numConsumer, int numProducer) 
+    protected AbstractBlockingQueueTestMain(float wcRatio, int numConsumer, int numProducer, Integer capacity) 
     {
         this.wcRatio = wcRatio < 0 ? 0 : wcRatio;
         this.numConsumer = numConsumer < 1 ? 1 : numConsumer;
         this.numProducer = numProducer < 1 ? 1 : numProducer;
+        this.capacity = capacity;
+        
         final int numProcessors = Runtime.getRuntime().availableProcessors();
         // JCiP section 8.2 - Sizing thread pools
         int threadPoolSize = (int)(numProcessors * (1 + this.wcRatio));
@@ -63,6 +67,7 @@ public abstract class AbstractBlockingQueueTestMain implements Callable<Void>
         System.out.println("wcRatio:" + this.wcRatio);
         System.out.println("numConsumer:" + this.numConsumer);
         System.out.println("numProducer:" + this.numProducer);
+        System.out.println("capacity:" + this.capacity);
         System.out.println("producerThreadPoolSize:" + producerThreadPoolSize);
         System.out.println("consumerThreadPoolSize:" + consumerThreadPoolSize);
         System.out.println("batchSize:" + this.batchSize);
@@ -72,13 +77,13 @@ public abstract class AbstractBlockingQueueTestMain implements Callable<Void>
     
     protected AbstractBlockingQueueTestMain()
     {
-        this(0, 1, 10);
+        this(0, 1, 10, null);
     }
 
     
     protected abstract Queue<Integer> getQueue();
     protected abstract Callable<Void> newConumerCallable(int max);
-    protected abstract BlockingQueue<Runnable> newThreadPoolBlockingQueue();
+    protected abstract BlockingQueue<Runnable> newThreadPoolBlockingQueue(Integer capacity);
     
     public Void call() throws InterruptedException, ExecutionException
     {
@@ -147,7 +152,7 @@ public abstract class AbstractBlockingQueueTestMain implements Callable<Void>
     private ExecutorService newFixedThreadPool(int nThreads) {
         return new ThreadPoolExecutor(nThreads, nThreads,
                                       0L, TimeUnit.MILLISECONDS,
-                                      newThreadPoolBlockingQueue());
+                                      newThreadPoolBlockingQueue(this.capacity));
     }
     
     /** 

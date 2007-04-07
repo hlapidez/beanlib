@@ -20,9 +20,9 @@ public class ConcurrentLinkedBlockingQueueTestMain extends AbstractBlockingQueue
     private final ConcurrentLinkedBlockingQueue<Integer> q = 
         new ConcurrentLinkedBlockingQueue<Integer>();
     
-    public ConcurrentLinkedBlockingQueueTestMain(float wcRatio, int numConsumer, int numProducer) 
+    public ConcurrentLinkedBlockingQueueTestMain(float wcRatio, int numConsumer, int numProducer, Integer capacity) 
     {
-        super(wcRatio, numConsumer, numProducer);
+        super(wcRatio, numConsumer, numProducer, capacity);
     }
     
     public ConcurrentLinkedBlockingQueueTestMain()
@@ -48,8 +48,11 @@ public class ConcurrentLinkedBlockingQueueTestMain extends AbstractBlockingQueue
     }
 
     @Override
-    protected BlockingQueue<Runnable> newThreadPoolBlockingQueue() {
-        return new ConcurrentLinkedBlockingQueue<Runnable>();
+    protected BlockingQueue<Runnable> newThreadPoolBlockingQueue(Integer capacity) {
+        return capacity == null 
+             ? new ConcurrentLinkedBlockingQueue<Runnable>() 
+             : new ConcurrentLinkedBoundedBlockingQueue<Runnable>(capacity)
+             ;
     }
     
     public static void main(String[] args) 
