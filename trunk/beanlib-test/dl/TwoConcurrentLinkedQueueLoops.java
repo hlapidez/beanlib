@@ -32,8 +32,8 @@ public class TwoConcurrentLinkedQueueLoops
         final Queue<Integer> q1;
         final Queue<Integer> q2;
         final CyclicBarrier barrier;
-        volatile Result result;
-        boolean r1;
+        final Result result;
+        final boolean r1;
         
         Stage (Queue<Integer> q1, Queue<Integer> q2, CyclicBarrier barrier, int iters, Result result, boolean r1) {
             this.q1 = q1; 
