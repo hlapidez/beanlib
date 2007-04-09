@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="/beanlib/lib/cglib-2.1_3.jar"/>
 	<classpathentry kind="lib" path="lib/junit/junit-4.0.jar"/>
 	<classpathentry kind="lib" path="/beanlib/lib/asm/asm-1.5.3.jar"/>
+	<classpathentry kind="src" path="dl"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
