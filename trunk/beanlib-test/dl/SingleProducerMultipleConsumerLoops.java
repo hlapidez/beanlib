@@ -4,7 +4,16 @@
  * http://creativecommons.org/licenses/publicdomain
  */
 
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+
+import net.sf.beanlib.util.concurrent.ConcurrentLinkedBlockingQueue;
 
 public class SingleProducerMultipleConsumerLoops {
     static final int CAPACITY =      100;
@@ -41,8 +50,16 @@ public class SingleProducerMultipleConsumerLoops {
         oneRun(new ArrayBlockingQueue<Integer>(CAPACITY), consumers, iters);
 
         if (print)
-            System.out.print("LinkedBlockingQueue     ");
+            System.out.print("LinkedBlockingQueue with capacity " + CAPACITY);
         oneRun(new LinkedBlockingQueue<Integer>(CAPACITY), consumers, iters);
+        
+        if (print)
+            System.out.print("LinkedBlockingQueue without capacity");
+        oneRun(new LinkedBlockingQueue<Integer>(), consumers, iters);
+        
+        if (print)
+            System.out.print("ConcurrentLinkedBlockingQueue     ");
+        oneRun(new ConcurrentLinkedBlockingQueue<Integer>(), consumers, iters);
 
         if (print)
             System.out.print("PriorityBlockingQueue   ");
