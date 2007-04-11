@@ -177,7 +177,7 @@ public class ConcurrentLinkedBlockingQueue<E> extends AbstractQueue<E>
     }
     
     public void put(E e) throws InterruptedException {
-        q.add(e);
+        offer(e);
     }
 
     public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
