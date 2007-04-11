@@ -80,16 +80,15 @@
     <jar destfile="${dist.jar.file}"
     	manifest="etc/QTEST-MANIFEST.MF"
    	>
-      <fileset dir="../beanlib/target/classes" includes="**/*ConcurrentLinkedBlockingQueue*.class"/>
-      <fileset dir="../beanlib/target/classes" includes="**/*ConcurrentLinkedBoundedBlockingQueue*.class"/>
-      <fileset dir="target/classes" includes="**/*TestMain*.class,**/CallableWithCount.class"/>
+      <fileset dir="../beanlib/target/classes" includes="**/*ConcurrentLinkedBlockingQueue*.class,**/*ConcurrentLinkedBoundedBlockingQueue*.class"/>
+      <fileset dir="target/classes" includes="**/*TestMain*.class,**/*Loop*.class"/>
     </jar>
   </target>
 	
   <target name="jar-qtest-src">
     <jar destfile="${dist.src-jar.file}">
-      <fileset dir="../beanlib" includes="src/**/ConcurrentLinkedBlockingQueue.java" />
-      <fileset dir="." includes="src/**/*TestMain.java" />
+      <fileset dir="../beanlib" includes="src/**/ConcurrentLinkedBlockingQueue.java,src/**/ConcurrentLinkedBoundedBlockingQueue.java" />
+      <fileset dir="." includes="src/**/*TestMain.java,dl/**/*.java" />
     </jar>
   </target>
 

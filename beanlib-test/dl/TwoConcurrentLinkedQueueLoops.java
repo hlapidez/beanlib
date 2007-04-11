@@ -72,12 +72,12 @@ public class TwoConcurrentLinkedQueueLoops
     
     static void oneRun(int npairs, int iters) throws Exception {
         List<Result> results = new ArrayList<Result>(npairs);
-        Queue<Integer> q1 = new ConcurrentLinkedQueue<Integer>();
-        Queue<Integer> q2 = new ConcurrentLinkedQueue<Integer>();
         LoopHelpers.BarrierTimer timer = new LoopHelpers.BarrierTimer();
         CyclicBarrier barrier = new CyclicBarrier(npairs * 2 + 1, timer);
         
         for (int i = 0; i < npairs; ++i) {
+            Queue<Integer> q1 = new ConcurrentLinkedQueue<Integer>();
+            Queue<Integer> q2 = new ConcurrentLinkedQueue<Integer>();
             Result result = new Result();
             results.add(result);
             pool.execute(new Runner(q1, q2, barrier, iters, result, true));

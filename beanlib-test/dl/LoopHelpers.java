@@ -7,8 +7,8 @@
  * Misc utilities in JSR166 performance tests
  */
 
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 class LoopHelpers {
 

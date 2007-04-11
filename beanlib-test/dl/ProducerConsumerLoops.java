@@ -15,6 +15,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 
 import net.sf.beanlib.util.concurrent.ConcurrentLinkedBlockingQueue;
+import net.sf.beanlib.util.concurrent.ConcurrentLinkedBoundedBlockingQueue;
 
 public class ProducerConsumerLoops {
     static final int CAPACITY =      100;
@@ -48,14 +49,11 @@ public class ProducerConsumerLoops {
         System.out.println("Warmup...");
         oneTest(1, 10000);
         Thread.sleep(100);
-//System.out.println("+++ hchar: oneTest 2");
         oneTest(2, 10000);
         Thread.sleep(100);
-//System.out.println("+++ hchar: oneTest 2 again");
         oneTest(2, 10000);
         Thread.sleep(100);
         print = true;
-//System.out.println("+++ hchar: ...");
         
         int k = 1;
         for (int i = 1; i <= maxPairs;) {
@@ -79,13 +77,17 @@ public class ProducerConsumerLoops {
         oneRun(new ArrayBlockingQueue<Integer>(CAPACITY), pairs, iters);
 
         if (print)
-            System.out.print("LinkedBlockingQueue     ");
+            System.out.print("LinkedBlockingQueue with capacity " + CAPACITY);
         oneRun(new LinkedBlockingQueue<Integer>(CAPACITY), pairs, iters);
         
         if (print)
-            System.out.print("ConcurrentLinkedBlockingQueue     ");
+            System.out.print("LinkedBlockingQueue without capacity");
+        oneRun(new LinkedBlockingQueue<Integer>(), pairs, iters);
+        
+        if (print)
+            System.out.print("ConcurrentLinkedBlockingQueue");
         oneRun(new ConcurrentLinkedBlockingQueue<Integer>(), pairs, iters);
-
+        
         if (print)
             System.out.print("LinkedBlockingDeque     ");
         oneRun(new LinkedBlockingDeque<Integer>(CAPACITY), pairs, iters);

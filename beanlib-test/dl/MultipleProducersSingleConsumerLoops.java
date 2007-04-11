@@ -4,7 +4,15 @@
  * http://creativecommons.org/licenses/publicdomain
  */
 
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+
+import net.sf.beanlib.util.concurrent.ConcurrentLinkedBlockingQueue;
 
 public class MultipleProducersSingleConsumerLoops {
     static final int CAPACITY =      100;
@@ -55,8 +63,16 @@ public class MultipleProducersSingleConsumerLoops {
         oneRun(new ArrayBlockingQueue<Integer>(CAPACITY), producers, iters);
 
         if (print)
-            System.out.print("LinkedBlockingQueue     ");
+            System.out.print("LinkedBlockingQueue with capacity " + CAPACITY);
         oneRun(new LinkedBlockingQueue<Integer>(CAPACITY), producers, iters);
+
+        if (print)
+            System.out.print("LinkedBlockingQueue without capacity");
+        oneRun(new LinkedBlockingQueue<Integer>(), producers, iters);
+
+        if (print)
+            System.out.print("ConcurrentLinkedBlockingQueue");
+        oneRun(new ConcurrentLinkedBlockingQueue<Integer>(), producers, iters);
 
         // Don't run PBQ since can legitimately run out of memory
         //        if (print)
