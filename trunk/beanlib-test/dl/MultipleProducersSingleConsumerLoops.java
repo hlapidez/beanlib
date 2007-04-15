@@ -13,6 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 
 import net.sf.beanlib.util.concurrent.ConcurrentLinkedBlockingQueue;
+import net.sf.beanlib.util.concurrent.UnboundedLinkedBlockingQueue;
 
 public class MultipleProducersSingleConsumerLoops {
     static final int CAPACITY =      100;
@@ -69,6 +70,10 @@ public class MultipleProducersSingleConsumerLoops {
         if (print)
             System.out.print("LinkedBlockingQueue without capacity");
         oneRun(new LinkedBlockingQueue<Integer>(), producers, iters);
+
+        if (print)
+            System.out.print("UnboundedLinkedBlockingQueue");
+        oneRun(new UnboundedLinkedBlockingQueue<Integer>(), producers, iters);
 
         if (print)
             System.out.print("ConcurrentLinkedBlockingQueue");

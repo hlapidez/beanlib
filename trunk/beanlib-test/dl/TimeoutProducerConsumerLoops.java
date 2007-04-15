@@ -16,6 +16,7 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 
 import net.sf.beanlib.util.concurrent.ConcurrentLinkedBlockingQueue;
+import net.sf.beanlib.util.concurrent.UnboundedLinkedBlockingQueue;
 
 public class TimeoutProducerConsumerLoops {
     static final int CAPACITY =      100;
@@ -84,6 +85,10 @@ public class TimeoutProducerConsumerLoops {
         oneRun(new LinkedBlockingQueue<Integer>(), pairs, iters);
 
         if (print)
+            System.out.print("UnboundedLinkedBlockingQueue");
+        oneRun(new UnboundedLinkedBlockingQueue<Integer>(), pairs, iters);
+
+        if (print)
             System.out.print("ConcurrentLinkedBlockingQueue");
         oneRun(new ConcurrentLinkedBlockingQueue<Integer>(), pairs, iters);
 
@@ -95,9 +100,9 @@ public class TimeoutProducerConsumerLoops {
             System.out.print("SynchronousQueue        ");
         oneRun(new SynchronousQueue<Integer>(), pairs, iters);
 
-        if (print)
-            System.out.print("SynchronousQueue(fair)  ");
-        oneRun(new SynchronousQueue<Integer>(true), pairs, fairIters);
+//        if (print)
+//            System.out.print("SynchronousQueue(fair)  ");
+//        oneRun(new SynchronousQueue<Integer>(true), pairs, fairIters);
 
         if (print)
             System.out.print("PriorityBlockingQueue   ");
