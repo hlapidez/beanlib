@@ -16,6 +16,7 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 
 import net.sf.beanlib.util.concurrent.ConcurrentLinkedBlockingQueue;
+import net.sf.beanlib.util.concurrent.UnboundedLinkedBlockingQueue;
 
 public class CancelledProducerConsumerLoops {
     static final int CAPACITY =      100;
@@ -102,6 +103,10 @@ public class CancelledProducerConsumerLoops {
         if (print)
             System.out.print("LinkedBlockingQueue without capacity");
         oneRun(new LinkedBlockingQueue<Integer>(), pairs, iters);
+
+        if (print)
+            System.out.print("UnboundedLinkedBlockingQueue");
+        oneRun(new UnboundedLinkedBlockingQueue<Integer>(), pairs, iters);
 
         if (print)
             System.out.print("ConcurrentLinkedBlockingQueue     ");
