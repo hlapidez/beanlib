@@ -15,6 +15,7 @@
  */
 package net.sf.beanlib.provider.replicator;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -61,10 +62,23 @@ public class DateReplicator extends ReplicatorTemplate implements DateReplicator
         // Timestamp
         if (fromDate instanceof Timestamp) 
         {
-            Timestamp ts = (Timestamp)fromDate;
-            Timestamp toTimeStamp = new Timestamp(ts.getTime());
-            putTargetCloned(fromDate, toTimeStamp);
-            return toClass.cast(toTimeStamp);
+            Timestamp toDate = new Timestamp(fromDate.getTime());
+            putTargetCloned(fromDate, toDate);
+            return toClass.cast(toDate);
+        }
+        // Time
+        if (fromDate instanceof Time) 
+        {
+            Time toDate = new Time(fromDate.getTime());
+            putTargetCloned(fromDate, toDate);
+            return toClass.cast(toDate);
+        }
+        // java.sql.Date
+        if (fromDate instanceof java.sql.Date) 
+        {
+            java.sql.Date toDate = new java.sql.Date(fromDate.getTime());
+            putTargetCloned(fromDate, toDate);
+            return toClass.cast(toDate);
         }
         // Date
         Date toDate = new Date(fromDate.getTime());

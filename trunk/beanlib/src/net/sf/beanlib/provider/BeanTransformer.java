@@ -85,7 +85,7 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     
     private final BeanPopulatorSpi.Factory beanPopulatorFactory;
     
-    private BeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) {
+    protected BeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) {
         this.beanPopulatorFactory = beanPopulatorFactory;
     }
     
