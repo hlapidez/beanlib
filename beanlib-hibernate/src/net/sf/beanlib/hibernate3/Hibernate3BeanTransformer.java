@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2007 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License")
  * you may not use this file except in compliance with the License.
@@ -12,14 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */package net.sf.beanlib.hibernate3;
+ */
+package net.sf.beanlib.hibernate3;
 
 import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.provider.BeanPopulator;
 import net.sf.beanlib.provider.BeanTransformer;
 import net.sf.beanlib.spi.BeanPopulatorSpi;
 import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.cglib.proxy.Enhancer;
 
+/**
+ * Hibernate 3 specific Bean Transformer.
+ * 
+ * @author Joe D. Velopar
+ */
 public class Hibernate3BeanTransformer extends BeanTransformer
 {
     private static final Factory factory = new Factory();
@@ -42,6 +49,8 @@ public class Hibernate3BeanTransformer extends BeanTransformer
                     Hibernate3MapReplicator.getFactory());
             transformer.initBlobReplicatable(
                     Hibernate3BlobReplicator.getFactory());
+            transformer.initBeanReplicatable(
+                    Hibernate3JavaBeanReplicator.getFactory());
             return transformer;
         }
     }
@@ -54,5 +63,16 @@ public class Hibernate3BeanTransformer extends BeanTransformer
 
     protected Hibernate3BeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) {
         super(beanPopulatorFactory);
+    }
+    
+    @Override
+    protected <T> T createToInstance(Class<T> toClass) 
+        throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
+    {
+        if (Enhancer.isEnhanced(toClass)) {
+            // figure out the pre-enhanced class
+            toClass = (Class<T>)toClass.getSuperclass();
+        }
+        return super.createToInstance(toClass);
     }
 }
