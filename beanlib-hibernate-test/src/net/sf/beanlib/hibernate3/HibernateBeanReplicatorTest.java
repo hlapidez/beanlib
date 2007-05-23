@@ -208,7 +208,7 @@ public class HibernateBeanReplicatorTest
         Type2 t2 = new Type2();
         BeanPopulator.newBeanPopulator(t1, t2)
             .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
-            .initTransformer(new Hibernate3BeanTransformer())
+            .initTransformer(Hibernate3BeanTransformer.newBeanTransformer())
             .populate();
         assertEquals(t1.getF1(), t2.getF1());
         assertEquals(t1.getF2(), t2.getF2());
