@@ -19,9 +19,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import junit.framework.JUnit4TestAdapter;
-import net.sf.beanlib.hibernate.CustomHibernateBeanTransformable;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
-import net.sf.beanlib.hibernate.HibernateBeanTransformableSpi;
+import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 
 import org.junit.Test;
 
@@ -47,18 +47,25 @@ public class EnumTest {
         c.setTestString("testStr");
         // Customer transformer used to be necessary to handle enum, 
         // before beanlib was entirely moved to Java 5.
-        HibernateBeanReplicator replicator = new Hibernate3BeanReplicator().initCustomTransformer(
-            new CustomHibernateBeanTransformable() {
-                public boolean isTransformable(
-                    @SuppressWarnings("unused") Object from, 
-                    Class toClass, 
-                    @SuppressWarnings("unused") HibernateBeanTransformableSpi hibernateBeanTransformer) 
+        HibernateBeanReplicator replicator = 
+            new Hibernate3BeanReplicator()
+            .initCustomTransformer(
+                new CustomBeanTransformerSpi.Factory() 
                 {
-                    return toClass.isEnum();
-                }
-                @SuppressWarnings("unchecked")
-                public <T> T transform(Object in, @SuppressWarnings("unused") Class<T> toClass) {return (T)in;}
-            });
+                    public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi beanTransformer) 
+                    {
+                        return new CustomBeanTransformerSpi() 
+                        {
+                            public <T> boolean isTransformable(Object from, Class<T> toClass) {
+                                return toClass.isEnum();
+                            }
+    
+                            public <T> T transform(Object in, Class<T> toClass) {
+                                return (T)in;
+                            }
+                        };
+                    }
+                });
         C c2 = replicator.deepCopy(c);
         assertNotSame(c2, c);
         assertSame(c2.getStatus(), c.getStatus());
