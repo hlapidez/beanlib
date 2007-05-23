@@ -36,7 +36,7 @@ import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
  */
 public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSpi
 {
-    public static final Factory factory = new Factory();
+    private static final Factory factory = new Factory();
     
     /**
      * Factory for {@link MapReplicator}

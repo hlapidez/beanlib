@@ -96,7 +96,7 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
     // http://sourceforge.net/forum/forum.php?thread_id=1462253&forum_id=470286
     // Thanks to Jam Flava for finding this bug.
     @SuppressWarnings("unchecked")
-    private Collection<Object> createToCollection(Collection<?> from) 
+    protected Collection<Object> createToCollection(Collection<?> from)
         throws InstantiationException, IllegalAccessException, SecurityException, 
                 NoSuchMethodException, InvocationTargetException
     {
@@ -138,13 +138,13 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
     }
     
     @SuppressWarnings("unchecked")
-    private Collection<Object> createToInstanceAsCollection(Collection<?> from) 
+    protected final Collection<Object> createToInstanceAsCollection(Collection<?> from) 
         throws InstantiationException, IllegalAccessException, NoSuchMethodException
     {
         return (Collection<Object>)createToInstance(from);
     }
     @SuppressWarnings("unchecked")
-    private SortedSet<Object> createToSortedSetWithComparator(SortedSet from, Comparator comparator) 
+    protected final SortedSet<Object> createToSortedSetWithComparator(SortedSet from, Comparator comparator) 
         throws NoSuchMethodException, SecurityException
     {
         return (SortedSet<Object>)createToInstanceWithComparator(from, comparator);
