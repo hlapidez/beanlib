@@ -32,6 +32,7 @@ import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.provider.replicator.CollectionReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
+import net.sf.cglib.proxy.Enhancer;
 
 import org.hibernate.Hibernate;
 
@@ -124,5 +125,16 @@ public class Hibernate3CollectionReplicator extends CollectionReplicator {
     private boolean isHibernatePackage(Class c) {
         Package p = c.getPackage();
         return p != null && p.getName().startsWith("org.hibernate.");
+    }
+    
+    @Override
+    protected <T> T createToInstance(Class<T> toClass) 
+        throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
+    {
+        if (Enhancer.isEnhanced(toClass)) {
+            // figure out the pre-enhanced class
+            toClass = (Class<T>)toClass.getSuperclass();
+        }
+        return super.createToInstance(toClass);
     }
 }

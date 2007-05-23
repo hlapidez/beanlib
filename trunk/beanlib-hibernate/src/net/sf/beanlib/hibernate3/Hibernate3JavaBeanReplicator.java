@@ -15,58 +15,47 @@
  */
 package net.sf.beanlib.hibernate3;
 
-import java.util.Map;
-
 import net.jcip.annotations.ThreadSafe;
-import net.sf.beanlib.provider.replicator.MapReplicator;
+import net.sf.beanlib.provider.replicator.BeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
-import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
+import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 import net.sf.cglib.proxy.Enhancer;
 
-import org.hibernate.Hibernate;
-
 /**
- * Hibernate 3 specific Map Replicator.
+ * Hibernate 3 specific JavaBean Replicator.
  * 
  * @author Joe D. Velopar
  */
-public class Hibernate3MapReplicator extends MapReplicator {
+public class Hibernate3JavaBeanReplicator extends BeanReplicator 
+{
     private static final Factory factory = new Factory();
     
     public static Factory getFactory() {
         return factory;
     }
+    
     /**
-     * Factory for {@link MapReplicator}
+     * Factory for {@link Hibernate3JavaBeanReplicator}
      * 
      * @author Joe D. Velopar
      */
     @ThreadSafe
-    public static class Factory implements MapReplicatorSpi.Factory {
+    public static class Factory implements BeanReplicatorSpi.Factory {
         private Factory() {}
         
-        public Hibernate3MapReplicator newMapReplicatable(BeanTransformerSpi beanTransformer) {
-            return new Hibernate3MapReplicator(beanTransformer);
+        public Hibernate3JavaBeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
+            return new Hibernate3JavaBeanReplicator(beanTransformer);
         }
     }
 
-    public static Hibernate3MapReplicator newMapReplicatable(BeanTransformerSpi beanTransformer) {
-        return factory.newMapReplicatable(beanTransformer);
+    public static Hibernate3JavaBeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
+        return factory.newBeanReplicatable(beanTransformer);
     }
-
-    protected Hibernate3MapReplicator(BeanTransformerSpi beanTransformer) 
-    {
+    
+    protected Hibernate3JavaBeanReplicator(BeanTransformerSpi beanTransformer) {
         super(beanTransformer);
     }
-    
-    @Override
-    public <K,V,T> T replicateMap(Map<K,V> from, Class<T> toClass)
-    {
-        if (!Hibernate.isInitialized(from))
-            Hibernate.initialize(from);
-        return super.replicateMap(from, toClass);
-    }
-    
+
     @Override
     protected <T> T createToInstance(Class<T> toClass) 
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 

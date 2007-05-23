@@ -111,12 +111,12 @@ public class Hibernate3DtoCopier
      * Returns a DTO by cloning portion of the object graph of the given Hibernate bean.
      * @param entityBean given Hibernate Bean
      */
-    public <T> T hibernate2dto(T entityBean /*, SessionFactory sessionFactory */) 
+    public <T> T hibernate2dto(T entityBean) 
     {
-        return (T)hibernate2dto(entityBean.getClass(), entityBean /*, sessionFactory */);
+        return (T)hibernate2dto(entityBean.getClass(), entityBean);
     }
     
-    public <E,T> E hibernate2dto(Class<E> targetEntityType, T entityBean /*, SessionFactory sessionFactory */) 
+    public <E,T> E hibernate2dto(Class<E> targetEntityType, T entityBean) 
     {
         if (entityBean == null)
             return null;
@@ -130,13 +130,13 @@ public class Hibernate3DtoCopier
      * @param collectionPropertyNames set properties to be included in the object graph
      */
     public <T> T hibernate2dto(T entityBean, 
-        Class[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames /*,SessionFactory sessionFactory */) 
+        Class[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames) 
     {
-        return (T)hibernate2dto(entityBean.getClass(), entityBean, interestedEntityTypes, collectionPropertyNames/*, sessionFactory */);
+        return (T)hibernate2dto(entityBean.getClass(), entityBean, interestedEntityTypes, collectionPropertyNames);
     }
     
     public <E, T> E hibernate2dto(Class<E> targetEntityType, T entityBean,
-        Class[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames /*, SessionFactory sessionFactory */) 
+        Class[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames) 
     {
         if (entityBean == null)
             return null;
@@ -201,7 +201,7 @@ public class Hibernate3DtoCopier
 //            Class[] entityBeanClassArray =
 //                aggregateEntityTypes(entityBean, interestedEntityTypes, sessionFactory);
 //            E to = copy(targetEntityType, entityBean, entityBeanClassArray, collectionPropertyNameArray /*, sessionFactory */);
-            E to = copy(targetEntityType, entityBean, interestedEntityTypes, collectionPropertyNameArray /*, sessionFactory */);
+            E to = copy(targetEntityType, entityBean, interestedEntityTypes, collectionPropertyNameArray);
             list.add(to);
         }
         return list;
@@ -247,16 +247,17 @@ public class Hibernate3DtoCopier
                 collectionPropertyNameSet = new HashSet<CollectionPropertyName>(Arrays.asList(collectionPropertyNameArray));
             replicator.initCollectionPropertyNameSet(collectionPropertyNameSet);
         }
-        BeanPopulatable beanPopulatable = new Hibernate3DtoPopulator(entityBeanClassSet, collectionPropertyNameSet /*, sessionFactory */)
-                                              .init(this);
-        HibernateBeanReplicator beanReplicator = createHibernateBeanReplicator()
-                                                .initBeanPopulatable(beanPopulatable)
-                                                .initCollectionPropertyNameSet(collectionPropertyNameSet)
-                                                .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
-                                                .initEntityBeanClassSet(entityBeanClassSet)
-                                                .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
-                                                ;
-        return (E)beanReplicator.copy(from, unenhance(targetEntityType));
+        BeanPopulatable beanPopulatable = new Hibernate3DtoPopulator(entityBeanClassSet, collectionPropertyNameSet)
+                                            .init(this);
+        replicator
+          .initBeanPopulatable(beanPopulatable)
+          .initCollectionPropertyNameSet(collectionPropertyNameSet)
+          .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
+          .initEntityBeanClassSet(entityBeanClassSet)
+          .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
+          ;
+        return (E)replicator.copy(from, unenhance(targetEntityType));
+        
     }
     
 //    /** 
