@@ -15,16 +15,18 @@
  */
 package net.sf.beanlib.hibernate3;
 
+import net.jcip.annotations.NotThreadSafe;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 
 /**
- * Hibernate 3 Bean Replicator.  Not thread safe.
+ * Hibernate 3 Bean Replicator.
  * 
  * @author Joe D. Velopar
  */
+@NotThreadSafe
 public class Hibernate3BeanReplicator extends HibernateBeanReplicator
 {
 	public Hibernate3BeanReplicator() {
-		super(new Hibernate3BeanTransformer());
+		super(Hibernate3BeanTransformer.newBeanTransformer());
 	}
 }

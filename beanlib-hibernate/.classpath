@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry path="src" kind="src"/>
-	<classpathentry path="javadoc" kind="src"/>
-	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
-	<classpathentry path="/beanlib" combineaccessrules="false" kind="src"/>
-	<classpathentry path="/beanlib/lib/commons/commons-logging.jar" kind="lib"/>
-	<classpathentry path="/beanlib/lib/log4j-1.2.12.jar" kind="lib"/>
-	<classpathentry sourcepath="C:/Playground/jakarta/commons-lang/2.1/src/java" path="/beanlib/lib/commons/commons-lang-2.1.jar" kind="lib"/>
-	<classpathentry path="/beanlib/lib/asm/asm-1.5.3.jar" kind="lib"/>
-	<classpathentry sourcepath="C:/Playground/cglib/cglib-src-2.1_3.jar" path="/beanlib/lib/cglib-2.1_3.jar" kind="lib"/>
-	<classpathentry path="lib/hibernate/hibernate-3.1.3.jar" kind="lib"/>
-	<classpathentry path="lib/spring/spring-2.0.jar" kind="lib"/>
-	<classpathentry path="lib/spring/spring-hibernate3-2.0.jar" kind="lib"/>
-	<classpathentry path="target/classes" kind="output"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="javadoc"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/beanlib"/>
+	<classpathentry kind="lib" path="/beanlib/lib/commons/commons-logging.jar"/>
+	<classpathentry kind="lib" path="/beanlib/lib/log4j-1.2.12.jar"/>
+	<classpathentry sourcepath="C:/Playground/jakarta/commons-lang/2.1/src/java" kind="lib" path="/beanlib/lib/commons/commons-lang-2.1.jar"/>
+	<classpathentry kind="lib" path="/beanlib/lib/asm/asm-1.5.3.jar"/>
+	<classpathentry sourcepath="C:/Playground/cglib/cglib-src-2.1_3.jar" kind="lib" path="/beanlib/lib/cglib-2.1_3.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate/hibernate-3.1.3.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/spring/spring-hibernate3-2.0.jar"/>
+	<classpathentry kind="lib" path="/beanlib/lib/jcip-annotations.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
