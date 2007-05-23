@@ -12,33 +12,47 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-package net.sf.beanlib.hibernate3;
+ */package net.sf.beanlib.hibernate3;
 
-import java.sql.Blob;
+import net.jcip.annotations.ThreadSafe;
+import net.sf.beanlib.provider.BeanPopulator;
+import net.sf.beanlib.provider.BeanTransformer;
+import net.sf.beanlib.spi.BeanPopulatorSpi;
+import net.sf.beanlib.spi.BeanTransformerSpi;
 
-import net.sf.beanlib.hibernate.HibernateBeanTransformer;
-
-import org.hibernate.Hibernate;
-
-
-/**
- * Hibernate 3 Bean Transformer.
- * 
- * @author Joe D. Velopar
- */
-public class Hibernate3BeanTransformer extends HibernateBeanTransformer
+public class Hibernate3BeanTransformer extends BeanTransformer
 {
-	@Override
-    public void hibernateInitialize(Object obj) {
-		// Note this Hibernate is from the Hibernate 3 package
-        // http://sourceforge.net/forum/forum.php?thread_id=1470862&forum_id=470286
-        if (!Hibernate.isInitialized(obj))
-            Hibernate.initialize(obj);
-	}
-	@Override
-    public Blob hibernateCreateBlob(byte[] byteArray) {
-		// Note this Hibernate is from the Hibernate 3 package
-		return Hibernate.createBlob(byteArray);
-	}
+    private static final Factory factory = new Factory();
+    
+    /**
+     * Hibernate Bean Transformer Factory.
+     * 
+     * @author Joe D. Velopar
+     */
+    @ThreadSafe
+    private static class Factory implements BeanTransformerSpi.Factory {
+        private Factory() {}
+        
+        public Hibernate3BeanTransformer newBeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) 
+        {
+            Hibernate3BeanTransformer transformer = new Hibernate3BeanTransformer(beanPopulatorFactory);
+            transformer.initCollectionReplicatable(
+                    Hibernate3CollectionReplicator.getFactory());
+            transformer.initMapReplicatable(
+                    Hibernate3MapReplicator.getFactory());
+            transformer.initBlobReplicatable(
+                    Hibernate3BlobReplicator.getFactory());
+            return transformer;
+        }
+    }
+    
+    /** Convenient factory method that defaults to use {@link BeanPopulator#factory}. */
+    public static Hibernate3BeanTransformer newBeanTransformer()
+    {
+        return factory.newBeanTransformer(BeanPopulator.factory);
+    }
+
+    protected Hibernate3BeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) {
+        super(beanPopulatorFactory);
+    }
 }

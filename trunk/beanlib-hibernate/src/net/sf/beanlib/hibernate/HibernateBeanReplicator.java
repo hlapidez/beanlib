@@ -24,6 +24,8 @@ import net.sf.beanlib.spi.BeanMethodCollector;
 import net.sf.beanlib.spi.BeanMethodFinder;
 import net.sf.beanlib.spi.BeanPopulatable;
 import net.sf.beanlib.spi.BeanSourceHandler;
+import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 import net.sf.beanlib.spi.DetailedBeanPopulatable;
 
 /**
@@ -35,7 +37,7 @@ public class HibernateBeanReplicator
 {
 //    private final Log log = LogFactory.getLog(this.getClass());
     
-    private final HibernateBeanTransformable hibernateBeanTransformer;
+    private final BeanTransformerSpi hibernateBeanTransformer;
 
     private Set<Class> entityBeanClassSet;
     private Set<? extends CollectionPropertyName> collectionPropertyNameSet;
@@ -43,7 +45,7 @@ public class HibernateBeanReplicator
     private BeanPopulatable beanPopulatable; 
     private BeanPopulatable vetoer; 
 
-    public HibernateBeanReplicator(HibernateBeanTransformable hibernateBeanTransformer) 
+    public HibernateBeanReplicator(BeanTransformerSpi hibernateBeanTransformer) 
     {
         if (hibernateBeanTransformer == null)
             throw new IllegalArgumentException("Argument hibernateBeanTransformer must not be null");
@@ -155,8 +157,8 @@ public class HibernateBeanReplicator
         return this;
     }
 
-    public final HibernateBeanReplicator initCustomTransformer(CustomHibernateBeanTransformable customTransformer) {
-        this.hibernateBeanTransformer.initCustomTransformer(customTransformer);
+    public final HibernateBeanReplicator initCustomTransformer(CustomBeanTransformerSpi.Factory customTransformerFactory) {
+        this.hibernateBeanTransformer.initCustomTransformer(customTransformerFactory);
         return this;
     }
 
