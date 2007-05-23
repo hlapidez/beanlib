@@ -34,7 +34,9 @@
            debug="true"
     >
         <src path="src"/>
+	<!--
         <src path="dl"/>
+	-->
         <classpath refid="project.classpath"/>
     </javac>
 </target>
