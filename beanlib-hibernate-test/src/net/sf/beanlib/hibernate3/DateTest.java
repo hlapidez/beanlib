@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
+ * Copyright 2007 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License")
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Map;
 
 import junit.framework.JUnit4TestAdapter;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
@@ -33,12 +34,15 @@ import org.junit.Test;
 /**
  * @author Joe D. Velopar
  */
-public class DateTest {
-    
-    private static class Pojo {
+public class DateTest 
+{
+    private static class Pojo 
+    {
         private Date date = new Timestamp(new Date().getTime());
+        // reference to the same date instance
+        private Date DateRef = date;
         private String text = "whatever";
-
+        
         public Date getDate() {
             return date;
         }
@@ -54,7 +58,14 @@ public class DateTest {
         public void setText(String text) {
             this.text = text;
         }
-        
+
+        public Date getDateRef() {
+            return DateRef;
+        }
+
+        public void setDateRef(Date dateRef) {
+            DateRef = dateRef;
+        }
     }
     
     @Test 
@@ -67,7 +78,7 @@ public class DateTest {
             .initCustomTransformer(
                 new CustomBeanTransformerSpi.Factory() 
                 {
-                    public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi beanTransformer) 
+                    public CustomBeanTransformerSpi newCustomBeanTransformer(final BeanTransformerSpi beanTransformer) 
                     {
                         return new CustomBeanTransformerSpi() 
                         {
@@ -75,19 +86,34 @@ public class DateTest {
                                 return from instanceof Date && toClass == Date.class;
                             }
     
-                            public <T> T transform(Object in, Class<T> toClass) {
+                            public <T> T transform(Object in, Class<T> toClass) 
+                            {
+                                Map<Object,Object> cloneMap = beanTransformer.getClonedMap();
+                                Object clone = cloneMap.get(in);
+                                
+                                if (clone != null)
+                                    return (T)clone;
                                 Date d = (Date)in;
-                                return (T)new Date(d.getTime());
+                                clone = new Date(d.getTime());
+                                cloneMap.put(in, clone);
+                                return (T)clone;
                             }
                         };
                     }
                 });
         Pojo clone = replicator.deepCopy(source);
+        
         assertNotSame(clone, source);
         assertEquals(clone.getText(), source.getText());
+        
         assertSame(source.getDate().getClass(), Timestamp.class);
         assertSame(clone.getDate().getClass(), Date.class);
+        
         assertTrue(clone.getDate().getTime() == source.getDate().getTime());
+        
+        assertSame(source.getDate(), source.getDateRef());
+        assertSame(clone.getDate(), clone.getDateRef());
+        assertNotSame(source.getDate(), clone.getDate());
     }
     
     public static junit.framework.Test suite() {
