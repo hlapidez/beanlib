@@ -6,6 +6,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/beanlib-hibernate"/>
 	<classpathentry kind="lib" path="/beanlib/lib/commons/commons-logging.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/beanlib"/>
-	<classpathentry kind="lib" path="/beanlib-test/lib/junit/junit-4.0.jar"/>
+	<classpathentry kind="lib" path="C:/Playground/workspace/beanlib/beanlib-test/lib/junit/junit-4.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
