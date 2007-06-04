@@ -13,7 +13,7 @@
     <!--
     <pathelement location="../dependencies/junit-4.0/junit-4.0.jar"/>
     -->
-    <pathelement location="../beanlib/lib/log4j-1.2.12.jar"/>
+    <pathelement location="../beanlib/lib/log4j-1.2.14.jar"/>
 </path>
 
 <target depends="build" name="instrument">
