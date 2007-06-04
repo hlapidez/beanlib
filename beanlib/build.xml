@@ -11,10 +11,10 @@
     <path id="project.classpath">
         <pathelement location="target/classes"/>
         <pathelement location="${beanlib.location}/lib/commons/commons-logging.jar"/>
-        <pathelement location="${beanlib.location}/lib/commons/commons-lang-2.1.jar"/>
-        <pathelement location="${beanlib.location}/lib/log4j-1.2.12.jar"/>
-        <pathelement location="${beanlib.location}/lib/xstream-1.1.2.jar"/>
-        <pathelement location="${beanlib.location}/lib/cglib-2.1_3.jar"/>
+        <pathelement location="${beanlib.location}/lib/commons/commons-lang-2.3.jar"/>
+        <pathelement location="${beanlib.location}/lib/log4j-1.2.14.jar"/>
+        <pathelement location="${beanlib.location}/lib/xstream-1.2.1.jar"/>
+        <pathelement location="${beanlib.location}/lib/cglib-nodep-2.1_3.jar"/>
         <pathelement location="${beanlib.location}/lib/aopalliance-1.0.jar"/>
         <pathelement location="${beanlib.location}/lib/jcip-annotations.jar"/>
     </path>

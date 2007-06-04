@@ -14,21 +14,19 @@
     </path>
     <path id="mainproject.classpath">
         <pathelement location="target/classes"/>
-        <pathelement location="${beanlib-hibernate.location}/lib/hibernate/hibernate-3.1.3.jar"/>
-        <pathelement location="${beanlib-hibernate.location}/lib/spring/spring-2.0.jar"/>
-        <pathelement location="${beanlib-hibernate.location}/lib/spring/spring-hibernate3-2.0.jar"/>
-        <pathelement location="${beanlib.location}/lib/asm/asm-1.5.3.jar"/>
+        <pathelement location="${beanlib-hibernate.location}/lib/hibernate/hibernate-3.2.4.sp1.jar"/>
+        <pathelement location="${beanlib-hibernate.location}/lib/spring/spring.jar"/>
         <pathelement location="${beanlib.location}/lib/commons/commons-logging.jar"/>
-        <pathelement location="${beanlib.location}/lib/log4j-1.2.12.jar"/>
-        <pathelement location="${beanlib.location}/lib/commons/commons-lang-2.1.jar"/>
+        <pathelement location="${beanlib.location}/lib/log4j-1.2.14.jar"/>
+        <pathelement location="${beanlib.location}/lib/commons/commons-lang-2.3.jar"/>
     </path>
     <path id="beanlib.classpath">
         <pathelement location="${beanlib.location}/target/classes"/>
         <pathelement location="${beanlib.location}/lib/commons/commons-logging.jar"/>
-        <pathelement location="${beanlib.location}/lib/commons/commons-lang-2.1.jar"/>
-        <pathelement location="${beanlib.location}/lib/log4j-1.2.12.jar"/>
-        <pathelement location="${beanlib.location}/lib/xstream-1.1.2.jar"/>
-        <pathelement location="${beanlib.location}/lib/cglib-2.1_3.jar"/>
+        <pathelement location="${beanlib.location}/lib/commons/commons-lang-2.3.jar"/>
+        <pathelement location="${beanlib.location}/lib/log4j-1.2.14.jar"/>
+        <pathelement location="${beanlib.location}/lib/xstream-1.2.1.jar"/>
+        <pathelement location="${beanlib.location}/lib/cglib-nodep-2.1_3.jar"/>
         <pathelement location="${beanlib.location}/lib/jcip-annotations.jar"/>
     </path>
     <target name="init">
