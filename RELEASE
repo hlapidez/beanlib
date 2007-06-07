@@ -1,3 +1,14 @@
+beanlib 3.3.0beta6
+------------------
+* fix bug in DtoCentricHibernate3Template caused as a side effect since spring upgraded from 1.x to 2.x
+
+beanlib 3.3.0beta5
+------------------
+* Use the new SPI framework for all hibernate bean replication and population
+* support different forms of Dates
+* Add PrivateSetterMethodCollector
+* add DateReplicatorTest
+
 beanlib 3.3.0beta4
 ------------------
 * complete the replicator SPI with the Date Replicator
