@@ -28,6 +28,7 @@ import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.engine.SessionImplementor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -260,14 +261,17 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
         }, true);
     }
 
-    /**
-     * Just so we can use DtoCentricCloseSuppressingInvocationHandler for faster performance.
-     */
     @Override
     protected Session createSessionProxy(Session session) {
+        Class[] sessionIfcs = null;
+        if (session instanceof SessionImplementor) {
+            sessionIfcs = new Class[] {Session.class, SessionImplementor.class};
+        }
+        else {
+            sessionIfcs = new Class[] {Session.class};
+        }
         return (Session) Proxy.newProxyInstance(
-                getClass().getClassLoader(),
-                new Class[] {Session.class},
+                getClass().getClassLoader(), sessionIfcs,
                 new DtoCentricCloseSuppressingInvocationHandler(session));
     }
     
