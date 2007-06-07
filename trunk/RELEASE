@@ -1,10 +1,10 @@
 beanlib 3.3.0beta6
 ------------------
 * fix bug in DtoCentricHibernate3Template caused as a side effect since spring upgraded from 1.x to 2.x
-* remove direct dependency on asm
 * upgrade 3rd party jars: spring to 2.0.5, etc.
-* pom for 3.3.0beta5
-* demo converting timestamp to date
+* remove direct dependency on asm
+* add junit test to demo converting timestamp to date
+* update pom 
 
 beanlib 3.3.0beta5
 ------------------
