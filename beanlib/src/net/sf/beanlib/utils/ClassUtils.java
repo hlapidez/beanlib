@@ -42,6 +42,8 @@ public enum ClassUtils {
             || c.isEnum()
             || Number.class.isAssignableFrom(c) && isJavaPackage(c)
             || Boolean.class == c
+            || Character.class == c
+            || Byte.class == c
             ;
     }
     
