@@ -19,6 +19,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import junit.framework.JUnit4TestAdapter;
+import net.sf.beanlib.provider.BeanTransformer;
+import net.sf.beanlib.provider.replicator.BeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 
@@ -77,9 +79,33 @@ public class CustomBeanTransformerSpiTest {
                                     .replicateBean(in, in.getClass());
         }
     }
+
+    @Test
+    public void testAbstractClassCopyViaBeanReplicator() {
+        A fromA = new A();
+        B1 fromB1 = new B1();
+        B2 fromB2 = new B2();
+        fromB1.setB(fromB2);
+        fromA.setB(fromB1);
+        A toA = BeanReplicator.newBeanReplicatable(
+                        BeanTransformer.newBeanTransformer()
+                                       .initCustomTransformer(
+                                               new MyCustomBeanTransformer.Factory()))
+                        .replicateBean(fromA, fromA.getClass());
+        assertNotNull(toA);
+        assertNotSame(fromA, toA);
+
+        assertTrue(toA.getB().getClass() == B1.class);
+        B1 toB1 = (B1)toA.getB();
+        assertNotSame(fromA.getB(), toA.getB());
+
+        assertTrue(toB1.getB().getClass() == B2.class);
+        B2 toB2 = (B2)toB1.getB();
+        assertNotSame(fromB2, toB2);
+    }
     
     @Test
-    public void testAbstractClassCopy() 
+    public void testAbstractClassCopyViaHibernate3BeanReplicator() 
     {
         A fromA = new A();
         B1 fromB1 = new B1();
@@ -100,7 +126,6 @@ public class CustomBeanTransformerSpiTest {
         assertTrue(toB1.getB().getClass() == B2.class);
         B2 toB2 = (B2)toB1.getB();
         assertNotSame(fromB2, toB2);
-
     }
     
     public static junit.framework.Test suite() {
