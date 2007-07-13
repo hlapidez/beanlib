@@ -20,13 +20,19 @@ package net.sf.beanlib.spi;
  * 
  * @author Joe D. Velopar
  */
-public interface Transformable {
-	/**
+public interface Transformable 
+{
+    /**
 	 * Returns an object transformed from the input object with the given target class.
 	 * 
-	 * @param in the input object to be transformed.
+	 * @param in the input object to be transformed.  
+     * If propertyInfo is non-null, the input object is a JavaBean property value.
 	 * @param toClass the target class to be transformed to.
+     * @param propertyInfo If null, it means the in object is a root level object.
+     * Otherwise, propertyInfo contains information about the input object 
+     * as a java bean property value to be transformed.  
+     * 
 	 * @return the transformed object.
 	 */
-	public <T> T transform(Object in, Class<T> toClass);
+	public <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo);
 }

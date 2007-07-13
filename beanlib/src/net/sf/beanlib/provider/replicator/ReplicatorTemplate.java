@@ -30,6 +30,7 @@ import java.util.Map;
 
 import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.PropertyInfo;
 
 import org.apache.log4j.Logger;
 
@@ -138,8 +139,8 @@ public abstract class ReplicatorTemplate
         return newInstanceAsPrivileged(toClass);
     }
     
-    protected <T> T transform(Object in, Class<T> toClass) {
-        return beanTransformer.transform(in, toClass);
+    protected <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo) {
+        return beanTransformer.transform(in, toClass, propertyInfo);
     }
     
     protected void populateBean(Object fromMember, Object toMember) {

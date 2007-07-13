@@ -39,6 +39,7 @@ import net.sf.beanlib.spi.BeanSourceHandler;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 import net.sf.beanlib.spi.DetailedBeanPopulatable;
+import net.sf.beanlib.spi.PropertyInfo;
 import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BlobReplicatorSpi;
@@ -114,11 +115,11 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     }
     
     @Override
-    public final <T> T transform(Object from, Class<T> toClass) 
+    public final <T> T transform(Object from, Class<T> toClass, PropertyInfo propertyInfo) 
     {
         try {
-            if (customTransformer.isTransformable(from, toClass))
-                return customTransformer.transform(from, toClass);
+            if (customTransformer.isTransformable(from, toClass, propertyInfo))
+                return customTransformer.transform(from, toClass, propertyInfo);
             return replicate(from, toClass);
         } catch (SecurityException e) {
             throw new BeanlibException(e);

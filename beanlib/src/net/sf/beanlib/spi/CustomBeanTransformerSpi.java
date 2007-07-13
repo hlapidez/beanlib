@@ -24,13 +24,13 @@ package net.sf.beanlib.spi;
  */
 public interface CustomBeanTransformerSpi extends Transformable {
 	public static final CustomBeanTransformerSpi NO_OP = new CustomBeanTransformerSpi() {
-		public <T> boolean isTransformable(
-                @SuppressWarnings("unused") Object in, 
-                @SuppressWarnings("unused") Class<T> toClass) 
-        { 
-            return false; 
+        public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
+            return false;
         }
-		public <T> T transform(@SuppressWarnings("unused") Object in, @SuppressWarnings("unused") Class<T> toClass) { return null; }
+
+        public <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo) {
+            return null;
+        }
 	};
     
     /**
@@ -48,7 +48,11 @@ public interface CustomBeanTransformerSpi extends Transformable {
      * 
      * @param <T> target class type
      * @param from source object
+     * @param propertyInfo If null, it means the in object is a root level object.
+     * Otherwise, propertyInfo contains information about the input object 
+     * as a java bean property value to be transformed.  
+     * 
      * @param toClass target class
      */
-    public <T> boolean isTransformable(Object from, Class<T> toClass);
+    public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo);
 }

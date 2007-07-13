@@ -34,6 +34,7 @@ import net.sf.beanlib.spi.BeanPopulatorSpi;
 import net.sf.beanlib.spi.BeanSourceHandler;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.DetailedBeanPopulatable;
+import net.sf.beanlib.spi.PropertyInfo;
 import net.sf.beanlib.spi.Transformable;
 
 import org.apache.commons.logging.Log;
@@ -145,7 +146,8 @@ public class BeanPopulator implements BeanPopulatorSpi
         } 
     }
 
-    private <T> void doit(Method setterMethod, Method readerMethod, Class<T> paramType, String propertyName)
+    private <T> void doit(
+            Method setterMethod, Method readerMethod, Class<T> paramType, final String propertyName)
 //        throws InvocationTargetException, IllegalAccessException 
     {
         if (baseConfig.getDetailedBeanPopulatable() != null) {
@@ -162,8 +164,23 @@ public class BeanPopulator implements BeanPopulatorSpi
         if (baseConfig.getBeanSourceHandler() != null)
             baseConfig.getBeanSourceHandler().handleBeanSource(propertyValue);
         
-        if (transformer != null)
-            propertyValue = transformer.transform(propertyValue, paramType);
+        if (transformer != null) {
+            PropertyInfo propertyInfo = new PropertyInfo() {
+                public String getPropertyName() {
+                    return propertyName;
+                }
+
+                public Object getFromBean() {
+                    return fromBean;
+                }
+
+                public Object getToBean() {
+                    return toBean;
+                }
+            
+            };
+            propertyValue = transformer.transform(propertyValue, paramType, propertyInfo);
+        }
         
         if (baseConfig.isDebug()) {
             if (log.isInfoEnabled())
