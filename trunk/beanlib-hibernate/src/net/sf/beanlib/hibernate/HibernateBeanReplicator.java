@@ -74,7 +74,7 @@ public class HibernateBeanReplicator
             this.beanPopulatable = new HibernateBeanPopulatableSupport(entityBeanClassSet, collectionPropertyNameSet, vetoer);
         hibernateBeanTransformer.initBeanPopulatable(beanPopulatable);
         try {
-            return hibernateBeanTransformer.transform(from, toClass);
+            return hibernateBeanTransformer.transform(from, toClass, null);
         } finally {
             hibernateBeanTransformer.reset();
         }

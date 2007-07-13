@@ -1,3 +1,13 @@
+beanlib 3.3.0beta7
+------------------
+* Provide information via PropertyInfo about the java bean property 
+  when the property value is transformed.
+  Thanks to Erik Romson (romson@users.sourceforge.net) for requesting it.
+* Add sample replication with BeanReplicator (ie without involving Hibernate)
+* Add sample CustomBeanTransformerSpi impl
+* Add Character and Byte for checking immutability.  
+  Thanks to Bruno (bmarchesson@users.sourceforge.net) for pointing this out.
+
 beanlib 3.3.0beta6
 ------------------
 * fix bug in DtoCentricHibernate3Template caused as a side effect since spring upgraded from 1.x to 2.x

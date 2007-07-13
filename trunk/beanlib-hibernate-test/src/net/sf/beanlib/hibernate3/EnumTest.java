@@ -22,6 +22,7 @@ import junit.framework.JUnit4TestAdapter;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
+import net.sf.beanlib.spi.PropertyInfo;
 
 import org.junit.Test;
 
@@ -56,11 +57,11 @@ public class EnumTest {
                     {
                         return new CustomBeanTransformerSpi() 
                         {
-                            public <T> boolean isTransformable(Object from, Class<T> toClass) {
+                            public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
                                 return toClass.isEnum();
                             }
     
-                            public <T> T transform(Object in, Class<T> toClass) {
+                            public <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo) {
                                 return (T)in;
                             }
                         };

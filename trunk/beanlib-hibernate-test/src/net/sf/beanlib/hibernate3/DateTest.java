@@ -28,6 +28,7 @@ import junit.framework.JUnit4TestAdapter;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
+import net.sf.beanlib.spi.PropertyInfo;
 
 import org.junit.Test;
 
@@ -82,15 +83,15 @@ public class DateTest
                     {
                         return new CustomBeanTransformerSpi() 
                         {
-                            public <T> boolean isTransformable(Object from, Class<T> toClass) {
+
+                            public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
                                 return from instanceof Date && toClass == Date.class;
                             }
-    
-                            public <T> T transform(Object in, Class<T> toClass) 
-                            {
+
+                            public <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo) {
                                 Map<Object,Object> cloneMap = beanTransformer.getClonedMap();
                                 Object clone = cloneMap.get(in);
-                                
+                                  
                                 if (clone != null)
                                     return (T)clone;
                                 Date d = (Date)in;
