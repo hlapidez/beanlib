@@ -19,11 +19,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import junit.framework.JUnit4TestAdapter;
+import net.sf.beanlib.PropertyInfo;
 import net.sf.beanlib.provider.BeanTransformer;
 import net.sf.beanlib.provider.replicator.BeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
-import net.sf.beanlib.spi.PropertyInfo;
 
 import org.junit.Test;
 
@@ -57,6 +57,7 @@ public class CustomBeanTransformerSpiTest {
     static class B2 extends B {
     }
 
+    @SuppressWarnings("unused")
     private static class MyCustomBeanTransformer implements CustomBeanTransformerSpi {
         public static class Factory implements CustomBeanTransformerSpi.Factory {
           public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi beanTransformer) {

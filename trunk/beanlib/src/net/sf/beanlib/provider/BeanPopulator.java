@@ -25,6 +25,7 @@ import java.security.PrivilegedAction;
 import net.jcip.annotations.NotThreadSafe;
 import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.BeanlibException;
+import net.sf.beanlib.PropertyInfo;
 import net.sf.beanlib.spi.BeanMethodCollector;
 import net.sf.beanlib.spi.BeanMethodFinder;
 import net.sf.beanlib.spi.BeanPopulatable;
@@ -34,7 +35,6 @@ import net.sf.beanlib.spi.BeanPopulatorSpi;
 import net.sf.beanlib.spi.BeanSourceHandler;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.DetailedBeanPopulatable;
-import net.sf.beanlib.spi.PropertyInfo;
 import net.sf.beanlib.spi.Transformable;
 
 import org.apache.commons.logging.Log;
@@ -165,20 +165,7 @@ public class BeanPopulator implements BeanPopulatorSpi
             baseConfig.getBeanSourceHandler().handleBeanSource(propertyValue);
         
         if (transformer != null) {
-            PropertyInfo propertyInfo = new PropertyInfo() {
-                public String getPropertyName() {
-                    return propertyName;
-                }
-
-                public Object getFromBean() {
-                    return fromBean;
-                }
-
-                public Object getToBean() {
-                    return toBean;
-                }
-            
-            };
+            PropertyInfo propertyInfo = new PropertyInfo(propertyName, fromBean, toBean);
             propertyValue = transformer.transform(propertyValue, paramType, propertyInfo);
         }
         

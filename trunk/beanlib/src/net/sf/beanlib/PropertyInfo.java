@@ -13,19 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.beanlib.spi;
+package net.sf.beanlib;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * Information about a JavaBean property.
  * 
  * @author Joe D. Velopar
  */
-public interface PropertyInfo
+public class PropertyInfo 
 {
+    private final String propertyName;
+    private final Object fromBean;
+    private final Object toBean;
+    
+    public PropertyInfo(String propertyName, Object fromBean, Object toBean) {
+        this.propertyName = propertyName;
+        this.fromBean = fromBean;
+        this.toBean = toBean;
+    }
+
     /** Returns the property name. */
-    public String getPropertyName();
+    public String getPropertyName() {
+        return propertyName;
+    }
+
     /** Returns the Java Bean from which the property is read. */ 
-    public Object getFromBean();
+    public Object getFromBean() {
+        return fromBean;
+    }
+
     /** Returns the Java Bean to which the property is to be written. */ 
-    public Object getToBean();
+    public Object getToBean() {
+        return toBean;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
 }

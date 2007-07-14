@@ -15,6 +15,8 @@
  */
 package net.sf.beanlib.spi;
 
+import net.sf.beanlib.PropertyInfo;
+
 /**
  * Object Transformer.
  * 

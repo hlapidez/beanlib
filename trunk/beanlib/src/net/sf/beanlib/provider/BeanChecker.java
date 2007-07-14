@@ -54,7 +54,7 @@ public class BeanChecker {
 	 * @param k specified class name from which the getter methods are derived. 
 	 */
 	public boolean empty(Object fromBean, Class k) {
-		Class fromClass = fromBean.getClass();
+		Class<?> fromClass = fromBean.getClass();
 		Method[] ma = k.getDeclaredMethods();
 		try {
 			// invoking all declaring getter methods of fromBean

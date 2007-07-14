@@ -25,10 +25,10 @@ import java.util.Date;
 import java.util.Map;
 
 import junit.framework.JUnit4TestAdapter;
+import net.sf.beanlib.PropertyInfo;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
-import net.sf.beanlib.spi.PropertyInfo;
 
 import org.junit.Test;
 
@@ -41,7 +41,7 @@ public class DateTest
     {
         private Date date = new Timestamp(new Date().getTime());
         // reference to the same date instance
-        private Date DateRef = date;
+        private Date dateRef = date;
         private String text = "whatever";
         
         public Date getDate() {
@@ -61,18 +61,18 @@ public class DateTest
         }
 
         public Date getDateRef() {
-            return DateRef;
+            return dateRef;
         }
 
         public void setDateRef(Date dateRef) {
-            DateRef = dateRef;
+            this.dateRef = dateRef;
         }
     }
     
     @Test 
     public void testConvertTimestampToDate() 
     {
-        Pojo source = new Pojo();
+        final Pojo source = new Pojo();
         // Replicate Timestamp into Date
         HibernateBeanReplicator replicator =
             new Hibernate3BeanReplicator()
@@ -89,6 +89,9 @@ public class DateTest
                             }
 
                             public <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo) {
+                                assertTrue("date".equals(propertyInfo.getPropertyName()) || "dateRef".equals(propertyInfo.getPropertyName()));
+                                assertSame(source, propertyInfo.getFromBean());
+                                assertNotSame(source, propertyInfo.getToBean());
                                 Map<Object,Object> cloneMap = beanTransformer.getClonedMap();
                                 Object clone = cloneMap.get(in);
                                   
