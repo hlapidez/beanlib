@@ -19,10 +19,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import junit.framework.JUnit4TestAdapter;
+import net.sf.beanlib.PropertyInfo;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
-import net.sf.beanlib.spi.PropertyInfo;
 
 import org.junit.Test;
 

@@ -29,8 +29,8 @@ import java.util.Date;
 import java.util.Map;
 
 import net.sf.beanlib.BeanlibException;
+import net.sf.beanlib.PropertyInfo;
 import net.sf.beanlib.spi.BeanTransformerSpi;
-import net.sf.beanlib.spi.PropertyInfo;
 
 import org.apache.log4j.Logger;
 
