@@ -36,10 +36,9 @@ public interface ArrayReplicatorSpi
     /** 
      * Returns a replicated array. 
      * 
-     * @param <V> component type of the from array
      * @param <T> target class type
      * @param fromArray from array
      * @param toClass target class
      */
-    public <V,T> T replicateArray(V[] fromArray, Class<T> toClass);
+    public <T> T replicateArray(Object fromArray, Class<T> toClass);
 }
