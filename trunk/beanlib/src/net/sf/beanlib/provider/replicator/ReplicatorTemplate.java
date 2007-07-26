@@ -93,7 +93,7 @@ public abstract class ReplicatorTemplate
         // Array
         if (from.getClass().isArray())
             return beanTransformer.getArrayReplicatable()
-                                  .replicateArray((Object[])from, toClass);
+                                  .replicateArray(from, toClass);
         // Map
         if (from instanceof Map)
             return (T)beanTransformer.getMapReplicatable()

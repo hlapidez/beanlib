@@ -54,26 +54,26 @@ public class ArrayReplicator extends ReplicatorTemplate implements ArrayReplicat
         super(beanTransformer);
     }
     
-    public <V,T> T replicateArray(V[] from, Class<T> toClass)
+    public <T> T replicateArray(Object arrayToCopy, Class<T> toClass)
     {
-        if (!toClass.isAssignableFrom(from.getClass()))
+        if (!toClass.isAssignableFrom(arrayToCopy.getClass()))
             return null;
-        Class fromClass = from.getClass();
+        Class fromClass = arrayToCopy.getClass();
         Class fromComponentType = fromClass.getComponentType();
         // primitive array
         if (immutable(fromComponentType))
         {
-            int len = Array.getLength(from);
+            int len = Array.getLength(arrayToCopy);
             Object to = Array.newInstance(fromComponentType, len);
-            System.arraycopy(from, 0, to, 0, len);
-            putTargetCloned(from, to);
+            System.arraycopy(arrayToCopy, 0, to, 0, len);
+            putTargetCloned(arrayToCopy, to);
             return toClass.cast(to);
         }
         // non-primitive array
-        int len = Array.getLength(from);
+        int len = Array.getLength(arrayToCopy);
         Object to = Array.newInstance(fromComponentType, len);
-        putTargetCloned(from, to);
-        Object[] fromArray = from;
+        putTargetCloned(arrayToCopy, to);
+        Object[] fromArray = (Object[])arrayToCopy;
         Object[] toArray = (Object[])to;
         // recursively populate member objects.
         for (int i=fromArray.length-1; i >= 0; i--) {
