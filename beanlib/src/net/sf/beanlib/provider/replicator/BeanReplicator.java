@@ -17,6 +17,7 @@ package net.sf.beanlib.provider.replicator;
 
 import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.BeanlibException;
+import net.sf.beanlib.provider.BeanTransformer;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 
@@ -46,10 +47,27 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
     public static BeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
         return factory.newBeanReplicatable(beanTransformer);
     }
+
+    /**
+     * Convenient factory method to use the default {@link BeanTransformer}.
+     */
+    public static BeanReplicator newBeanReplicatable() {
+        return factory.newBeanReplicatable(BeanTransformer.newBeanTransformer());
+    }
     
-    protected BeanReplicator(BeanTransformerSpi beanTransformer) 
+    /**
+     * Convenient constructor for passing in a bean transformer.
+     */
+    public BeanReplicator(BeanTransformerSpi beanTransformer) 
     {
         super(beanTransformer);
+    }
+    
+    /**
+     * Convenient constructor to make use of the default {@link BeanTransformer}.
+     */
+    public BeanReplicator() {
+        super(BeanTransformer.newBeanTransformer());
     }
     
     public <V,T> T replicateBean(V from, Class<T> toClass)

@@ -15,6 +15,8 @@
  */
 package net.sf.beanlib.utils;
 
+import java.util.Currency;
+
 /**
  * Class Utilities.
  * 
@@ -44,6 +46,7 @@ public enum ClassUtils {
             || Boolean.class == c
             || Character.class == c
             || Byte.class == c
+            || Currency.class == c
             ;
     }
     
