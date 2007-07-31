@@ -1,3 +1,8 @@
+beanlib 3.3.0beta9
+------------------
+* Add convenient constructor to BeanReplicator.
+* Include java.util.Currency in checking for immutability.
+
 beanlib 3.3.0beta8
 ------------------
 * Bug fix of byte[] replication.
