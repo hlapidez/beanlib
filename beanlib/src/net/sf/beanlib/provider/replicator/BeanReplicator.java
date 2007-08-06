@@ -70,6 +70,11 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
         super(BeanTransformer.newBeanTransformer());
     }
     
+    /** Convenient method to replicate a bean to the same target class. */
+    public <V> V replicateBean(V from) {
+        return replicateBean(from, from.getClass());
+    }
+    
     public <V,T> T replicateBean(V from, Class<T> toClass)
     {
         Class fromClass = from.getClass();
