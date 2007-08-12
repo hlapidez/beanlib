@@ -15,25 +15,29 @@
  */
 package net.sf.beanlib.hibernate3;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import junit.framework.JUnit4TestAdapter;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Test;
 
 /**
  * @author Joe D. Velopar
  */
-public class SubTypeTest extends TestCase {
+public class SubTypeTest {
 	Log log = LogFactory.getLog(this.getClass());
 	public static abstract class A{};
 	public static class B extends A{};
-	public  static class C extends A{};
+	public static class C extends A{};
 
-	public  static class D {
+	public static class D {
 		private List<A> list = new ArrayList<A>();
 
 		public List<A> getList() {
@@ -47,6 +51,8 @@ public class SubTypeTest extends TestCase {
 			list.add(a);
 		}
 	}
+    
+    @Test
 	public void testCopy() {
 		D d = new D();
 		d.addToList(new B());
@@ -63,4 +69,8 @@ public class SubTypeTest extends TestCase {
 			assertTrue(type == B.class || type == C.class);
 		}
 	}
+
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(SubTypeTest.class);
+    }
 }
