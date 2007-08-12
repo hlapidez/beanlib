@@ -84,5 +84,4 @@ public class PublicSetterCollectionLastMethodCollectorTest {
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(PublicSetterCollectionLastMethodCollectorTest.class);
     }
-
 }
