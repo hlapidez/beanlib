@@ -1,3 +1,8 @@
+beanlib 3.3.0beta10
+-------------------
+* Add OrderedMethodCollector
+* Support javassist enhanced proxies in Hibernate
+
 beanlib 3.3.0beta9
 ------------------
 * Add convenient constructor to BeanReplicator.
