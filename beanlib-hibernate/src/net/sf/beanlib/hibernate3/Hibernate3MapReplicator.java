@@ -18,10 +18,10 @@ package net.sf.beanlib.hibernate3;
 import java.util.Map;
 
 import net.jcip.annotations.ThreadSafe;
+import net.sf.beanlib.hibernate.UnEnhancer;
 import net.sf.beanlib.provider.replicator.MapReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
-import net.sf.cglib.proxy.Enhancer;
 
 import org.hibernate.Hibernate;
 
@@ -71,10 +71,8 @@ public class Hibernate3MapReplicator extends MapReplicator {
     protected <T> T createToInstance(Class<T> toClass) 
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
     {
-        if (Enhancer.isEnhanced(toClass)) {
-            // figure out the pre-enhanced class
-            toClass = (Class<T>)toClass.getSuperclass();
-        }
+        // figure out the pre-enhanced class
+        toClass = UnEnhancer.unenhance(toClass);
         return super.createToInstance(toClass);
     }
 }

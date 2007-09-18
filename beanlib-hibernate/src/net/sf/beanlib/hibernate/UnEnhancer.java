@@ -24,12 +24,28 @@ public class UnEnhancer
 {
     private UnEnhancer() {}
     /**
-     * Digs out the pre CGLIB enhanced class, if any.
+     * Digs out the pre CGLIB/Javassist enhanced class, if any.
      */
-    public static Class unenhance(Class c) {
-        while (c != null && Enhancer.isEnhanced(c))
-            c = c.getSuperclass();
-        return c;
+    @SuppressWarnings("unchecked")
+    public static <T> Class<T> unenhance(Class c) 
+    {
+        boolean enhanced = true;
+        
+        while (c != null && enhanced)
+        {
+            enhanced = Enhancer.isEnhanced(c);
+            
+            if (!enhanced)
+            {
+                String className = c.getName();
+                // pattern found in javassist 3.4 and 3.6's ProxyFactory 
+                enhanced = className.startsWith("org.javassist.tmp.")
+                        || className.indexOf("_$$_javassist_") != -1;
+            }
+            if (enhanced)
+                c = c.getSuperclass();
+        }
+        return (Class<T>)c;
     }
 
 }

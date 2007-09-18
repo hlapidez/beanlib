@@ -16,10 +16,10 @@
 package net.sf.beanlib.hibernate3;
 
 import net.jcip.annotations.ThreadSafe;
+import net.sf.beanlib.hibernate.UnEnhancer;
 import net.sf.beanlib.provider.replicator.BeanReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
-import net.sf.cglib.proxy.Enhancer;
 
 /**
  * Hibernate 3 specific JavaBean Replicator.
@@ -60,10 +60,7 @@ public class Hibernate3JavaBeanReplicator extends BeanReplicator
     protected <T> T createToInstance(Class<T> toClass) 
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
     {
-        if (Enhancer.isEnhanced(toClass)) {
-            // figure out the pre-enhanced class
-            toClass = (Class<T>)toClass.getSuperclass();
-        }
+        toClass = UnEnhancer.unenhance(toClass);
         return super.createToInstance(toClass);
     }
 }

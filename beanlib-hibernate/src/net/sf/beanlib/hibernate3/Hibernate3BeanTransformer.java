@@ -16,11 +16,11 @@
 package net.sf.beanlib.hibernate3;
 
 import net.jcip.annotations.ThreadSafe;
+import net.sf.beanlib.hibernate.UnEnhancer;
 import net.sf.beanlib.provider.BeanPopulator;
 import net.sf.beanlib.provider.BeanTransformer;
 import net.sf.beanlib.spi.BeanPopulatorSpi;
 import net.sf.beanlib.spi.BeanTransformerSpi;
-import net.sf.cglib.proxy.Enhancer;
 
 /**
  * Hibernate 3 specific Bean Transformer.
@@ -69,10 +69,8 @@ public class Hibernate3BeanTransformer extends BeanTransformer
     protected <T> T createToInstance(Class<T> toClass) 
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
     {
-        if (Enhancer.isEnhanced(toClass)) {
-            // figure out the pre-enhanced class
-            toClass = (Class<T>)toClass.getSuperclass();
-        }
+        // figure out the pre-enhanced class
+        toClass = UnEnhancer.unenhance(toClass);
         return super.createToInstance(toClass);
     }
 }
