@@ -29,10 +29,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.jcip.annotations.ThreadSafe;
+import net.sf.beanlib.hibernate.UnEnhancer;
 import net.sf.beanlib.provider.replicator.CollectionReplicator;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
-import net.sf.cglib.proxy.Enhancer;
 
 import org.hibernate.Hibernate;
 
@@ -131,10 +131,8 @@ public class Hibernate3CollectionReplicator extends CollectionReplicator {
     protected <T> T createToInstance(Class<T> toClass) 
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
     {
-        if (Enhancer.isEnhanced(toClass)) {
-            // figure out the pre-enhanced class
-            toClass = (Class<T>)toClass.getSuperclass();
-        }
+        // figure out the pre-enhanced class
+        toClass = UnEnhancer.unenhance(toClass);
         return super.createToInstance(toClass);
     }
 }

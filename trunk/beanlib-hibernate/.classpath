@@ -7,7 +7,7 @@
 	<classpathentry kind="lib" path="/beanlib/lib/commons/commons-logging.jar"/>
 	<classpathentry kind="lib" path="C:/Playground/workspace/beanlib/beanlib/lib/log4j-1.2.14.jar"/>
 	<classpathentry kind="lib" path="C:/Playground/workspace/beanlib/beanlib/lib/commons/commons-lang-2.3.jar"/>
-	<classpathentry kind="lib" path="C:/Playground/workspace/beanlib/beanlib/lib/cglib-nodep-2.1_3.jar"/>
+	<classpathentry sourcepath="C:/Playground/cglib/2.1_3/src/proxy" kind="lib" path="C:/Playground/workspace/beanlib/beanlib/lib/cglib-nodep-2.1_3.jar"/>
 	<classpathentry sourcepath="C:/Playground/spring/2.0.5/src" kind="lib" path="C:/Playground/workspace/beanlib/beanlib-hibernate/lib/spring/spring.jar"/>
 	<classpathentry kind="lib" path="/beanlib/lib/jcip-annotations.jar"/>
 	<classpathentry sourcepath="C:/Playground/hibernate/3.2/ga/src" kind="lib" path="lib/hibernate/hibernate-3.2.4.sp1.jar"/>

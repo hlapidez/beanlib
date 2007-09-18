@@ -16,6 +16,9 @@
 package net.sf.beanlib.provider.collector;
 
 import static org.junit.Assert.assertTrue;
+
+import java.util.Date;
+
 import junit.framework.JUnit4TestAdapter;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 import net.sf.beanlib.hibernate3.Hibernate3BeanReplicator;
@@ -26,16 +29,18 @@ public class OrderedMethodCollectorTest {
     
     @Test
     public void test() {
-        A a1 = new A("a1");
-        A a2 = new A();
-        a1.addA(a1);
-        a1.addA(a2);
-        assertTrue(2 == a1.getAset().size());
+        B b1 = new B("b1");
+        b1.setDate(new Date());
+        
+        B b2 = new B();
+        b1.addB(b1);
+        b1.addB(b2);
+        assertTrue(2 == b1.getBSet().size());
         
         HibernateBeanReplicator replicator = new Hibernate3BeanReplicator()
                                                 .initSetterMethodCollector(new OrderedMethodCollector());
-        A a1clone = replicator.copy(a1);
-        assertTrue(a1clone.getAset().size() == 2);
+        B a1clone = replicator.copy(b1);
+        assertTrue(a1clone.getBSet().size() == 2);
     }
     
     public static junit.framework.Test suite() {
