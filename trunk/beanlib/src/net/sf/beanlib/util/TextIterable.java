@@ -17,8 +17,8 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public class TextIterable implements Iterable<String>, Closeable {
     private final URL url;
-
     private final List<LineIterator> openedIterators = new ArrayList<LineIterator>();
+    private volatile boolean returnNullUponEof;
 
     public TextIterable(File file) throws MalformedURLException {
         this(file.toURI().toURL());
@@ -37,7 +37,7 @@ public class TextIterable implements Iterable<String>, Closeable {
 
     public LineIterator iterator() {
         try {
-            LineIterator ret = new LineIterator(this, url.openStream());
+            LineIterator ret = new LineIterator(this, url.openStream(), returnNullUponEof);
 
             synchronized (openedIterators) {
                 openedIterators.add(ret);
@@ -73,5 +73,18 @@ public class TextIterable implements Iterable<String>, Closeable {
         synchronized (openedIterators) {
             openedIterators.remove(li);
         }
+    }
+
+    public boolean isReturnNullUponEof() {
+        return returnNullUponEof;
+    }
+
+    public void setReturnNullUponEof(boolean returnNullUponEof) {
+        this.returnNullUponEof = returnNullUponEof;
+    }
+
+    public TextIterable withReturnNullUponEof(boolean returnNullUponEof) {
+        setReturnNullUponEof(returnNullUponEof);
+        return this;
     }
 }

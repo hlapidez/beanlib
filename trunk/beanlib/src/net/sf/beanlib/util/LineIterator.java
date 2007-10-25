@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import net.jcip.annotations.NotThreadSafe;
 
@@ -15,15 +16,14 @@ import net.jcip.annotations.NotThreadSafe;
 @NotThreadSafe
 class LineIterator implements Iterator<String>, Closeable {
     private boolean hasNextExecuted;
-
     private String line;
-
     private LineNumberReader lnr;
-
     private final TextIterable textIterable;
+    private final boolean returnNullUponEof;
 
-    LineIterator(TextIterable textIterable, InputStream is) {
+    LineIterator(TextIterable textIterable, InputStream is, boolean returnNullUponEof) {
         this.textIterable = textIterable;
+        this.returnNullUponEof = returnNullUponEof;
         InputStreamReader isr = null;
 
         try {
@@ -63,9 +63,21 @@ class LineIterator implements Iterator<String>, Closeable {
     public String next() {
         if (hasNextExecuted) {
             hasNextExecuted = false;
-            return line;
+            return line == null 
+                 ? eof() 
+                 : line
+                 ;
         }
-        return hasNext() ? next() : null;
+        return hasNext() 
+             ? next() 
+             : eof()
+             ;
+    }
+    
+    private String eof() {
+        if (returnNullUponEof)
+            return null;
+        throw new NoSuchElementException();
     }
 
     public void close() {
@@ -74,7 +86,14 @@ class LineIterator implements Iterator<String>, Closeable {
             closeInPrivate();
         }
     }
-
+    
+    public int getLineNumber() {
+        return lnr == null  
+             ? -1 
+             : lnr.getLineNumber()
+             ;
+    }
+    
     void closeInPrivate() {
         if (lnr != null) {
             try {
