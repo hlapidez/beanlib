@@ -13,6 +13,7 @@
         <path refid="beanlib.classpath"/>
     </path>
     <path id="mainproject.classpath">
+        <pathelement location="etc"/>
         <pathelement location="target/classes"/>
         <pathelement location="${beanlib.location}/lib/commons/commons-logging.jar"/>
         <pathelement location="${beanlib.location}/lib/commons/commons-lang-2.3.jar"/>

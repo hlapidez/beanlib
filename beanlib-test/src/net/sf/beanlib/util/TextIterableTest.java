@@ -1,6 +1,12 @@
 package net.sf.beanlib.util;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import junit.framework.JUnit4TestAdapter;
 
 import org.junit.Test;
@@ -65,6 +71,42 @@ public class TextIterableTest
         ti.close();
     }
    
+    @Test(expected=NoSuchElementException.class)
+    public void testNoSuchElement() {
+        TextIterable ti = new TextIterable("testing_text_iterable.txt");
+        Iterator itr=ti.iterator();
+        
+        while (itr.hasNext())
+            itr.next();
+        itr.next();
+    }
+    
+    @Test
+    public void testReturnNull() {
+        TextIterable ti = new TextIterable("testing_text_iterable.txt")
+                          .withReturnNullUponEof(true);
+        Iterator itr=ti.iterator();
+        
+        while (itr.hasNext())
+            itr.next();
+        assertNull(itr.next());
+        assertNull(itr.next());
+        assertFalse(itr.hasNext());
+        assertFalse(itr.hasNext());
+        assertNull(itr.next());
+    }
+    
+    @Test
+    public void testReturnNull2() {
+        TextIterable ti = new TextIterable("testing_text_iterable.txt")
+                          .withReturnNullUponEof(true);
+        Iterator itr=ti.iterator();
+        
+        while (itr.hasNext())
+            itr.next();
+        assertFalse(itr.hasNext());
+        assertNull(itr.next());
+    }
     
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(TextIterableTest.class);
