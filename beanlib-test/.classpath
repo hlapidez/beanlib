@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="C:/Playground/workspace/beanlib/beanlib/lib/cglib-nodep-2.1_3.jar"/>
 	<classpathentry kind="lib" path="C:/Playground/workspace/beanlib/beanlib-test/lib/junit/junit-4.1.jar"/>
 	<classpathentry kind="src" path="dl"/>
+	<classpathentry kind="lib" path="etc"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
