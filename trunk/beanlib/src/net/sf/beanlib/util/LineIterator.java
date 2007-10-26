@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -21,13 +23,37 @@ class LineIterator implements Iterator<String>, Closeable {
     private final TextIterable textIterable;
     private final boolean returnNullUponEof;
 
-    LineIterator(TextIterable textIterable, InputStream is, boolean returnNullUponEof) {
+    LineIterator(TextIterable textIterable, InputStream is, boolean returnNullUponEof, Charset charset) {
         this.textIterable = textIterable;
         this.returnNullUponEof = returnNullUponEof;
         InputStreamReader isr = null;
 
         try {
-            isr = new InputStreamReader(is);
+            isr = charset == null 
+                ? new InputStreamReader(is) 
+                : new InputStreamReader(is, charset)
+                ;
+            lnr = new LineNumberReader(isr);
+        } catch (Exception ex) {
+            try {
+                if (lnr != null)
+                    lnr.close();
+                else if (isr != null)
+                    isr.close();
+                else if (is != null)
+                    is.close();
+            } catch (Throwable ignore) {
+            }
+        }
+    }
+    
+    LineIterator(TextIterable textIterable, InputStream is, boolean returnNullUponEof, CharsetDecoder decoder) {
+        this.textIterable = textIterable;
+        this.returnNullUponEof = returnNullUponEof;
+        InputStreamReader isr = null;
+
+        try {
+            isr = new InputStreamReader(is, decoder);
             lnr = new LineNumberReader(isr);
         } catch (Exception ex) {
             try {

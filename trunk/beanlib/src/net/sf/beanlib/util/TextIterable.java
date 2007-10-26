@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -19,6 +21,9 @@ public class TextIterable implements Iterable<String>, Closeable {
     private final URL url;
     private final List<LineIterator> openedIterators = new ArrayList<LineIterator>();
     private volatile boolean returnNullUponEof;
+    private String charsetname;
+    private Charset charset;
+    private CharsetDecoder charsetDecoder;
 
     public TextIterable(File file) throws MalformedURLException {
         this(file.toURI().toURL());
@@ -36,9 +41,25 @@ public class TextIterable implements Iterable<String>, Closeable {
     }
 
     public LineIterator iterator() {
+        LineIterator ret;
+        final String charsetname;
+        final Charset charset;
+        final CharsetDecoder charsetDecoder;
+        
+        synchronized(this) {
+            charsetname = this.charsetname;
+            charset = this.charset;
+            charsetDecoder = this.charsetDecoder;
+        }
         try {
-            LineIterator ret = new LineIterator(this, url.openStream(), returnNullUponEof);
-
+            if (charsetDecoder != null)
+                ret = new LineIterator(this, url.openStream(), returnNullUponEof, charsetDecoder);
+            else if (charset != null)
+                ret = new LineIterator(this, url.openStream(), returnNullUponEof, charset);
+            else if (charsetname != null)
+                ret = new LineIterator(this, url.openStream(), returnNullUponEof, Charset.forName(charsetname));
+            else
+                ret = new LineIterator(this, url.openStream(), returnNullUponEof, (Charset)null);
             synchronized (openedIterators) {
                 openedIterators.add(ret);
             }
@@ -47,7 +68,7 @@ public class TextIterable implements Iterable<String>, Closeable {
             throw new IllegalStateException(e);
         }
     }
-
+    
     public void close() {
         LineIterator[] lineIterators;
 
@@ -85,6 +106,51 @@ public class TextIterable implements Iterable<String>, Closeable {
 
     public TextIterable withReturnNullUponEof(boolean returnNullUponEof) {
         setReturnNullUponEof(returnNullUponEof);
+        return this;
+    }
+
+    public synchronized Charset getCharset() {
+        return charset;
+    }
+
+    public synchronized void setCharset(Charset charset) {
+        this.charset = charset;
+        this.charsetname = null;
+        this.charsetDecoder = null;
+    }
+    
+    public TextIterable withCharset(Charset charset) {
+        setCharset(charset);
+        return this;
+    }
+
+    public synchronized CharsetDecoder getCharsetDecoder() {
+        return charsetDecoder;
+    }
+
+    public synchronized void setCharsetDecoder(CharsetDecoder charsetDecoder) {
+        this.charsetDecoder = charsetDecoder;
+        this.charsetname = null;
+        this.charset = null;
+    }
+    
+    public TextIterable withCharsetDecoder(CharsetDecoder charsetDecoder) {
+        setCharsetDecoder(charsetDecoder);
+        return this;
+    }
+
+    public synchronized String getCharsetname() {
+        return charsetname;
+    }
+
+    public synchronized void setCharsetname(String charsetname) {
+        this.charsetname = charsetname;
+        this.charset = null;
+        this.charsetDecoder = null;
+    }
+    
+    public TextIterable withCharsetname(String charsetname) {
+        this.charsetname = charsetname;
         return this;
     }
 }
