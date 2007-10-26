@@ -149,7 +149,7 @@ public class TextIterable implements Iterable<String>, Closeable {
     }
     
     public TextIterable withCharsetname(String charsetname) {
-        this.charsetname = charsetname;
+        setCharsetname(charsetname);
         return this;
     }
 }
