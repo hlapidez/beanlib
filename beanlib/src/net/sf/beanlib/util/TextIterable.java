@@ -70,7 +70,7 @@ public class TextIterable implements Iterable<String>, Closeable {
     }
     
     public void close() {
-        LineIterator[] lineIterators;
+        final LineIterator[] lineIterators;
 
         synchronized (openedIterators) {
             lineIterators = openedIterators.toArray(
