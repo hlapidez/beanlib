@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -30,7 +31,7 @@ public class LineIteratorTest
     {
         {
             ByteArrayInputStream is = new ByteArrayInputStream(TWO_LINER.getBytes());
-            LineIterator itr = new LineIterator(PLACEHOLDER, is, true);
+            LineIterator itr = new LineIterator(PLACEHOLDER, is, true, (Charset)null);
             assertEquals(ONE_LINER, itr.next());
             assertTrue(itr.getLineNumber() == 1);
             itr.closeInPrivate();
@@ -39,7 +40,7 @@ public class LineIteratorTest
         }
         {
             ByteArrayInputStream is = new ByteArrayInputStream(TWO_LINER.getBytes());
-            LineIterator itr = new LineIterator(PLACEHOLDER, is, true);
+            LineIterator itr = new LineIterator(PLACEHOLDER, is, true, (Charset)null);
             assertEquals(ONE_LINER, itr.next());
             itr.closeInPrivate();
             assertFalse(itr.hasNext());
@@ -51,7 +52,7 @@ public class LineIteratorTest
     public void testNoSuchElement() {
         {
             ByteArrayInputStream is = new ByteArrayInputStream(EMPTY.getBytes());
-            LineIterator itr = new LineIterator(PLACEHOLDER, is, false);
+            LineIterator itr = new LineIterator(PLACEHOLDER, is, false, (Charset)null);
             assertTrue(itr.getLineNumber() == 0);
             assertFalse(itr.hasNext());
             assertFalse(itr.hasNext());
@@ -63,7 +64,7 @@ public class LineIteratorTest
     public void testNoSuchElement2() {
         {
             ByteArrayInputStream is = new ByteArrayInputStream(EMPTY.getBytes());
-            LineIterator itr = new LineIterator(PLACEHOLDER, is, false);
+            LineIterator itr = new LineIterator(PLACEHOLDER, is, false, (Charset)null);
             itr.next();
         }
     }
@@ -72,7 +73,7 @@ public class LineIteratorTest
     public void testNoSuchElement3() {
         {
             ByteArrayInputStream is = new ByteArrayInputStream(EMPTY.getBytes());
-            LineIterator itr = new LineIterator(PLACEHOLDER, is, false);
+            LineIterator itr = new LineIterator(PLACEHOLDER, is, false, (Charset)null);
             assertFalse(itr.hasNext());
             itr.next();
         }
@@ -82,7 +83,7 @@ public class LineIteratorTest
     public void testEmpty() {
         {
             ByteArrayInputStream is = new ByteArrayInputStream(EMPTY.getBytes());
-            LineIterator itr = new LineIterator(PLACEHOLDER, is, true);
+            LineIterator itr = new LineIterator(PLACEHOLDER, is, true, (Charset)null);
             assertTrue(itr.getLineNumber() == 0);
             assertFalse(itr.hasNext());
             assertNull(itr.next());
@@ -94,7 +95,7 @@ public class LineIteratorTest
         }
         {
             ByteArrayInputStream is = new ByteArrayInputStream(EMPTY.getBytes());
-            LineIterator itr = new LineIterator(PLACEHOLDER, is, true);
+            LineIterator itr = new LineIterator(PLACEHOLDER, is, true, (Charset)null);
             assertTrue(itr.getLineNumber() == 0);
             assertFalse(itr.hasNext());
             assertFalse(itr.hasNext());
@@ -109,7 +110,7 @@ public class LineIteratorTest
     public void testOneLiner() {
         {
             ByteArrayInputStream is = new ByteArrayInputStream(ONE_LINER.getBytes());
-            LineIterator itr = new LineIterator(PLACEHOLDER, is, true);
+            LineIterator itr = new LineIterator(PLACEHOLDER, is, true, (Charset)null);
             assertTrue(itr.getLineNumber() == 0);
             assertTrue(itr.hasNext());
             assertTrue(itr.getLineNumber() == 1);
@@ -122,7 +123,7 @@ public class LineIteratorTest
         }
         {
             ByteArrayInputStream is = new ByteArrayInputStream(ONE_LINER.getBytes());
-            LineIterator itr = new LineIterator(PLACEHOLDER, is, true);
+            LineIterator itr = new LineIterator(PLACEHOLDER, is, true, (Charset)null);
             assertTrue(itr.getLineNumber() == 0);
             assertTrue(itr.hasNext());
             assertTrue(itr.getLineNumber() == 1);
@@ -135,7 +136,7 @@ public class LineIteratorTest
         }
         {
             ByteArrayInputStream is = new ByteArrayInputStream(ONE_LINER.getBytes());
-            Iterator itr = new LineIterator(PLACEHOLDER, is, true);
+            Iterator itr = new LineIterator(PLACEHOLDER, is, true, (Charset)null);
             assertEquals(ONE_LINER, itr.next());
             assertFalse(itr.hasNext());
         }
@@ -145,7 +146,7 @@ public class LineIteratorTest
     public void testTwoLiner() {
         {
             ByteArrayInputStream is = new ByteArrayInputStream(TWO_LINER.getBytes());
-            Iterator itr = new LineIterator(PLACEHOLDER, is, true);
+            Iterator itr = new LineIterator(PLACEHOLDER, is, true, (Charset)null);
             assertTrue(itr.hasNext());
             assertEquals(ONE_LINER, itr.next());
             assertTrue(itr.hasNext());
@@ -155,7 +156,7 @@ public class LineIteratorTest
         }
         {
             ByteArrayInputStream is = new ByteArrayInputStream(TWO_LINER.getBytes());
-            LineIterator itr = new LineIterator(PLACEHOLDER, is, true);
+            LineIterator itr = new LineIterator(PLACEHOLDER, is, true, (Charset)null);
             assertTrue(itr.getLineNumber() == 0);
             assertTrue(itr.hasNext());
             assertTrue(itr.getLineNumber() == 1);
@@ -180,7 +181,7 @@ public class LineIteratorTest
         }
         {
             ByteArrayInputStream is = new ByteArrayInputStream(TWO_LINER.getBytes());
-            Iterator itr = new LineIterator(PLACEHOLDER, is, true);
+            Iterator itr = new LineIterator(PLACEHOLDER, is, true, (Charset)null);
             assertEquals(ONE_LINER, itr.next());
             assertEquals("Two line", itr.next());
             assertNull(itr.next());
