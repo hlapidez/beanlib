@@ -73,11 +73,10 @@ public class TextIterable implements Iterable<String>, Closeable {
         LineIterator[] lineIterators;
 
         synchronized (openedIterators) {
-            lineIterators = new LineIterator[openedIterators.size()];
-            lineIterators = openedIterators.toArray(lineIterators);
-
-            for (Iterator<LineIterator> itr=openedIterators.iterator(); itr.hasNext();)
-            {
+            lineIterators = openedIterators.toArray(
+                                        new LineIterator[
+                                             openedIterators.size()]);
+            for (Iterator<LineIterator> itr=openedIterators.iterator(); itr.hasNext();) {
                 itr.next();
                 itr.remove();
             }
