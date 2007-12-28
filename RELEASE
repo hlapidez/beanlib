@@ -1,3 +1,7 @@
+beanlib 3.3.0beta11
+-------------------
+* Add TextIterable
+
 beanlib 3.3.0beta10
 -------------------
 * Add OrderedMethodCollector
