@@ -116,27 +116,40 @@ public abstract class ReplicatorTemplate
                               .replicateBean(from, toClass);
     }
     
-    /** 
-     * Creates a non cglib enhanced instance of the given object.
-     */
-    protected Object createToInstance(Object from) 
+//    /** 
+//     * Creates a non cglib enhanced instance of the given object.
+//     */
+    protected final Object createToInstance(Object from) 
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
     {
-        return createToInstance(from.getClass());
+        return createToInstance(from, from.getClass());
     }
     
-    /** 
-     * Creates a non cglib enhanced instance of the given class, which could itself be the class of a cglib enhanced object.
-     */
+//    /** 
+//     * Creates a non cglib enhanced instance of the given class, which could itself be the class of a cglib enhanced object.
+//     */
+//    @SuppressWarnings("unchecked")
+//    protected <T> T createToInstance(Class<T> toClass) 
+//        throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
+//    {
+//        //      if (Enhancer.isEnhanced(toClass)) {
+//        //      // figure out the pre-enhanced class
+//        //      toClass = (Class<T>)toClass.getSuperclass();
+//        //  }
+//        return newInstanceAsPrivileged(toClass);
+//    }
+    
     @SuppressWarnings("unchecked")
-    protected <T> T createToInstance(Class<T> toClass) 
+    protected <T> T createToInstance(Object from, Class<T> toClass)
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
     {
-        //      if (Enhancer.isEnhanced(toClass)) {
-        //      // figure out the pre-enhanced class
-        //      toClass = (Class<T>)toClass.getSuperclass();
-        //  }
-        return newInstanceAsPrivileged(toClass);
+        Class<T> targetClass = chooseClass(from.getClass(), toClass);
+        return newInstanceAsPrivileged(targetClass);
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected final <T> Class<T> chooseClass(Class<?> fromClass, Class<T> toClass) {
+        return (Class<T>)(toClass.isAssignableFrom(fromClass) ? fromClass : toClass);
     }
     
     protected <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo) {
@@ -179,7 +192,7 @@ public abstract class ReplicatorTemplate
      * @param c given class
      * @return a new instance of the given class via the no-arg constructor
      */ 
-    private <T> T newInstanceAsPrivileged(Class<T> c) 
+    protected final <T> T newInstanceAsPrivileged(Class<T> c) 
         throws SecurityException, NoSuchMethodException, InstantiationException, IllegalAccessException
     {
         final Constructor constructor = c.getDeclaredConstructor();

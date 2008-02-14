@@ -92,7 +92,7 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
         }
         T to;
         try {
-            to = createToInstance(chooseClass(from.getClass(), toClass));
+            to = createToInstance(from, toClass);
         } catch (SecurityException e) {
             throw new BeanlibException(e);
         } catch (InstantiationException e) {
@@ -108,8 +108,8 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
         return to;
     }
     
-    @SuppressWarnings("unchecked")
-    private <T> Class<T> chooseClass(Class<?> fromClass, Class<T> toClass) {
-        return (Class<T>)(toClass.isAssignableFrom(fromClass) ? fromClass : toClass);
-    }
+//    @SuppressWarnings("unchecked")
+//    private <T> Class<T> chooseClass(Class<?> fromClass, Class<T> toClass) {
+//        return (Class<T>)(toClass.isAssignableFrom(fromClass) ? fromClass : toClass);
+//    }
 }

@@ -17,6 +17,9 @@ package net.sf.beanlib.hibernate;
 
 import net.sf.cglib.proxy.Enhancer;
 
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.LazyInitializer;
+
 /**
  * @author Joe D. Velopar
  */
@@ -47,5 +50,34 @@ public class UnEnhancer
         }
         return (Class<T>)c;
     }
-
+    
+    @SuppressWarnings("unchecked")
+    public static <T> Class<T> getActualClass(Object proxy) 
+    {
+        Class c = proxy.getClass();
+        boolean enhanced = true;
+        
+        while (c != null && enhanced)
+        {
+            enhanced = Enhancer.isEnhanced(c);
+            
+            if (!enhanced)
+            {
+                String className = c.getName();
+                // pattern found in javassist 3.4 and 3.6's ProxyFactory 
+                enhanced = className.startsWith("org.javassist.tmp.")
+                        || className.indexOf("_$$_javassist_") != -1;
+            }
+            if (enhanced) 
+            {
+                if ( proxy instanceof HibernateProxy ) {
+                    HibernateProxy hibernateProxy = (HibernateProxy)proxy; 
+                    LazyInitializer lazyInitializer = hibernateProxy.getHibernateLazyInitializer();
+                    return lazyInitializer.getPersistentClass();
+                }
+                c = c.getSuperclass();
+            }
+        }
+        return (Class<T>)c;
+    }
 }
