@@ -95,7 +95,6 @@ public class DateReplicatorTest {
     }
     
     public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(DateReplicatorTest.class);
+        return new JUnit4TestAdapter(new Object(){}.getClass().getEnclosingClass());
     }
-
 }
