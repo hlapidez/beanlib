@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import junit.framework.JUnit4TestAdapter;
+import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.PropertyInfo;
 import net.sf.beanlib.provider.BeanTransformer;
 import net.sf.beanlib.provider.replicator.BeanReplicator;
@@ -37,7 +38,7 @@ public class BeanTransformerSpiTest {
         BeanReplicator beanReplicator = BeanReplicator.newBeanReplicatable();
         try {
             beanReplicator.replicateBean(a);
-        } catch(net.sf.beanlib.BeanlibException ex) {
+        } catch(BeanlibException ex) {
             throw ex.getCause();
         }
     }
