@@ -210,11 +210,15 @@ public class Hibernate3DtoCopier
     /** Copy with a Application specific BeanPopulatable excluding all member Set properties. */
     private Object copy(Object from, Class[] entityBeanClassArray /* , SessionFactory sessionFactory */) 
     {
+        if (from == null)
+            return null;
         return copy(from.getClass(), from, entityBeanClassArray, CollectionPropertyName.EMPTY_ARRAY /*, sessionFactory */);
     }
     
     private <E> E copy(Class<E> targetEntityType, Object from, Class[] entityBeanClassArray /* , SessionFactory sessionFactory */) 
     {
+        if (from == null)
+            return null;
         return copy(targetEntityType, from, entityBeanClassArray, CollectionPropertyName.EMPTY_ARRAY /*, sessionFactory */);
     }
 
@@ -222,6 +226,8 @@ public class Hibernate3DtoCopier
     private <E> E copy(Class<E> targetEntityType, Object from, 
         Class[] entityBeanClassArray, CollectionPropertyName[] collectionPropertyNameArray /*, SessionFactory  sessionFactory */ ) 
     {
+        if (from == null)
+            return null;
         HibernateBeanReplicator replicator = createHibernateBeanReplicator();
         // Assumes all entity classes
         Set<Class> entityBeanClassSet = null;
