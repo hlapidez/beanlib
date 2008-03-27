@@ -1,3 +1,9 @@
+beanlib 3.3.0beta12
+-------------------
+* Fix NPE in Hibernate3DtoCopier when the collection contains null elements
+* Use UnEnhancer.getActualClass to figure out the persistent class
+* Remove unused classes
+
 beanlib 3.3.0beta11
 -------------------
 * Add TextIterable
