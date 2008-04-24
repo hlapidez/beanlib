@@ -136,12 +136,4 @@ public class Hibernate3CollectionReplicator extends CollectionReplicator {
         Class<T> targetClass = chooseClass(actualClass, toClass);
         return newInstanceAsPrivileged(targetClass);
     }
-//    @Override
-//    protected <T> T createToInstance(Class<T> toClass) 
-//        throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
-//    {
-//        // figure out the pre-enhanced class
-//        toClass = UnEnhancer.unenhance(toClass);
-//        return super.createToInstance(toClass);
-//    }
 }

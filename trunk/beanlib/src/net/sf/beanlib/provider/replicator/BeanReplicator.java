@@ -107,9 +107,4 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
         populateBean(from, to);
         return to;
     }
-    
-//    @SuppressWarnings("unchecked")
-//    private <T> Class<T> chooseClass(Class<?> fromClass, Class<T> toClass) {
-//        return (Class<T>)(toClass.isAssignableFrom(fromClass) ? fromClass : toClass);
-//    }
 }

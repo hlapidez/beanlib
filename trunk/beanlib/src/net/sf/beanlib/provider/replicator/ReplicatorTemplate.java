@@ -148,8 +148,12 @@ public abstract class ReplicatorTemplate
     }
     
     @SuppressWarnings("unchecked")
-    protected final <T> Class<T> chooseClass(Class<?> fromClass, Class<T> toClass) {
-        return (Class<T>)(toClass.isAssignableFrom(fromClass) ? fromClass : toClass);
+    protected final <T> Class<T> chooseClass(Class<?> fromClass, Class<T> toClass) 
+    {
+        if (!toClass.isAssignableFrom(fromClass) 
+        ||  Modifier.isAbstract(fromClass.getModifiers()))
+            return toClass;
+        return (Class<T>)fromClass;
     }
     
     protected <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo) {

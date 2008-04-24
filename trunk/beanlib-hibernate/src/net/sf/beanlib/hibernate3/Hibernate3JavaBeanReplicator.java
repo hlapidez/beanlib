@@ -56,13 +56,6 @@ public class Hibernate3JavaBeanReplicator extends BeanReplicator
         super(beanTransformer);
     }
 
-//    @Override
-//    protected <T> T createToInstance(Class<T> toClass) 
-//        throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
-//    {
-//        toClass = UnEnhancer.unenhance(toClass);
-//        return super.createToInstance(toClass);
-//    }
     @Override
     protected <T> T createToInstance(Object from, Class<T> toClass)
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
