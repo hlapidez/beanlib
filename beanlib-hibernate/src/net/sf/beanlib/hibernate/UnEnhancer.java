@@ -17,6 +17,8 @@ package net.sf.beanlib.hibernate;
 
 import net.sf.cglib.proxy.Enhancer;
 
+import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 
@@ -26,6 +28,22 @@ import org.hibernate.proxy.LazyInitializer;
 public class UnEnhancer
 {
     private UnEnhancer() {}
+    
+    private static final String JAVASSIST_STARTWITH = "org.javassist.tmp."; 
+    private static final String JAVASSIST_INDEXOF = "_$$_javassist_";
+
+    /** 
+     * Returns true if the given class is found to be a javassist enhanced class; 
+     * false otherwise. 
+     */ 
+    private static boolean isJavassistEnhanced(Class c) {
+        String className = c.getName();
+        // pattern found in javassist 3.4 and 3.6's ProxyFactory 
+        return className.startsWith(JAVASSIST_STARTWITH)
+            || className.indexOf(JAVASSIST_INDEXOF) != -1
+            ;
+    }
+    
     /**
      * Digs out the pre CGLIB/Javassist enhanced class, if any.
      */
@@ -36,15 +54,9 @@ public class UnEnhancer
         
         while (c != null && enhanced)
         {
-            enhanced = Enhancer.isEnhanced(c);
-            
-            if (!enhanced)
-            {
-                String className = c.getName();
-                // pattern found in javassist 3.4 and 3.6's ProxyFactory 
-                enhanced = className.startsWith("org.javassist.tmp.")
-                        || className.indexOf("_$$_javassist_") != -1;
-            }
+            enhanced =  Enhancer.isEnhanced(c)
+                     || isJavassistEnhanced(c)
+                     ;
             if (enhanced)
                 c = c.getSuperclass();
         }
@@ -59,20 +71,24 @@ public class UnEnhancer
         
         while (c != null && enhanced)
         {
-            enhanced = Enhancer.isEnhanced(c);
-            
-            if (!enhanced)
-            {
-                String className = c.getName();
-                // pattern found in javassist 3.4 and 3.6's ProxyFactory 
-                enhanced = className.startsWith("org.javassist.tmp.")
-                        || className.indexOf("_$$_javassist_") != -1;
-            }
+            enhanced =  Enhancer.isEnhanced(c)
+                     || isJavassistEnhanced(c)
+                     ;
             if (enhanced) 
             {
-                if ( proxy instanceof HibernateProxy ) {
+                if (proxy instanceof HibernateProxy) 
+                {
                     HibernateProxy hibernateProxy = (HibernateProxy)proxy; 
                     LazyInitializer lazyInitializer = hibernateProxy.getHibernateLazyInitializer();
+                    try {
+                        // suggested by Chris (harris3@sourceforge.net)
+                        Object obj = lazyInitializer.getImplementation();
+                        
+                        if (obj != null)
+                            return (Class<T>)obj.getClass();
+                    } catch(HibernateException ex) {
+                        Logger.getLogger(UnEnhancer.class).warn("Unable to retrieve the underlying persistent object", ex);
+                    }
                     return lazyInitializer.getPersistentClass();
                 }
                 c = c.getSuperclass();
