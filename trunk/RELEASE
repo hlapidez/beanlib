@@ -1,3 +1,8 @@
+beanlib 3.3.0beta15
+-------------------
+* change UnEnhancer to try to dig out the class of the underlying implementation object whenever possible.
+  Thanks to harris3@users.sourceforget.net for reporting this.
+
 beanlib 3.3.0beta13
 -------------------
 * change ReplicatorTemplate.chooseClass to return toClass if fromClass is abstract
