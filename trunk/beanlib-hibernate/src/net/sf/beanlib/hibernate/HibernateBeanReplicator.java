@@ -58,7 +58,9 @@ public class HibernateBeanReplicator
      * @param from given object.
      */
     public final <T> T copy(T from) {
-        return (T)(from == null ? null : copy(from, from.getClass()));
+        return (T)(from == null 
+                         ? null 
+                         : copy(from, UnEnhancer.getActualClass(from)));
     }
 
     /** 
@@ -90,7 +92,9 @@ public class HibernateBeanReplicator
      * @return a deep clone of the from object.
      */
     public final <T> T deepCopy(T from) {
-        return (T)(from == null ? null : deepCopy(from, from.getClass()));
+        return (T)(from == null 
+                         ? null 
+                         : deepCopy(from, UnEnhancer.getActualClass(from)));
     }
 
     /** 
@@ -121,7 +125,9 @@ public class HibernateBeanReplicator
      * @return a shallow clone of the from object.
      */
     public final <T> T shallowCopy(T from) {
-        return (T)(from == null ? null : shallowCopy(from, from.getClass()));
+        return (T)(from == null 
+                         ? null 
+                         : shallowCopy(from, UnEnhancer.getActualClass(from)));
     }
 
     /** 

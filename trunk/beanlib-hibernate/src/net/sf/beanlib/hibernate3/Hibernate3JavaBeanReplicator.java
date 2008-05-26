@@ -65,4 +65,9 @@ public class Hibernate3JavaBeanReplicator extends BeanReplicator
         Class<T> targetClass = chooseClass(actualClass, toClass);
         return newInstanceAsPrivileged(targetClass);
     }
+    
+    @Override
+    public <V,T> T replicateBean(V from, Class<T> toClass) {
+        return super.replicateBean(UnEnhancer.unenhanceObject(from), toClass);
+    }
 }
