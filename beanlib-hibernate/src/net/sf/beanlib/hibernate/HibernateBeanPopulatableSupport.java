@@ -15,7 +15,6 @@
  */
 package net.sf.beanlib.hibernate;
 
-import static net.sf.beanlib.hibernate.UnEnhancer.unenhance;
 import static net.sf.beanlib.utils.ClassUtils.immutable;
 import static net.sf.beanlib.utils.ClassUtils.isJavaPackage;
 
@@ -69,19 +68,19 @@ public class HibernateBeanPopulatableSupport implements BeanPopulatable
                 goAhead = true;
             }
             else {
-                Class<?> unenhancedReturnType = unenhance(readerMethod.getReturnType());
+                Class<?> unenhancedReturnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
                 // Only a subset of collection properties needs to be populated
                 goAhead =  Collection.class.isAssignableFrom(unenhancedReturnType) 
                         || Map.class.isAssignableFrom(unenhancedReturnType)
                         ? collectionPropertyNameSet.contains(
-                                new CollectionPropertyName(unenhance(readerMethod.getDeclaringClass()), propertyName))
+                                new CollectionPropertyName(UnEnhancer.unenhanceClass(readerMethod.getDeclaringClass()), propertyName))
                         : true    // not a Collection property, so go ahead
                         ;
             }
         }
         else {
             // Only a subset of entity bean to be populated.
-            Class returnType = unenhance(readerMethod.getReturnType());
+            Class returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
             
             if (immutable(returnType))
             {
@@ -99,7 +98,9 @@ public class HibernateBeanPopulatableSupport implements BeanPopulatable
                     goAhead =  Collection.class.isAssignableFrom(returnType)
                             || Map.class.isAssignableFrom(returnType)
                             ? collectionPropertyNameSet.contains(
-                                    new CollectionPropertyName(unenhance(readerMethod.getDeclaringClass()), propertyName))
+                                    new CollectionPropertyName(
+                                            UnEnhancer.unenhanceClass(
+                                                    readerMethod.getDeclaringClass()), propertyName))
                             : true
                             ;
                 }

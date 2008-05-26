@@ -15,8 +15,6 @@
  */
 package net.sf.beanlib.hibernate3;
 
-import static net.sf.beanlib.hibernate.UnEnhancer.unenhance;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +25,7 @@ import java.util.Set;
 
 import net.sf.beanlib.CollectionPropertyName;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
+import net.sf.beanlib.hibernate.UnEnhancer;
 import net.sf.beanlib.provider.collector.ProtectedSetterMethodCollector;
 import net.sf.beanlib.spi.BeanPopulatable;
 import net.sf.beanlib.spi.DetailedBeanPopulatable;
@@ -113,7 +112,7 @@ public class Hibernate3DtoCopier
      */
     public <T> T hibernate2dto(T entityBean) 
     {
-        return (T)hibernate2dto(entityBean.getClass(), entityBean);
+        return (T)hibernate2dto(UnEnhancer.getActualClass(entityBean), entityBean);
     }
     
     public <E,T> E hibernate2dto(Class<E> targetEntityType, T entityBean) 
@@ -124,6 +123,7 @@ public class Hibernate3DtoCopier
 //        return copy(targetEntityType, entityBean, entityBeanClassArray /*, sessionFactory */);
         return copy(targetEntityType, entityBean, ArrayUtils.EMPTY_CLASS_ARRAY /*, sessionFactory */);
     }
+    
     /** 
      * Returns a DTO by cloning portion of the object graph of the given Hibernate bean.
      * @param entityBean given Hibernate Bean
@@ -132,7 +132,9 @@ public class Hibernate3DtoCopier
     public <T> T hibernate2dto(T entityBean, 
         Class[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames) 
     {
-        return (T)hibernate2dto(entityBean.getClass(), entityBean, interestedEntityTypes, collectionPropertyNames);
+        return (T)hibernate2dto(
+                    UnEnhancer.getActualClass(entityBean), 
+                    entityBean, interestedEntityTypes, collectionPropertyNames);
     }
     
     public <E, T> E hibernate2dto(Class<E> targetEntityType, T entityBean,
@@ -212,19 +214,20 @@ public class Hibernate3DtoCopier
     {
         if (from == null)
             return null;
-        return copy(from.getClass(), from, entityBeanClassArray, CollectionPropertyName.EMPTY_ARRAY /*, sessionFactory */);
+        return copy(UnEnhancer.getActualClass(from), 
+                    from, entityBeanClassArray, CollectionPropertyName.EMPTY_ARRAY);
     }
     
-    private <E> E copy(Class<E> targetEntityType, Object from, Class[] entityBeanClassArray /* , SessionFactory sessionFactory */) 
+    private <E> E copy(Class<E> targetEntityType, Object from, Class[] entityBeanClassArray) 
     {
         if (from == null)
             return null;
-        return copy(targetEntityType, from, entityBeanClassArray, CollectionPropertyName.EMPTY_ARRAY /*, sessionFactory */);
+        return copy(targetEntityType, from, entityBeanClassArray, CollectionPropertyName.EMPTY_ARRAY);
     }
 
     @SuppressWarnings("unchecked")
     private <E> E copy(Class<E> targetEntityType, Object from, 
-        Class[] entityBeanClassArray, CollectionPropertyName[] collectionPropertyNameArray /*, SessionFactory  sessionFactory */ ) 
+        Class[] entityBeanClassArray, CollectionPropertyName[] collectionPropertyNameArray)
     {
         if (from == null)
             return null;
@@ -262,7 +265,8 @@ public class Hibernate3DtoCopier
           .initEntityBeanClassSet(entityBeanClassSet)
           .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
           ;
-        return (E)replicator.copy(from, unenhance(targetEntityType));
+        return (E)replicator.copy(from, 
+                                  UnEnhancer.unenhanceClass(targetEntityType));
         
     }
     

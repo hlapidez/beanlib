@@ -15,7 +15,6 @@
  */
 package net.sf.beanlib.hibernate3;
 
-import static net.sf.beanlib.hibernate.UnEnhancer.unenhance;
 import static net.sf.beanlib.utils.ClassUtils.immutable;
 import static net.sf.beanlib.utils.ClassUtils.isJavaPackage;
 
@@ -26,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sf.beanlib.CollectionPropertyName;
+import net.sf.beanlib.hibernate.UnEnhancer;
 import net.sf.beanlib.spi.BeanPopulatable;
 
 /**
@@ -79,7 +79,7 @@ class Hibernate3DtoPopulator implements BeanPopulatable {
      */
     public boolean shouldPopulate(String propertyName, Method readerMethod) 
     {
-        Class returnType = unenhance(readerMethod.getReturnType());
+        Class returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
         
         if (immutable(returnType))
             return true;
@@ -128,14 +128,16 @@ class Hibernate3DtoPopulator implements BeanPopulatable {
     private boolean checkCollectionProperty(String propertyName, Method readerMethod) 
     {
         // Only a specified set of Collection/Map properties needs to be populated
-        Class returnType = unenhance(readerMethod.getReturnType());
+        Class returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
         
         if (Collection.class.isAssignableFrom(returnType) 
         ||    Map.class.isAssignableFrom(returnType)) 
         {
             // A Collection/Map property
             if (collectionPropertyNameSet.contains(
-                    new CollectionPropertyName(unenhance(readerMethod.getDeclaringClass()), propertyName))) 
+                    new CollectionPropertyName(
+                            UnEnhancer.unenhanceClass(
+                                    readerMethod.getDeclaringClass()), propertyName))) 
             {
 //                // Collection/Map property to be included.
 //                // Now expand the c2p member class set.
