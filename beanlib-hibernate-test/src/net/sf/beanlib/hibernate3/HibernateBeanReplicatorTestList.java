@@ -45,7 +45,7 @@ public class HibernateBeanReplicatorTestList {
 		// Test recursive references
 		fooList.addToList(fooList);
 		fooList.addToList(fooList.getList());
-		FooWithList toList = new Hibernate3BeanReplicator().deepCopy(fooList);
+		FooWithList toList = new Hibernate3BeanReplicator().initDebug(true).deepCopy(fooList);
 
 		assertFalse(fooList.getList() == toList.getList());
 		
