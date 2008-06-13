@@ -147,6 +147,16 @@ public abstract class ReplicatorTemplate
         return newInstanceAsPrivileged(targetClass);
     }
     
+    /**
+     * Chooses a target class from the given "from" and "to" classes, giving
+     * priority to the one which is more specific whenever possible.
+     *  
+     * @param <T> target type
+     * @param fromClass from class
+     * @param toClass target class
+     * @return the target class if either the "from" class is not assignable to the "to" class,
+     * or if the from class is abstract; otherwise, returns the from class.
+     */
     @SuppressWarnings("unchecked")
     protected final <T> Class<T> chooseClass(Class<?> fromClass, Class<T> toClass) 
     {

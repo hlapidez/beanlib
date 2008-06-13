@@ -1,3 +1,7 @@
+beanlib 3.3.0beta17
+-------------------
+* fix bug of stack overflow by replacing the unenhanced from-object with the original from-object
+
 beanlib 3.3.0beta16
 -------------------
 * bug fix: more accurate un-enhancing classes and objects when abstract base class is involved

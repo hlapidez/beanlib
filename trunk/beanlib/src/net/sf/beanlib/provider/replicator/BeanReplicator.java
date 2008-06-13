@@ -70,13 +70,44 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
         super(BeanTransformer.newBeanTransformer());
     }
     
-    /** Convenient method to replicate a bean to the same target class. */
+    /**
+     * Replicates a given JavaBean object.
+     * 
+     * @param <V> from type
+     * @param from from bean to be replicated.
+     */
     @SuppressWarnings("unchecked")
     public <V> V replicateBean(V from) {
         return replicateBean(from, (Class<V>)from.getClass());
     }
     
-    public <V,T> T replicateBean(V from, Class<T> toClass)
+    /**
+     * Replicates the properties of a JavaBean object to an instance of a target class,
+     * which is selected from the given "from" and "to" classes, giving
+     * priority to the one which is more specific whenever possible.
+     * 
+     * @param <V> from type
+     * @param <T> target type
+     * @param from from bean (after unenhancement) to be replicated
+     * @param toClass target class to be instantiated
+     */
+    public <V,T> T replicateBean(V from, Class<T> toClass) {
+        return this.replicateBean(from, toClass, from);
+    }
+    
+    /**
+     * Replicates the properties of a JavaBean object to an instance of a target class,
+     * which is selected from the given "from" and "to" classes, giving
+     * priority to the one which is more specific whenever possible.
+     * 
+     * @param <V> from type
+     * @param <T> target type
+     * @param from from bean (after unenhancement) to be replicated
+     * @param toClass target class to be instantiated
+     * @param originalFrom the original from bean before any "unehancement"
+     * @return an instance of the  replicated bean
+     */
+    protected <V,T> T replicateBean(V from, Class<T> toClass, V originalFrom)
     {
         Class fromClass = from.getClass();
         String fromClassName = fromClass.getName();
@@ -102,7 +133,7 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
         } catch (NoSuchMethodException e) {
             throw new BeanlibException(e);
         }
-        putTargetCloned(from, to);
+        putTargetCloned(originalFrom, to);
         // recursively populate member objects.
         populateBean(from, to);
         return to;
