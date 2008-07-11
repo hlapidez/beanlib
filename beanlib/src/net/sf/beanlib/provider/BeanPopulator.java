@@ -162,7 +162,7 @@ public class BeanPopulator implements BeanPopulatorSpi
         Object propertyValue = this.invokeMethodAsPrivileged(fromBean, readerMethod, null);
         
         if (baseConfig.getBeanSourceHandler() != null)
-            baseConfig.getBeanSourceHandler().handleBeanSource(propertyValue);
+            baseConfig.getBeanSourceHandler().handleBeanSource(fromBean, readerMethod, propertyValue);
         
         if (transformer != null) {
             PropertyInfo propertyInfo = new PropertyInfo(propertyName, fromBean, toBean);
