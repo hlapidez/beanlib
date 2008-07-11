@@ -1,3 +1,7 @@
+beanlib 3.3.0beta18
+-------------------
+* enrich BeanSourceHandler SPI
+
 beanlib 3.3.0beta17
 -------------------
 * fix bug of stack overflow by replacing the unenhanced from-object with the original from-object
