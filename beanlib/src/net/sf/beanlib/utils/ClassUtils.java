@@ -24,6 +24,8 @@ import java.util.Currency;
  */
 public enum ClassUtils {
     ;
+    /** copied from the private static Class.ENUM constant. */
+    private static final int ENUM      = 0x00004000;
     /** Returns the unqalified class name. */
     public static String unqualify(Class c) {
         if (c == null)
@@ -41,7 +43,7 @@ public enum ClassUtils {
             return false;
         return c == String.class
             || c.isPrimitive()
-            || c.isEnum()
+            || (c.getModifiers() & ENUM) != 0
             || Number.class.isAssignableFrom(c) && isJavaPackage(c)
             || Boolean.class == c
             || Character.class == c
