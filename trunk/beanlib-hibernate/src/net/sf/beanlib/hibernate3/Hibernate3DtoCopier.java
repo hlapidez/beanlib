@@ -84,13 +84,13 @@ public class Hibernate3DtoCopier
     }
     
     /** Returns a DTO by deep cloning the given Hibernate bean. */
-    public <T> T hibernate2dtoFully(T entityBean) {
-        return entityBean == null 
-                 ? null 
-                 : createHibernateBeanReplicator()
+    public <T> T hibernate2dtoFully(Object entityBean) {
+        return (T)(entityBean == null 
+                   ? null 
+                   : createHibernateBeanReplicator()
                             .initBeanPopulatable(new Hibernate3DtoPopulator()
                                                     .init(this))
-                            .copy(entityBean);
+                            .copy(entityBean));
     }
     
     /** Returns a list of DTO's by deep cloning the given collection of Hibernate beans. */
