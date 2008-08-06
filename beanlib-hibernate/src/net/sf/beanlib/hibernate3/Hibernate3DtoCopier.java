@@ -105,12 +105,13 @@ public class Hibernate3DtoCopier
         for (Object obj : hibernateBeans)
             list.add(replicator.deepCopy(obj));
         return list;
-    }    
+    }
+    
     /** 
      * Returns a DTO by cloning portion of the object graph of the given Hibernate bean.
      * @param entityBean given Hibernate Bean
      */
-    public <T> T hibernate2dto(T entityBean) 
+    public <T> T hibernate2dto(Object entityBean) 
     {
         return (T)hibernate2dto(UnEnhancer.getActualClass(entityBean), entityBean);
     }
@@ -171,7 +172,7 @@ public class Hibernate3DtoCopier
      * Returns a list of DTO's by cloning portion of the object graph of the given collection of Hibernate beans. 
      * @param hibernateBeans given collection of Hibernate Beans.
      */
-    public List hibernate2dto(Collection hibernateBeans /*, SessionFactory sessionFactory */) 
+    public List<?> hibernate2dto(Collection<?> hibernateBeans /*, SessionFactory sessionFactory */) 
     {
         if (hibernateBeans == null)
             return null;
