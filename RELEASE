@@ -1,3 +1,7 @@
+beanlib 3.3.0beta20
+-------------------
+* keep Eclipse 3.4 happy
+
 beanlib 3.3.0beta19
 -------------------
 * get around Class.isEnum problem
