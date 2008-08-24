@@ -99,6 +99,8 @@ public class UnEnhancer
     
     @SuppressWarnings("unchecked")
     public static <T> T unenhanceObject(T object) {
+        if (object == null)
+            return null;
         Class c = object.getClass();
         boolean enhanced = true;
         

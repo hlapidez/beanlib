@@ -136,4 +136,11 @@ public class Hibernate3CollectionReplicator extends CollectionReplicator {
         Class<T> targetClass = chooseClass(actualClass, toClass);
         return newInstanceAsPrivileged(targetClass);
     }
+
+    @Override
+    protected Object replicate(Object from)
+    {
+        return super.replicate(
+                    UnEnhancer.unenhanceObject(from));
+    }
 }

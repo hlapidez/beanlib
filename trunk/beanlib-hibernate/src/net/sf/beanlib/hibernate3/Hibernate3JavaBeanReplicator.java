@@ -70,4 +70,11 @@ public class Hibernate3JavaBeanReplicator extends BeanReplicator
     public <V,T> T replicateBean(V from, Class<T> toClass) {
         return super.replicateBean(UnEnhancer.unenhanceObject(from), toClass, from);
     }
+
+    @Override
+    protected Object replicate(Object from)
+    {
+        return super.replicate(
+                    UnEnhancer.unenhanceObject(from));
+    }
 }

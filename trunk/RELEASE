@@ -1,6 +1,8 @@
 beanlib 3.3.0beta20
 -------------------
 * keep Eclipse 3.4 happy
+* Bug fix: Un-enhance object when ReplicatorTemplate.replicate(Object) is used for replicating Hibernate objects.
+  Thanks to Vitaliy Morarian <vmorarian@users.sourceforge.net> for pointing this out.
 
 beanlib 3.3.0beta19
 -------------------
