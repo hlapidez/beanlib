@@ -28,7 +28,7 @@ import net.sf.beanlib.spi.BeanMethodFinder;
 public class ProtectedReaderMethodFinder implements BeanMethodFinder {
 	public static final ProtectedReaderMethodFinder inst = new ProtectedReaderMethodFinder();
 	
-	private ProtectedReaderMethodFinder() {}
+	ProtectedReaderMethodFinder() {}
 	
 	public Method find(final String propertyName, Object bean) {
 		String s= propertyName;
@@ -44,7 +44,7 @@ public class ProtectedReaderMethodFinder implements BeanMethodFinder {
 		while (beanClass != Object.class) {
 			Method m = null;
 			try {
-				// Find the public member method of the class or interface,
+				// Find the declared member method of the class or interface,
 				// recursively on super classes and interfaces as necessary.
 				m = beanClass.getDeclaredMethod("get" + s);
 				
@@ -64,7 +64,8 @@ public class ProtectedReaderMethodFinder implements BeanMethodFinder {
 		}
 		return null;
 	}
-	private boolean found(Method m) {
+	
+	boolean found(Method m) {
 		final int modifier = m.getModifiers();
 		return !Modifier.isStatic(modifier) && !Modifier.isPrivate(modifier);
 	}
