@@ -46,19 +46,19 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
     
     // Overrides here for co-variant return type.
     /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
-	public BeanTransformerSpi initBeanPopulatable(BeanPopulatable beanPopulatable);
+    public BeanTransformerSpi initBeanPopulatable(BeanPopulatable beanPopulatable);
     /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
-	public BeanTransformerSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable);
+    public BeanTransformerSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable);
     /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
-	public BeanTransformerSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler);
+    public BeanTransformerSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler);
     /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
-	public BeanTransformerSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder);
+    public BeanTransformerSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder);
     /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
-	public BeanTransformerSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector);
+    public BeanTransformerSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector);
     /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
     public BeanTransformerSpi initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler beanPopulationExceptionHandler);
     /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
-	public BeanTransformerSpi initDebug(boolean debug);
+    public BeanTransformerSpi initDebug(boolean debug);
     /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
     public BeanTransformerSpi initBeanPopulatorBaseConfig(BeanPopulatorBaseConfig baseConfig);
 
