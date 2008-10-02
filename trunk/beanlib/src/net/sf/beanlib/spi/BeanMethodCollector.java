@@ -23,6 +23,6 @@ import java.lang.reflect.Method;
  *  @author Joe D. Velopar
  */
 public interface BeanMethodCollector {
-	public Method[] collect(Object bean);
+    public Method[] collect(Object bean);
     public String getMethodPrefix();
 }

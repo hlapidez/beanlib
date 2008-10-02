@@ -23,12 +23,12 @@ import java.lang.reflect.Method;
  * @author Joe D. Velopar
  */
 public interface BeanPopulatable {
-	/**
-	 * Returns true if the given JavaBean property should be populated;
-	 * false otherwise.
-	 * @param propertyName JavaBean property name.
-	 * @param readerMethod reader method of the JavaBean property name.
-	 * @return true if the given JavaBean property should be populated.
-	 */
-	public boolean shouldPopulate(String propertyName, Method readerMethod);
+    /**
+     * Returns true if the given JavaBean property should be populated;
+     * false otherwise.
+     * @param propertyName JavaBean property name.
+     * @param readerMethod reader method of the JavaBean property name.
+     * @return true if the given JavaBean property should be populated.
+     */
+    public boolean shouldPopulate(String propertyName, Method readerMethod);
 }

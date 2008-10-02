@@ -25,29 +25,29 @@ import net.sf.beanlib.provider.JavaBeanPopulatableSupport;
  * @author Joe D. Velopar
  */
 public interface DetailedBeanPopulatable {
-	public static final DetailedBeanPopulatable ALWAYS_POPULATE = new DetailedBeanPopulatable() {
-		public boolean shouldPopulate(
+    public static final DetailedBeanPopulatable ALWAYS_POPULATE = new DetailedBeanPopulatable() {
+        public boolean shouldPopulate(
             @SuppressWarnings("unused") String propertyName, 
             @SuppressWarnings("unused") Object fromBean, 
             @SuppressWarnings("unused") Method readerMethod, 
             @SuppressWarnings("unused") Object toBean, 
             @SuppressWarnings("unused") Method setterMethod) 
-		{
-			return true;
-		}
-	};
-	public static final DetailedBeanPopulatable JAVABEAN_POPULATE = JavaBeanPopulatableSupport.inst;
-	/**
-	 * Returns true if the given JavaBean property should be populated;
-	 * false otherwise.
-	 * @param propertyName JavaBean property name.
-	 * @param fromBean from bean.
-	 * @param readerMethod reader method of the JavaBean property name.
-	 * @param toBean to bean.
-	 * @param setterMethod setter method of the JavaBean property name.
-	 * @return true if the given JavaBean property should be populated.
-	 */
-	public boolean shouldPopulate(String propertyName, 
-			Object fromBean, Method readerMethod, 
-			Object toBean, Method setterMethod);
+        {
+            return true;
+        }
+    };
+    public static final DetailedBeanPopulatable JAVABEAN_POPULATE = JavaBeanPopulatableSupport.inst;
+    /**
+     * Returns true if the given JavaBean property should be populated;
+     * false otherwise.
+     * @param propertyName JavaBean property name.
+     * @param fromBean from bean.
+     * @param readerMethod reader method of the JavaBean property name.
+     * @param toBean to bean.
+     * @param setterMethod setter method of the JavaBean property name.
+     * @return true if the given JavaBean property should be populated.
+     */
+    public boolean shouldPopulate(String propertyName, 
+            Object fromBean, Method readerMethod, 
+            Object toBean, Method setterMethod);
 }

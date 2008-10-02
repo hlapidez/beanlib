@@ -25,12 +25,12 @@ import org.apache.commons.logging.Log;
  *  @author Joe D. Velopar
  */
 public interface BeanPopulationExceptionHandler {
-	/** Exception handler which aborts by throwing or re-throwing a RuntimeException or Error. */
-	public static final BeanPopulationExceptionHandler ABORT = new BeanPopulationExceptionHandlerAdapter();
-	/** Exception handler which always continue by logging and then igoring the exception or error. */
-	public static final BeanPopulationExceptionHandler CONTINUE = new BeanPopulationExceptionHandlerAdapter() 
+    /** Exception handler which aborts by throwing or re-throwing a RuntimeException or Error. */
+    public static final BeanPopulationExceptionHandler ABORT = new BeanPopulationExceptionHandlerAdapter();
+    /** Exception handler which always continue by logging and then igoring the exception or error. */
+    public static final BeanPopulationExceptionHandler CONTINUE = new BeanPopulationExceptionHandlerAdapter() 
     {
-		@Override
+        @Override
         public void handleException(Throwable t, Log log) 
         {
             log.warn("\n" 
@@ -40,19 +40,19 @@ public interface BeanPopulationExceptionHandler {
                     + "fromBean=" + fromBean + "\n"
                     + "toBean=" + toBean + "\n"
                     , t);
-		}
-	};
-	
-	/** Handles the exception thrown during the population of a bean property. */
-	public void handleException(Throwable t, Log log);
-	/** Sets the name of the property being populated. */
-	public BeanPopulationExceptionHandler initPropertyName(String propertyName);
-	/** Sets the bean from which the property is populated from, ie the source bean. */
-	public BeanPopulationExceptionHandler initFromBean(Object fromBean);
-	/** Sets the reader method used to retreive the value from the source bean. */
-	public BeanPopulationExceptionHandler initReaderMethod(Method readerMethod);
-	/** Sets the bean to which the property is populated to, ie the target bean. */
-	public BeanPopulationExceptionHandler initToBean(Object toBean);
-	/** Sets the setter method used to set the value to the target bean. */
-	public BeanPopulationExceptionHandler initSetterMethod(Method setterMethod);
+        }
+    };
+    
+    /** Handles the exception thrown during the population of a bean property. */
+    public void handleException(Throwable t, Log log);
+    /** Sets the name of the property being populated. */
+    public BeanPopulationExceptionHandler initPropertyName(String propertyName);
+    /** Sets the bean from which the property is populated from, ie the source bean. */
+    public BeanPopulationExceptionHandler initFromBean(Object fromBean);
+    /** Sets the reader method used to retreive the value from the source bean. */
+    public BeanPopulationExceptionHandler initReaderMethod(Method readerMethod);
+    /** Sets the bean to which the property is populated to, ie the target bean. */
+    public BeanPopulationExceptionHandler initToBean(Object toBean);
+    /** Sets the setter method used to set the value to the target bean. */
+    public BeanPopulationExceptionHandler initSetterMethod(Method setterMethod);
 }
