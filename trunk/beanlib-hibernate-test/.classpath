@@ -5,7 +5,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/beanlib-test"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/beanlib-hibernate"/>
 	<classpathentry kind="lib" path="/beanlib/lib/commons/commons-logging.jar"/>
-	<classpathentry kind="lib" path="C:/Playground/workspace/beanlib/beanlib-test/lib/junit/junit-4.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/beanlib-test/lib/junit/hamcrest-all-1.1.jar"/>
+	<classpathentry kind="lib" path="/beanlib-test/lib/junit/junit-4.4.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -6,8 +6,11 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/beanlib"/>
 	<classpathentry kind="lib" path="C:/Playground/workspace/beanlib/beanlib/lib/commons/commons-lang-2.3.jar"/>
 	<classpathentry kind="lib" path="C:/Playground/workspace/beanlib/beanlib/lib/cglib-nodep-2.1_3.jar"/>
-	<classpathentry kind="lib" path="C:/Playground/workspace/beanlib/beanlib-test/lib/junit/junit-4.1.jar"/>
 	<classpathentry kind="src" path="dl"/>
 	<classpathentry kind="lib" path="etc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/beanlib-joda"/>
+	<classpathentry kind="lib" path="/beanlib-joda/lib/joda-time-1.5.2.jar" sourcepath="/beanlib-joda/lib/joda-time-1.5.2-sources.jar"/>
+	<classpathentry kind="lib" path="lib/junit/hamcrest-all-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/junit/junit-4.4.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

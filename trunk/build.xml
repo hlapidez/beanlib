@@ -3,14 +3,15 @@
 <project name="beanlib" default="call">
 
   <property name="target" value="full"/>
-  <property name="version" value="3.3.0beta20"/>
+  <property name="version" value="3.3.0beta21"/>
   <property name="published.javadoc.dir" value="${version}/api"/>
   <property name="published.cobertura.dir" value="${version}/cobertura"/>
 
   <target name="call">
     <ant antfile="build.xml" dir="./beanlib" target="${target}"/>
-    <ant antfile="build.xml" dir="./beanlib-hibernate" target="${target}" />
+    <ant antfile="build.xml" dir="./beanlib-joda" target="${target}"/>
     <ant antfile="build.xml" dir="./beanlib-test" target="${target}"/>
+    <ant antfile="build.xml" dir="./beanlib-hibernate" target="${target}" />
     <ant antfile="build.xml" dir="./beanlib-hibernate-test" target="${target}"/>
   </target>
 
@@ -50,11 +51,12 @@
         use="true" 
         version="true"
         packagenames="net.sf.beanlib.*"
-        sourcepath="beanlib/src;beanlib/javadoc;beanlib-hibernate/src;beanlib-hibernate/javadoc"
+	sourcepath="beanlib/src;beanlib/javadoc;beanlib-joda/src;beanlib-joda/javadoc;beanlib-hibernate/src;beanlib-hibernate/javadoc"
     >
         <classpath>
             <fileset dir=".">
                 <include name="beanlib/lib/**/*.jar"/>
+                <include name="beanlib-joda/lib/**/*.jar"/>
                 <include name="beanlib-hibernate/lib/**/*.jar"/>
             </fileset>
         </classpath>
@@ -64,7 +66,7 @@
         <link href="http://jakarta.apache.org/commons/lang/api/"/>
         <link href="http://xstream.codehaus.org/javadoc/"/>
         <link href="http://cglib.sourceforge.net/apidocs/" />
-        <link href="http://www.springframework.org/docs/api/" />
+	<link href="http://static.springframework.org/spring/docs/2.0.x/api/" />
     </javadoc>
   </target>
 
@@ -113,11 +115,16 @@
     <mkdir dir="beanlib-${version}"/>
 
     <jar destfile="beanlib-${version}/beanlib-${version}.jar" basedir="beanlib/target/classes" />
+    <jar destfile="beanlib-${version}/beanlib-joda-${version}.jar" basedir="beanlib-joda/target/classes" />
     <jar destfile="beanlib-${version}/beanlib-hibernate-${version}.jar" basedir="beanlib-hibernate/target/classes" />
 
     <jar destfile="beanlib-${version}/beanlib-${version}-sources.jar">
         <fileset dir="beanlib" excludes="doc/api/**,target,target/**,.*/**" />
         <fileset dir="beanlib-test" excludes="target,target/**,.*/**" />
+    </jar>
+
+    <jar destfile="beanlib-${version}/beanlib-joda-${version}-sources.jar">
+        <fileset dir="beanlib-joda" excludes="doc/api/**,target,target/**,.*/**" />
     </jar>
 
     <jar destfile="beanlib-${version}/beanlib-hibernate-${version}-sources.jar">

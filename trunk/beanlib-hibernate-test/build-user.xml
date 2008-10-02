@@ -16,19 +16,19 @@
 
 <target name="clean">
     <delete dir="target"/>
-	<delete dir="sequencelogs" />
+    <delete dir="sequencelogs" />
 </target>
 
 <target depends="init" name="build">
     <ant antfile="${beanlib.location}/build.xml" target="build" 
-    	 dir="${beanlib.location}"
-    	 inheritAll="false"/>
+         dir="${beanlib.location}"
+         inheritAll="false"/>
     <ant antfile="${beanlib-hibernate.location}/build.xml" target="build" 
-    	 dir="${beanlib-hibernate.location}"
-    	 inheritAll="false"/>
+         dir="${beanlib-hibernate.location}"
+         inheritAll="false"/>
     <ant antfile="${beanlib-test.location}/build.xml" target="build" 
-    	 dir="${beanlib-test.location}"
-    	 inheritAll="false"/>
+         dir="${beanlib-test.location}"
+         inheritAll="false"/>
     <echo message="${ant.project.name}: ${ant.file}"/>
     <javac destdir="target/classes"
            debug="true"
@@ -40,19 +40,19 @@
 
 <target depends="instrument" name="test">
     <junit fork="yes" printsummary="withOutAndErr" haltonfailure="yes">
-		<!-- Specify the name of the coverage data file to use. -->    	
-		<sysproperty key="net.sourceforge.cobertura.datafile" file="../cobertura.ser" />
+        <!-- Specify the name of the coverage data file to use. -->        
+        <sysproperty key="net.sourceforge.cobertura.datafile" file="../cobertura.ser" />
 
         <formatter type="plain"/>
         <formatter type="xml"/>
         <!-- Instrumented dir for code coverage. -->
         <classpath>
-	        <pathelement location="${beanlib.location}/target/instrumented"/>
-	        <pathelement location="${beanlib-hibernate.location}/target/instrumented"/>
-			<pathelement location="${instrumented.dir}" />
-	        <path refid="project.classpath"/>
+            <pathelement location="${beanlib.location}/target/instrumented"/>
+            <pathelement location="${beanlib-hibernate.location}/target/instrumented"/>
+            <pathelement location="${instrumented.dir}" />
+            <path refid="project.classpath"/>
             <path refid="cobertura.classpath" />
-		</classpath>
+        </classpath>
         <batchtest todir="target/test-reports">
           <fileset dir="src">
             <include name="**/*Test*.java"/>
@@ -62,24 +62,24 @@
 </target>
 
 <target depends="test" name="report">
-	<delete dir="${coveragereport.dir}" />
-	<cobertura-report format="html" 
-					  datafile="../cobertura.ser"
-					  destdir="${coveragereport.dir}" 
-	>
-	    <fileset dir="${beanlib.location}/src">
-	        <include name="**/*.java" />
-	    </fileset>
-	    <fileset dir="${beanlib-test.location}/src">
-	        <include name="**/*.java" />
-	    </fileset>
-	    <fileset dir="${beanlib-hibernate.location}/src">
-	        <include name="**/*.java" />
-	    </fileset>
-	    <fileset dir="src">
-	        <include name="**/*.java" />
-	    </fileset>
- 	</cobertura-report>
+    <delete dir="${coveragereport.dir}" />
+    <cobertura-report format="html" 
+                      datafile="../cobertura.ser"
+                      destdir="${coveragereport.dir}" 
+    >
+        <fileset dir="${beanlib.location}/src">
+            <include name="**/*.java" />
+        </fileset>
+        <fileset dir="${beanlib-test.location}/src">
+            <include name="**/*.java" />
+        </fileset>
+        <fileset dir="${beanlib-hibernate.location}/src">
+            <include name="**/*.java" />
+        </fileset>
+        <fileset dir="src">
+            <include name="**/*.java" />
+        </fileset>
+     </cobertura-report>
 </target>
 
 <target name="full" depends="clean,build,instrument,test,report" />

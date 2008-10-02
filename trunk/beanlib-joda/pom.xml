@@ -5,12 +5,16 @@
 >
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.sf.beanlib</groupId>
-  <artifactId>beanlib</artifactId>
+  <artifactId>beanlib-joda</artifactId>
   <packaging>jar</packaging>
   <version>3.3.0beta21</version>
-  <name>Java Bean Library</name>
+  <name>Java Bean Library for Hibernate</name>
   <url>http://beanlib.sourceforge.net/</url>
-  <description>Java Bean Utilities Library</description>
+  <description>
+    Particularly handy when used with Hibernate.  
+    It allows developers to easily reuse the same pojo classes for 
+    both persistence instances and data transfer objects.
+  </description>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -23,39 +27,15 @@
   </scm>
   <dependencies>
     <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging-api</artifactId>
-      <version>1.0.4</version>
+      <groupId>net.sf.beanlib</groupId>
+      <artifactId>beanlib</artifactId>
+      <version>3.3.0beta21</version>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.1</version>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.12</version>
-    </dependency>
-    <dependency>
-      <groupId>xstream</groupId>
-      <artifactId>xstream</artifactId>
-      <version>1.1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>cglib</groupId>
-      <artifactId>cglib</artifactId>
-      <version>2.1_3</version>
-    </dependency>
-    <dependency>
-      <groupId>aopalliance</groupId>
-      <artifactId>aopalliance</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>net.jcip</groupId>
-      <artifactId>jcip-annotations</artifactId>
-      <version>1.0</version>
+      <groupId>org.joda</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>1.5.2</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
   <build>
@@ -83,13 +63,4 @@
       </plugin>
     </plugins>
   </build>
-    <repositories>
-      <repository>
-        <id>jboss</id>
-        <url>http://repository.jboss.com/maven2</url>
-        <releases>
-          <enabled>true</enabled>
-        </releases>
-      </repository>
-    </repositories>
 </project>

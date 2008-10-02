@@ -28,6 +28,7 @@ public interface BeanPopulatorSpi extends BeanPopulatorBaseSpi
      * @author Joe D. Velopar
      */
     public static interface Factory {
+        /** Returns a bean populator, given the from bean and to bean. */ 
         public BeanPopulatorSpi newBeanPopulator(Object from, Object to);
     }
     

@@ -11,21 +11,25 @@
     <path id="project.classpath">
         <path refid="mainproject.classpath"/>
         <path refid="beanlib.classpath"/>
+        <path refid="beanlib-joda.classpath"/>
     </path>
     <path id="mainproject.classpath">
         <pathelement location="etc"/>
+        <pathelement location="target/instrumented"/>
         <pathelement location="target/classes"/>
         <pathelement location="${beanlib.location}/lib/commons/commons-logging.jar"/>
         <pathelement location="${beanlib.location}/lib/commons/commons-lang-2.3.jar"/>
         <pathelement location="${beanlib.location}/lib/cglib-nodep-2.1_3.jar"/>
-        <pathelement location="${beanlib-test.location}/lib/junit/junit-4.1.jar"/>
+        <pathelement location="${beanlib.location}/lib/log4j-1.2.14.jar"/>
+        <pathelement location="${beanlib.location}/lib/xstream-1.2.1.jar"/>
+	<pathelement location="${beanlib-joda.location}/lib/joda-time-1.5.2.jar"/>
+        <pathelement location="${beanlib-test.location}/lib/junit/junit-4.4.jar"/>
+        <pathelement location="${beanlib-test.location}/lib/junit/hamcrest-all-1.1.jar"/>
     </path>
     <path id="beanlib.classpath">
         <pathelement location="${beanlib.location}/target/classes"/>
-        <pathelement location="${beanlib.location}/lib/commons/commons-logging.jar"/>
-        <pathelement location="${beanlib.location}/lib/commons/commons-lang-2.3.jar"/>
-        <pathelement location="${beanlib.location}/lib/log4j-1.2.14.jar"/>
-        <pathelement location="${beanlib.location}/lib/xstream-1.2.1.jar"/>
-        <pathelement location="${beanlib.location}/lib/cglib-nodep-2.1_3.jar"/>
+    </path>
+    <path id="beanlib-joda.classpath">
+        <pathelement location="${beanlib-joda.location}/target/classes"/>
     </path>
 </project>

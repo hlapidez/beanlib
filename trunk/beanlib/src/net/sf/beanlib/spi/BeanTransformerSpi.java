@@ -38,6 +38,9 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
      * @author Joe D. Velopar
      */
     public static interface Factory {
+        /** 
+         * Returns a bean transformer, given a bean populator factory.
+         */
         public BeanTransformerSpi newBeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory);
     }
     
@@ -62,7 +65,18 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
     /** Don't invoke this method, except from within the replicator implementation class. */
     public BeanPopulatorBaseConfig getBeanPopulatorBaseConfig();
     
+    /** 
+     * Initializes with a custom transformer factory.
+     * @deprecated this method has been a misnormer.  
+     * Use {@link #initCustomTransformerFactory(net.sf.beanlib.spi.CustomBeanTransformerSpi.Factory)} instead.
+     */
+    @Deprecated
     public BeanTransformerSpi initCustomTransformer(CustomBeanTransformerSpi.Factory customTransformerFactory);
+    
+    /** 
+     * Initializes with a custom transformer factory.
+     */
+    public BeanTransformerSpi initCustomTransformerFactory(CustomBeanTransformerSpi.Factory customTransformerFactory);
     
     public void reset();
     
