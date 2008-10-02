@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="javadoc"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/commons/commons-logging.jar"/>
 	<classpathentry kind="lib" path="C:/Playground/workspace/beanlib/beanlib/lib/commons/commons-lang-2.3.jar"/>
 	<classpathentry kind="lib" path="C:/Playground/workspace/beanlib/beanlib/lib/log4j-1.2.14.jar"/>
@@ -10,5 +9,6 @@
 	<classpathentry kind="lib" path="C:/Playground/workspace/beanlib/beanlib/lib/cglib-nodep-2.1_3.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jcip-annotations.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

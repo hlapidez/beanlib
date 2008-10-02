@@ -17,7 +17,8 @@
     <path id="mainproject.classpath">
         <pathelement location="target/classes"/>
         <pathelement location="${beanlib.location}/lib/commons/commons-logging.jar"/>
-        <pathelement location="${beanlib-test.location}/lib/junit/junit-4.1.jar"/>
+        <pathelement location="${beanlib-test.location}/lib/junit/junit-4.4.jar"/>
+        <pathelement location="${beanlib-test.location}/lib/junit/hamcrest-all-1.1.jar"/>
     </path>
     <path id="beanlib.classpath">
         <pathelement location="${beanlib.location}/target/classes"/>
@@ -40,6 +41,7 @@
         <pathelement location="${beanlib.location}/lib/commons/commons-logging.jar"/>
         <pathelement location="${beanlib.location}/lib/commons/commons-lang-2.3.jar"/>
         <pathelement location="${beanlib.location}/lib/cglib-nodep-2.1_3.jar"/>
-        <pathelement location="${beanlib-test.location}/lib/junit/junit-4.1.jar"/>
+        <pathelement location="${beanlib-test.location}/lib/junit/junit-4.4.jar"/>
+        <pathelement location="${beanlib-test.location}/lib/junit/hamcrest-all-1.1.jar"/>
     </path>
 </project>

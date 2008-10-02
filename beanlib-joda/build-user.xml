@@ -1,7 +1,7 @@
 
 &cobertura;
 
-<property name="beanlib-hibernate.location" value="."/>
+<property name="beanlib-joda.location" value="."/>
 <property name="beanlib.location" value="../beanlib"/>
 <property name="javadoc.dir" value="doc/api"/>
 
@@ -16,7 +16,7 @@
 </target>
 
 <target depends="init" name="build">
-    <ant antfile="${beanlib.location}/build.xml" target="build" 
+    <ant antfile="${beanlib-joda.location}/build.xml" target="build" 
          dir="${beanlib.location}"
          inheritAll="false"/>
     <echo message="${ant.project.name}: ${ant.file}"/>
@@ -36,7 +36,7 @@
         access="private" 
         author="true" 
         destdir="${javadoc.dir}" 
-        doctitle="JavaBean Library for Hibernate" 
+        doctitle="JavaBean Library for Joda Time" 
         nodeprecated="false" 
         nodeprecatedlist="false" 
         noindex="false" 
@@ -51,12 +51,8 @@
     >
         <classpath refid="project.classpath"/>
         <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
-        <link href="http://jakarta.apache.org/commons/logging/apidocs/"/>
-        <link href="http://jakarta.apache.org/commons/lang/api/"/>
-        <link href="http://xstream.codehaus.org/javadoc/"/>
-        <link href="http://cglib.sourceforge.net/apidocs/" />
-        <link href="http://www.hibernate.org/hib_docs/v3/api/"/>
         <link href="http://static.springframework.org/spring/docs/2.0.x/api/" />
+        <link href="http://joda-time.sourceforge.net/api-release/" />
     </javadoc>
 </target>
 

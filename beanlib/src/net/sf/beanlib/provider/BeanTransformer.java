@@ -38,8 +38,10 @@ import net.sf.beanlib.spi.BeanPopulatorBaseConfig;
 import net.sf.beanlib.spi.BeanPopulatorSpi;
 import net.sf.beanlib.spi.BeanSourceHandler;
 import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.ChainedCustomBeanTransformer;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 import net.sf.beanlib.spi.DetailedBeanPopulatable;
+import net.sf.beanlib.spi.TrivialCustomBeanTransformerFactories;
 import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BlobReplicatorSpi;
@@ -84,6 +86,22 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         return factory.newBeanTransformer(BeanPopulator.factory);
     }
     
+    /** 
+     * Convenient factory method that both defaults to use {@link BeanPopulator#factory},
+     * and allows plugging in one or more custom bean transformer factories that will be chained together.  
+     */
+    public static BeanTransformer newBeanTransformer(final CustomBeanTransformerSpi.Factory ... customBeanTransformerFactories)
+    {
+        if (customBeanTransformerFactories == null || customBeanTransformerFactories.length == 0)
+            return newBeanTransformer();
+        BeanTransformer beanTransformer = BeanTransformer.newBeanTransformer();
+        return beanTransformer.initCustomTransformerFactory(
+                    customBeanTransformerFactories.length == 1
+                        ? customBeanTransformerFactories[0]
+                        : new ChainedCustomBeanTransformer.Factory(customBeanTransformerFactories))
+                        ;
+    }
+    
     private final BeanPopulatorSpi.Factory beanPopulatorFactory;
     
     protected BeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) {
@@ -99,8 +117,8 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     
     private BeanPopulatorBaseConfig baseConfig = new BeanPopulatorBaseConfig();
     
-    /** Custom Transformer. */
-    private CustomBeanTransformerSpi customTransformer = CustomBeanTransformerSpi.NO_OP;
+    /** Custom Transformer.  Defaults is a NO_OP. */
+    private CustomBeanTransformerSpi customTransformer = TrivialCustomBeanTransformerFactories.getNoopCustomTransformer();
     
     private ImmutableReplicatorSpi immutableReplicatable = ImmutableReplicator.newImmutableReplicatable(this);
     private CollectionReplicatorSpi collectionReplicatable = CollectionReplicator.newCollectionReplicatable(this);
@@ -126,7 +144,14 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         }
     }
     
+    @Deprecated
     public final BeanTransformer initCustomTransformer(CustomBeanTransformerSpi.Factory customTransformer) {
+        this.customTransformer = customTransformer.newCustomBeanTransformer(this);
+        return this;
+    }
+    
+    /** Initializes with a custom transformer factory. */
+    public final BeanTransformer initCustomTransformerFactory(CustomBeanTransformerSpi.Factory customTransformer) {
         this.customTransformer = customTransformer.newCustomBeanTransformer(this);
         return this;
     }

@@ -4,10 +4,11 @@
 <tstamp/>
 <property name="beanlib-test.location" value="."/>
 <property name="beanlib.location" value="../beanlib"/>
+<property name="beanlib-joda.location" value="../beanlib-joda"/>
 
 <property name="dist.dir" location="dist" />
 <property name="dist.jar.file" value="${dist.dir}/q-test-${DSTAMP}.jar"/>
-<property name="dist.src-jar.file" value="${dist.dir}/q-test-${DSTAMP}-sources.jar"/>	
+<property name="dist.src-jar.file" value="${dist.dir}/q-test-${DSTAMP}-sources.jar"/>    
 
 <target name="help">
     <echo message="Please run: $ ant -v -projecthelp"/>
@@ -27,34 +28,35 @@
 
 <target depends="init" name="build">
     <ant antfile="${beanlib.location}/build.xml" target="build" 
-    	 dir="${beanlib.location}"
-    	 inheritAll="false"/>
+         dir="${beanlib.location}"
+         inheritAll="false"/>
     <echo message="${ant.project.name}: ${ant.file}"/>
     <javac destdir="target/classes"
            debug="true"
     >
         <src path="src"/>
-	<!--
+    <!--
         <src path="dl"/>
-	-->
+    -->
         <classpath refid="project.classpath"/>
     </javac>
 </target>
 
 <target depends="instrument" name="test">
     <junit fork="yes" printsummary="withOutAndErr" haltonfailure="yes">
-		<!-- Specify the name of the coverage data file to use. -->    	
-		<sysproperty key="net.sourceforge.cobertura.datafile" file="../cobertura.ser" />
+        <!-- Specify the name of the coverage data file to use. -->        
+        <sysproperty key="net.sourceforge.cobertura.datafile" file="../cobertura.ser" />
 
         <formatter type="plain"/>
         <formatter type="xml"/>
         <!-- Instrumented dir for code coverage. -->
         <classpath>
-	        <pathelement location="${beanlib.location}/target/instrumented"/>
-			<pathelement location="${instrumented.dir}" />
-	        <path refid="project.classpath"/>
+            <pathelement location="${beanlib.location}/target/instrumented"/>
+            <pathelement location="${beanlib-joda.location}/target/instrumented"/>
+            <pathelement location="${instrumented.dir}" />
+            <path refid="project.classpath"/>
             <path refid="cobertura.classpath" />
-		</classpath>
+        </classpath>
         <batchtest todir="target/test-reports">
           <fileset dir="src">
             <include name="**/*Test.java"/>
@@ -64,32 +66,35 @@
 </target>
 
 <target depends="test" name="report">
-	<delete dir="${coveragereport.dir}" />
-	<cobertura-report format="html" 
-					  datafile="../cobertura.ser"
-					  destdir="${coveragereport.dir}" 
-	>
-	    <fileset dir="${beanlib.location}/src">
-	        <include name="**/*.java" />
-	    </fileset>
-	    <fileset dir="src">
-	        <include name="**/*.java" />
-	    </fileset>
- 	</cobertura-report>
+    <delete dir="${coveragereport.dir}" />
+    <cobertura-report format="html" 
+                      datafile="../cobertura.ser"
+                      destdir="${coveragereport.dir}" 
+    >
+        <fileset dir="${beanlib.location}/src">
+            <include name="**/*.java" />
+        </fileset>
+        <fileset dir="${beanlib-joda.location}/src">
+            <include name="**/*.java" />
+        </fileset>
+        <fileset dir="src">
+            <include name="**/*.java" />
+        </fileset>
+     </cobertura-report>
 </target>
 
   <target name="jar-qtest" depends="jar-qtest-src">
     <jar destfile="${dist.jar.file}"
-    	manifest="etc/QTEST-MANIFEST.MF"
-   	>
-      <fileset dir="../beanlib/target/classes" includes="**/*ConcurrentLinkedBlockingQueue*.class,**/*ConcurrentLinkedBoundedBlockingQueue*.class"/>
+        manifest="etc/QTEST-MANIFEST.MF"
+       >
+    <fileset dir="../beanlib/target/classes" includes="**/*ConcurrentLinkedBlockingQueue*.class,**/*ConcurrentLinkedBoundedBlockingQueue*.class,**/*Unbounded*.class"/>
       <fileset dir="target/classes" includes="**/*TestMain*.class,**/*Loop*.class"/>
     </jar>
   </target>
-	
+    
   <target name="jar-qtest-src">
     <jar destfile="${dist.src-jar.file}">
-      <fileset dir="../beanlib" includes="src/**/ConcurrentLinkedBlockingQueue.java,src/**/ConcurrentLinkedBoundedBlockingQueue.java" />
+        <fileset dir="../beanlib" includes="src/**/ConcurrentLinkedBlockingQueue.java,src/**/ConcurrentLinkedBoundedBlockingQueue.java,src/**/Unbounded*.java" />
       <fileset dir="." includes="src/**/*TestMain.java,dl/**/*.java" />
     </jar>
   </target>

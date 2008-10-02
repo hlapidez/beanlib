@@ -25,23 +25,19 @@ import net.sf.beanlib.PropertyInfo;
  * @author Joe D. Velopar
  */
 public interface CustomBeanTransformerSpi extends Transformable {
-	public static final CustomBeanTransformerSpi NO_OP = new CustomBeanTransformerSpi() {
-        public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
-            return false;
-        }
-
-        public <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo) {
-            return null;
-        }
-	};
-    
     /**
      * Custom Bean Transformer Factory SPI.
      *  
      * @author Joe D. Velopar
      */
     public static interface Factory {
-        public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi beanTransformer);
+        /**
+         * Returns a custom transformer.
+         * 
+         * @param contextBeanTransformer the context bean transformer currently used to provide the 
+         * default transformation behavior.
+         */
+        public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi contextBeanTransformer);
     }
 	
     /**
