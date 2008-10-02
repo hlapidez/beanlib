@@ -23,5 +23,5 @@ import java.lang.reflect.Method;
  * @author Joe D. Velopar
  */
 public interface BeanSourceHandler {
-	public void handleBeanSource(Object fromBean, Method readerMethod, Object propertyValue);
+    public void handleBeanSource(Object fromBean, Method readerMethod, Object propertyValue);
 }

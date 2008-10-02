@@ -39,7 +39,7 @@ public interface CustomBeanTransformerSpi extends Transformable {
          */
         public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi contextBeanTransformer);
     }
-	
+    
     /**
      * Returns true if the given object is to be transformed by this transformer;
      * false otherwise.
