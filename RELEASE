@@ -1,3 +1,14 @@
+beanlib 3.3.0beta21
+-------------------
+* add support for joda-time classes with beanlib-joda jar
+* add support for chaining multiple custom transformer (factories)
+* add convenient factory method BeanTransformer.newBeanTransformer(CustomBeanTransformerSpi ...)
+* deprecate mis-normer BeanTransformerSpi.initCustomTransformer with initCustomTransformerFactory
+* deprecate mis-normer HibernateBeanReplicator.initCustomTransformer with initCustomTransformerFactory
+* add TrivialCustomBeanTransformerFactories
+* prepare for 3.3.0beta21
+* upgrade junit from 4.1 to 4.4 + hamcrest
+
 beanlib 3.3.0beta20
 -------------------
 * keep Eclipse 3.4 happy
