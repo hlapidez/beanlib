@@ -32,7 +32,7 @@ public class TrivialCustomBeanTransformerFactories {
     }
     
     /** 
-     * Returns the factory of a custom transformer always performs identical transformation 
+     * Returns the factory of a custom transformer that always performs identical transformation 
      * (ie returns the same input instance). 
      */ 
     public static CustomBeanTransformerSpi.Factory getIdentityCustomTransformerFactory() {
@@ -40,7 +40,7 @@ public class TrivialCustomBeanTransformerFactories {
     }
     
     /** 
-     * Returns a custom transformer always performs identical transformation 
+     * Returns a custom transformer that always performs identical transformation 
      * (ie returns the same input instance). 
      */ 
     public static CustomBeanTransformerSpi getIdentityCustomTransformer() {
@@ -59,6 +59,7 @@ public class TrivialCustomBeanTransformerFactories {
 
     /** Used to delay loading class until necessary. */
     private static class NoopCustomTransformer {
+        /** Factory of a transformer that performs no custom transformation. */
         static final CustomBeanTransformerSpi.Factory FACTORY = new CustomBeanTransformerSpi.Factory() {
             public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi contextBeanTransformer) {
                 return SINGLETON;
@@ -78,13 +79,14 @@ public class TrivialCustomBeanTransformerFactories {
     
     /** Used to delay loading class until necessary. */
     private static class IdentityCustomTransformer {
+        /** Factory of a transformer that always transform to the same input instance. */
         static final CustomBeanTransformerSpi.Factory FACTORY = new CustomBeanTransformerSpi.Factory() {
             public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi contextBeanTransformer) {
                 return SINGLETON;
             }
         };
         /** Always transform to the same input instance. */
-        public static final CustomBeanTransformerSpi SINGLETON = new CustomBeanTransformerSpi() {
+        static final CustomBeanTransformerSpi SINGLETON = new CustomBeanTransformerSpi() {
             public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
                 return true;
             }
@@ -98,13 +100,14 @@ public class TrivialCustomBeanTransformerFactories {
     
     /** Used to delay loading class until necessary. */
     private static class NullCustomTransformer {
+        /** Factory of a transformer that always transform to null. */
         static final CustomBeanTransformerSpi.Factory FACTORY = new CustomBeanTransformerSpi.Factory() {
             public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi contextBeanTransformer) {
                 return SINGLETON;
             }
         };
         /** Always transform to null. */
-        public static final CustomBeanTransformerSpi SINGLETON = new CustomBeanTransformerSpi() {
+        static final CustomBeanTransformerSpi SINGLETON = new CustomBeanTransformerSpi() {
             public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
                 return true;
             }
