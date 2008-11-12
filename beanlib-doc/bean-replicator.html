@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>BeanReplicator</title>
+  <style type="text/css">
+<!--
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+}
+-->
+  </style>
+</head><body>
+<h1>Beanlib - BeanReplicator </h1>
+It's all about JavaBean replication.
+<h2>BeanReplicator</h2>
+To replicate a simple JavaBean with a class definition like:
+<pre><blockquote>public class SimpleBean {
+    private String name;
+
+    public SimpleBean() {}
+    public SimpleBean(String name) { this.name = name; }
+    
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+}
+...
+SimpleBean from = new SimpleBean("foo");
+</blockquote></pre>is a simple matter of:
+<pre><blockquote>SimpleBean to = BeanReplicator.newBeanReplicatable().replicateBean(from);
+</blockquote></pre>
+Notes the default no-arg constructor is required.
+<p>But is that going to work for a more complex JavaBean ?  Let's try:
+<pre><blockquote>public class ComplexBean {
+    private String name;
+    private ComplexBean[] array;
+    private Collection<ComplexBean> collection;
+    private Map<String,ComplexBean> map;
+
+    public ComplexBean() {}
+    public ComplexBean(String name) { this.name = name; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public Collection<ComplexBean> getCollection() { return collection; }
+    public void setCollection(Collection<ComplexBean> collection) { this.collection = collection; }
+
+    public ComplexBean[] getArray() { return array; }
+    public void setArray(ComplexBean[] array) { this.array = array; }
+
+    public Map<String, ComplexBean> getMap() { return map; }
+    public void setMap(Map<String, ComplexBean> map) { this.map = map; }
+}
+</blockquote></pre>First, set up the bean
+<pre><blockquote>ComplexBean from = new ComplexBean("foo");
+ComplexBean[] a = { from };
+Collection<ComplexBean> col = Arrays.asList(a);
+from.setArray(a);
+from.setCollection(col);
+Map<String,ComplexBean> map = new HashMap<String,ComplexBean>();
+map.put(from.getName(), from);
+from.setMap(map);
+</blockquote></pre>
+It can be replicated in the same way:
+<pre><blockquote>ComplexBean to = BeanReplicator.newBeanReplicatable().replicateBean(from);
+<blockquote></pre>
+Note the "to" and "from" beans are different object instances, but otherwise the content (ie the entire object graph) has been replicated.  All it requires is that the from bean follows the JavaBean convention.
+</pre>
+</body></html>
