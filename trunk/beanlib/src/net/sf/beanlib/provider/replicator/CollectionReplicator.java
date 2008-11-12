@@ -20,6 +20,7 @@ import static net.sf.beanlib.utils.ClassUtils.isJavaPackage;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -56,6 +57,15 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
     
     public static CollectionReplicator newCollectionReplicatable(BeanTransformerSpi beanTransformer) {
         return factory.newCollectionReplicatable(beanTransformer);
+    }
+    
+    static final Class<?> CLASS_ARRAY_ARRAYLIST;
+    static {
+        try {
+            CLASS_ARRAY_ARRAYLIST = Class.forName("java.util.Arrays$ArrayList");
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
     }
     
     protected CollectionReplicator(BeanTransformerSpi beanTransformer) 
@@ -141,6 +151,11 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
     protected final Collection<Object> createToInstanceAsCollection(Collection<?> from) 
         throws InstantiationException, IllegalAccessException, NoSuchMethodException
     {
+        
+        if (from.getClass() == CLASS_ARRAY_ARRAYLIST) {
+            List<?> list = (List<?>)from;
+            return new ArrayList(list.size());
+        }
         return (Collection<Object>)createToInstance(from);
     }
     @SuppressWarnings("unchecked")
