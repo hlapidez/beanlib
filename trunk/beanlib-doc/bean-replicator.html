@@ -33,8 +33,8 @@ Notes the default no-arg constructor is required.
 <pre><blockquote>public class ComplexBean {
     private String name;
     private ComplexBean[] array;
-    private Collection<ComplexBean> collection;
-    private Map<String,ComplexBean> map;
+    private Collection&lt;ComplexBean> collection;
+    private Map&lt;String,ComplexBean> map;
 
     public ComplexBean() {}
     public ComplexBean(String name) { this.name = name; }
@@ -42,28 +42,30 @@ Notes the default no-arg constructor is required.
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public Collection<ComplexBean> getCollection() { return collection; }
-    public void setCollection(Collection<ComplexBean> collection) { this.collection = collection; }
+    public Collection&lt;ComplexBean> getCollection() { return collection; }
+    public void setCollection(Collection&lt;ComplexBean> collection) { this.collection = collection; }
 
     public ComplexBean[] getArray() { return array; }
     public void setArray(ComplexBean[] array) { this.array = array; }
 
-    public Map<String, ComplexBean> getMap() { return map; }
-    public void setMap(Map<String, ComplexBean> map) { this.map = map; }
+    public Map&lt;String, ComplexBean> getMap() { return map; }
+    public void setMap(Map&lt;String, ComplexBean> map) { this.map = map; }
 }
 </blockquote></pre>First, set up the bean
 <pre><blockquote>ComplexBean from = new ComplexBean("foo");
 ComplexBean[] a = { from };
-Collection<ComplexBean> col = Arrays.asList(a);
+Collection&lt;ComplexBean> col = Arrays.asList(a);
 from.setArray(a);
 from.setCollection(col);
-Map<String,ComplexBean> map = new HashMap<String,ComplexBean>();
+Map&lt;String,ComplexBean> map = new HashMap&lt;String,ComplexBean>();
 map.put(from.getName(), from);
 from.setMap(map);
 </blockquote></pre>
 It can be replicated in the same way:
 <pre><blockquote>ComplexBean to = BeanReplicator.newBeanReplicatable().replicateBean(from);
 <blockquote></pre>
-Note the "to" and "from" beans are different object instances, but otherwise the content (ie the entire object graph) has been replicated.  All it requires is that the from bean follows the JavaBean convention.
+Note the "to" and "from" beans are different object instances, but otherwise the content (ie the entire object graph) has been replicated.  
+All it requires is that the from bean follows the JavaBean convention.  
+See <a href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib-test/src/net/sf/beanlib/provider/replicator/BeanReplicatorTest.java?revision=277&view=markup">BeanReplicatorTest.java</a> for more details.
 </pre>
 </body></html>
