@@ -144,6 +144,9 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         }
     }
     
+    /**
+     * A misnormer.  Use {@link #initCustomTransformerFactory(net.sf.beanlib.spi.CustomBeanTransformerSpi.Factory)} instead.
+     */
     @Deprecated
     public final BeanTransformer initCustomTransformer(CustomBeanTransformerSpi.Factory customTransformer) {
         this.customTransformer = customTransformer.newCustomBeanTransformer(this);
