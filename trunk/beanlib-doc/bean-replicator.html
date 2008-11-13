@@ -28,7 +28,7 @@ SimpleBean from = new SimpleBean("foo");
 </blockquote></pre>is a simple matter of:
 <pre><blockquote>SimpleBean to = BeanReplicator.newBeanReplicatable().replicateBean(from);
 </blockquote></pre>
-Notes the default no-arg constructor is required.
+Notes a no-arg constructor is required.
 <p>But is that going to work for a more complex JavaBean ?  Let's try:
 <pre><blockquote>public class ComplexBean {
     private String name;

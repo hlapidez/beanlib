@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>Beanlib FAQ</title>
+  <style type="text/css">
+<!--
+body,td,th {
+	font-family: Arial, Helvetica, sans-serif;
+}
+-->
+  </style>
+</head><body>
+<h1>Beanlib - FAQ</h1>
+<ol><h2><li>Can I get around the NoSuchMethodException if one of the field doesn't have an empty (ie no-arg) constructor ?</h2>
+Yes, see the <a href="custom-bean-transformer.html">CustomBeanTransformer SPI</a> section for details.
+</li>
+<h2><li>Can I combine the use of multiple CustomBeanTransformerSpi instances ?</h2>
+Yes, have a look at <a 
+href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib/src/net/sf/beanlib/spi/ChainedCustomBeanTransformer.java?revision=264&view=markup"
+>ChainedCustomBeanTransformer</a>.
+</li>
+<h2><li>I would like to replicate only the initialized properties/associations in my Hibernate object graph. Is there a simple way to do this?</h2>
+Yes, you can make use of a custom transformer to do that.  For example,
+<pre><blockquote>public class MyBeanTransformer implements CustomBeanTransformerSpi {
+    public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo)  
+    { // apply custom transformation for the uninitialized properties 
+        return !Hibernate.isInitialized(from); 
+    } 
+     
+    public <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo)  
+    { // custom transform by not replicating the uninitialized properties 
+        return null; 
+    } 
+}
+...
+HibernateBeanReplicator replicator = new Hibernate3BeanReplicator();
+replicator.initCustomTransformerFactory(new MyBeanTransformerFactory());
+replicator.deepCopy(...);
+</blockquote>
+</pre>
+</li>
+</ol>
+</body></html>
