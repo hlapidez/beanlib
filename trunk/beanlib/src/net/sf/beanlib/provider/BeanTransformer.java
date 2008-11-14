@@ -19,7 +19,6 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import net.jcip.annotations.NotThreadSafe;
-import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.PropertyInfo;
 import net.sf.beanlib.provider.replicator.ArrayReplicator;
@@ -52,54 +51,31 @@ import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
 
 /**
  * Bean Transformer.
- * 
+ *
  * @author Joe D. Velopar
  */
 @NotThreadSafe
 public class BeanTransformer extends ReplicatorTemplate implements BeanTransformerSpi
 {
-    private static final Factory factory = new Factory();
-    
-    /**
-     * Bean Transformer Factory.
-     * 
-     * @author Joe D. Velopar
-     */
-    @ThreadSafe
-    private static class Factory implements BeanTransformerSpi.Factory {
-        private Factory() {}
-        
-        public BeanTransformer newBeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) 
-        {
-            return new BeanTransformer(beanPopulatorFactory);
-        }
-    }
-    
-    public static BeanTransformer newBeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory)
-    {
-        return factory.newBeanTransformer(beanPopulatorFactory);
-    }
-    
-    /** Convenient factory method that defaults to use {@link BeanPopulator#factory}. */
-    public static BeanTransformer newBeanTransformer()
-    {
-        return factory.newBeanTransformer(BeanPopulator.factory);
+    /** Convenient constructor that defaults to use {@link BeanPopulator#factory}. */
+    public BeanTransformer() {
+        this(BeanPopulator.factory);
     }
     
     /** 
-     * Convenient factory method that both defaults to use {@link BeanPopulator#factory},
+     * Convenient constructor that both defaults to use {@link BeanPopulator#factory},
      * and allows plugging in one or more custom bean transformer factories that will be chained together.  
      */
-    public static BeanTransformer newBeanTransformer(final CustomBeanTransformerSpi.Factory ... customBeanTransformerFactories)
-    {
-        if (customBeanTransformerFactories == null || customBeanTransformerFactories.length == 0)
-            return newBeanTransformer();
-        BeanTransformer beanTransformer = BeanTransformer.newBeanTransformer();
-        return beanTransformer.initCustomTransformerFactory(
-                    customBeanTransformerFactories.length == 1
-                        ? customBeanTransformerFactories[0]
-                        : new ChainedCustomBeanTransformer.Factory(customBeanTransformerFactories))
-                        ;
+    public BeanTransformer(final CustomBeanTransformerSpi.Factory ... customBeanTransformerFactories) {
+        this(BeanPopulator.factory);
+        
+        if (customBeanTransformerFactories != null && customBeanTransformerFactories.length > 0) 
+        {
+            this.initCustomTransformerFactory(customBeanTransformerFactories.length == 1
+                            ? customBeanTransformerFactories[0]
+                            : new ChainedCustomBeanTransformer.Factory(customBeanTransformerFactories))
+                            ;
+        }
     }
     
     private final BeanPopulatorSpi.Factory beanPopulatorFactory;
@@ -126,7 +102,7 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     private ArrayReplicatorSpi arrayReplicatable = ArrayReplicator.newArrayReplicatable(this);
     private BlobReplicatorSpi blobReplicatable = UnsupportedBlobReplicator.newBlobReplicatable(this);
     private DateReplicatorSpi dateReplicatable = DateReplicator.newDateReplicatable(this);
-    private BeanReplicatorSpi beanReplicatable = BeanReplicator.newBeanReplicatable(this);
+    private BeanReplicatorSpi beanReplicatable = new BeanReplicator(this);
     
     public final void reset() {
         clonedMap = new IdentityHashMap<Object,Object>();
