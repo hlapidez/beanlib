@@ -143,20 +143,7 @@ public class BeanPopulator implements BeanPopulatorSpi
     private BeanTransformerSpi getTransformerSpi() {
         return (BeanTransformerSpi)(transformer instanceof BeanTransformerSpi ? transformer : null); 
     }
-    /** 
-     * Returns the to-bean with setter methods invoked with values retreived 
-     * from the getter methods of the from-bean.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T populate() 
-    {
-        if (getTransformerSpi() != null)
-            getTransformerSpi().getClonedMap().put(fromBean, toBean);
-        // invoking all declaring setter methods of toBean from all matching getter methods of fromBean
-        for (Method m : baseConfig.getSetterMethodCollector().collect(toBean))
-            processSetterMethod(m);
-        return (T)toBean;
-    }
+
     /**
      * Processes a specific setter method for the toBean.
      * 
@@ -184,12 +171,6 @@ public class BeanPopulator implements BeanPopulatorSpi
         String propertyName = Introspector.decapitalize(propertyString);
         try {
             doit(setterMethod, readerMethod, paramType, propertyName);
-//        } catch (InvocationTargetException ex) {
-//            baseConfig.getBeanPopulationExceptionHandler()
-//                .initFromBean(fromBean).initToBean(toBean)
-//                .initPropertyName(propertyName)
-//                .initReaderMethod(readerMethod).initSetterMethod(setterMethod)
-//                .handleException(ex.getTargetException(), log);
         } catch (Exception ex) {
             baseConfig.getBeanPopulationExceptionHandler()
                 .initFromBean(fromBean).initToBean(toBean)
@@ -201,7 +182,6 @@ public class BeanPopulator implements BeanPopulatorSpi
 
     private <T> void doit(
             Method setterMethod, Method readerMethod, Class<T> paramType, final String propertyName)
-//        throws InvocationTargetException, IllegalAccessException 
     {
         if (baseConfig.getDetailedBeanPopulatable() != null) {
             if (!baseConfig.getDetailedBeanPopulatable()
@@ -231,11 +211,9 @@ public class BeanPopulator implements BeanPopulatorSpi
         this.invokeMethodAsPrivileged(toBean, setterMethod, args);
         return;
     }
+    
     /** 
      * Invoke the given method as a privileged action, if necessary. 
-     * @throws InvocationTargetException 
-     * @throws IllegalAccessException 
-     * @throws IllegalArgumentException 
      */
     private Object invokeMethodAsPrivileged(final Object target, final Method method, final Object[] args)
     {
@@ -268,10 +246,34 @@ public class BeanPopulator implements BeanPopulatorSpi
                 }
         });
     }
+
+    // --------------------------- BeanPopulatorSpi --------------------------- 
     
-    /**
-     * @param beanPopulatable optionally used to control if a specific value read should get populated across
-     */
+    public Transformable getTransformer() {
+        return transformer;
+    }
+
+    public BeanPopulator initTransformer(Transformable transformer) {
+        this.transformer = transformer;
+        
+        if (this.getTransformerSpi() != null)
+            this.getTransformerSpi().initBeanPopulatorBaseConfig(baseConfig);
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T populate() 
+    {
+        if (getTransformerSpi() != null)
+            getTransformerSpi().getClonedMap().put(fromBean, toBean);
+        // invoking all declaring setter methods of toBean from all matching getter methods of fromBean
+        for (Method m : baseConfig.getSetterMethodCollector().collect(toBean))
+            processSetterMethod(m);
+        return (T)toBean;
+    }
+    
+    // -------------------------- BeanPopulatorBaseSpi -------------------------- 
+
     public BeanPopulator initBeanPopulatable(BeanPopulatable beanPopulatable) {
         baseConfig.setBeanPopulatable(beanPopulatable);
 
@@ -280,9 +282,6 @@ public class BeanPopulator implements BeanPopulatorSpi
         return this;
     }
     
-    /**
-     * @param beanSourceHandler optionally used to do something with the value read before the population
-     */
     public BeanPopulator initBeanSourceHandler(BeanSourceHandler beanSourceHandler) {
         baseConfig.setBeanSourceHandler(beanSourceHandler);
         
@@ -291,9 +290,6 @@ public class BeanPopulator implements BeanPopulatorSpi
         return this;
     }
     
-    /**
-     * @param debug debug mode.
-     */
     public BeanPopulator initDebug(boolean debug) {
         baseConfig.setDebug(debug);
 
@@ -302,9 +298,6 @@ public class BeanPopulator implements BeanPopulatorSpi
         return this;
     }
     
-    /**
-     * @param detailedBeanPopulatable optionally used to override the population decisions.
-     */
     public BeanPopulator initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable) 
     {
         baseConfig.setDetailedBeanPopulatable(detailedBeanPopulatable);
@@ -331,21 +324,6 @@ public class BeanPopulator implements BeanPopulatorSpi
             if (this.getTransformerSpi() != null)
                 this.getTransformerSpi().initSetterMethodCollector(setterMethodCollector);
         }
-        return this;
-    }
-    
-    public Transformable getTransformer() {
-        return transformer;
-    }
-
-    /**
-     * @param transformer optionally used to transform the value for the population
-     */
-    public BeanPopulator initTransformer(Transformable transformer) {
-        this.transformer = transformer;
-        
-        if (this.getTransformerSpi() != null)
-            this.getTransformerSpi().initBeanPopulatorBaseConfig(baseConfig);
         return this;
     }
     
