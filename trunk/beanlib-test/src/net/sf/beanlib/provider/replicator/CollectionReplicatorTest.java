@@ -61,7 +61,7 @@ public class CollectionReplicatorTest
         }
         
         A to = new A();
-        BeanPopulator.newBeanPopulator(from, to)
+        new BeanPopulator(from, to)
             .populate();
 
         {
