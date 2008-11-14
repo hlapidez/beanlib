@@ -21,7 +21,70 @@ import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 
 /**
- * Default implementation of {@link net.sf.beanlib.spi.replicator.BeanReplicatorSpi}.
+ * Default implementation of {@link BeanReplicatorSpi}.
+ * <p>
+ * A BeanReplicator can be used to replicate JavaBean's.
+ * <h2>Quick Start</h2>
+ * To replicate a simple JavaBean with a class definition like:
+ * <blockquote><pre>
+ * public class SimpleBean {
+ *     private String name;
+ *
+ *  public SimpleBean() {}
+ *    public SimpleBean(String name) { this.name = name; }
+ *    
+ *    public String getName() { return name; }
+ *    public void setName(String name) { this.name = name; }
+ * }
+ * ...
+ * SimpleBean from = new SimpleBean("foo");
+ * SimpleBean to = new BeanReplicator().replicateBean(from);
+ * </pre></blockquote> 
+ * Notes a no-arg constructor is required for the JavaBean at the top level.
+ * <p>
+ * How about a more complex example ? Let's try:
+ * <pre><blockquote>public class ComplexBean {
+ *     private String name;
+ *     private ComplexBean[] array;
+ *     private Collection&lt;ComplexBean> collection;
+ *     private Map&lt;String,ComplexBean> map;
+ * 
+ *     public ComplexBean() {}
+ *     public ComplexBean(String name) { this.name = name; }
+ * 
+ *     public String getName() { return name; }
+ *     public void setName(String name) { this.name = name; }
+ * 
+ *     public Collection&lt;ComplexBean> getCollection() { return collection; }
+ *     public void setCollection(Collection&lt;ComplexBean> collection) { this.collection = collection; }
+ * 
+ *     public ComplexBean[] getArray() { return array; }
+ *     public void setArray(ComplexBean[] array) { this.array = array; }
+ * 
+ *     public Map&lt;String, ComplexBean> getMap() { return map; }
+ *     public void setMap(Map&lt;String, ComplexBean> map) { this.map = map; }
+ * }
+ * </blockquote></pre>First, set up the bean
+ * <blockquote><pre>
+ * ComplexBean from = new ComplexBean("foo");
+ * ComplexBean[] a = { from };
+ * Collection&lt;ComplexBean> col = Arrays.asList(a);
+ * from.setArray(a);
+ * from.setCollection(col);
+ * Map&lt;String,ComplexBean> map = new HashMap&lt;String,ComplexBean>();
+ * map.put(from.getName(), from);
+ * from.setMap(map);
+ * </pre></blockquote>
+ * And then replicate it in the same way:
+ * <pre><blockquote>ComplexBean to = new BeanReplicator().replicateBean(from);
+ * <blockquote></pre>
+ * Voila!  The "to" and "from" beans are different object instances, 
+ * but the content (ie the entire object graph) has been replicated.
+ * Note this works as long as these objects follow the JavaBean convention.
+ * 
+ * @see <a 
+ * href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib-test/src/net/sf/beanlib/provider/replicator/BeanReplicatorTest.java?revision=277&view=markup"
+ * >BeanReplicatorTest.java</a> for more details.
  * 
  * @author Joe D. Velopar
  */
