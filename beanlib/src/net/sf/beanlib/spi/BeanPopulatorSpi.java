@@ -49,63 +49,24 @@ public interface BeanPopulatorSpi extends BeanPopulatorBaseSpi
     public Transformable getTransformer();
     
     /** 
-     * Propagate every property from the source JavaBean to the target JavaBean. 
+     * Propagates every property from the source JavaBean to the target JavaBean. 
      */
     public <T> T populate(); 
     
-    /**
-     * Overrides for co-variant return type.
-     * 
-     * @see BeanPopulatorBaseSpi#initBeanPopulatable(BeanPopulatable)
-     */
+    // Overrides for co-variant return type.
     public BeanPopulatorSpi initBeanPopulatable(BeanPopulatable beanPopulatable);
-    
-    /**
-     * Overrides for co-variant return type.
-     * 
-     * @see BeanPopulatorBaseSpi#initDetailedBeanPopulatable(DetailedBeanPopulatable)
-     */
+    // Overrides for co-variant return type.
     public BeanPopulatorSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable);
-    
-    /**
-     * Overrides for co-variant return type.
-     * 
-     * @see BeanPopulatorBaseSpi#initBeanSourceHandler(BeanSourceHandler)
-     */
+    // Overrides for co-variant return type.
     public BeanPopulatorSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler);
-    
-    /**
-     * Overrides for co-variant return type.
-     * 
-     * @see BeanPopulatorBaseSpi#initReaderMethodFinder(BeanMethodFinder)
-     */
+    // Overrides for co-variant return type.
     public BeanPopulatorSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder);
-    
-    /**
-     * Overrides for co-variant return type.
-     * 
-     * @see BeanPopulatorBaseSpi#initSetterMethodCollector(BeanMethodCollector)
-     */
+    // Overrides for co-variant return type.
     public BeanPopulatorSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector);
-    
-    /**
-     * Overrides for co-variant return type.
-     * 
-     * @see BeanPopulatorBaseSpi#initDebug(boolean)
-     */
+    // Overrides for co-variant return type.
     public BeanPopulatorSpi initDebug(boolean debug);
-    
-    /**
-     * Overrides for co-variant return type.
-     * 
-     * @see BeanPopulatorBaseSpi#initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler)
-     */
+    // Overrides for co-variant return type.
     public BeanPopulatorSpi initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler beanPopulationExceptionHandler);
-    
-    /**
-     * Overrides for co-variant return type.
-     * 
-     * @see BeanPopulatorBaseSpi#initBeanPopulatorBaseConfig(BeanPopulatorBaseConfig)
-     */
+    // Overrides for co-variant return type.
     public BeanPopulatorSpi initBeanPopulatorBaseConfig(BeanPopulatorBaseConfig baseConfig);
 }
