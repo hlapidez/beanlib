@@ -41,6 +41,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * Default implementation of {@link BeanPopulatorSpi}.
+ * <p>
  * A Bean Populator can be used to populate the properties from a JavaBean instance to another JavaBean instance.
  * For example,
  * <blockquote><pre>
