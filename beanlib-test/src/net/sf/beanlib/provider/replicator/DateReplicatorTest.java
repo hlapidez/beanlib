@@ -84,7 +84,7 @@ public class DateReplicatorTest {
         assertNull(to.getTime());
         assertNull(to.getTimestamp());
         
-        BeanPopulator.newBeanPopulator(from, to)
+        new BeanPopulator(from, to)
             .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
             .populate();
 

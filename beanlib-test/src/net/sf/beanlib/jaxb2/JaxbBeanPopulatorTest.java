@@ -51,7 +51,7 @@ public class JaxbBeanPopulatorTest
             }
         };
         
-        BeanPopulator.newBeanPopulator(from, to)
+        new BeanPopulator(from, to)
             .initSetterMethodCollector(FluentSetterMethodCollector.inst)
             .populate()
             ;
@@ -79,7 +79,7 @@ public class JaxbBeanPopulatorTest
             }
         };
         
-        BeanPopulator.newBeanPopulator(from, to)
+        new BeanPopulator(from, to)
             .populate()
             ;
         Assert.assertNull(to.getStuff());
@@ -105,7 +105,7 @@ public class JaxbBeanPopulatorTest
             }
         };
         
-        BeanPopulator.newBeanPopulator(from, to)
+        new BeanPopulator(from, to)
             .populate()
             ;
         Assert.assertEquals("Foo",to.getStuff());
@@ -131,7 +131,7 @@ public class JaxbBeanPopulatorTest
             }
         };
         
-        BeanPopulator.newBeanPopulator(from, to)
+        new BeanPopulator(from, to)
             .initSetterMethodCollector(FluentSetterMethodCollector.inst)
             .populate()
             ;

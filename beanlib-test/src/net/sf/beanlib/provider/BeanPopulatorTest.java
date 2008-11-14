@@ -38,7 +38,7 @@ public class BeanPopulatorTest {
             from.setString("foo");
             Foo to = new Foo("to");
             assertFalse(from.equals(to));
-            BeanPopulator.newBeanPopulator(from, to)
+            new BeanPopulator(from, to)
                          .initTransformer(null)
                          .populate();
             assertEquals(from.getString(), to.getString());
@@ -51,7 +51,7 @@ public class BeanPopulatorTest {
             from.setString("foo");
             Foo to = new Foo("to");
             assertFalse(from.equals(to));
-            BeanPopulator.newBeanPopulator(from, to)
+            new BeanPopulator(from, to)
                          .populate();
             assertEquals(from.getString(), to.getString());
             assertFalse(from.getProtectedSetString().equals(to.getProtectedSetString()));
@@ -67,7 +67,7 @@ public class BeanPopulatorTest {
             from.setString("foo");
             Foo to = new Foo("to");
             assertFalse(from.equals(to));
-            BeanPopulator.newBeanPopulator(from, to)
+            new BeanPopulator(from, to)
                          .initTransformer(null)
                          .populate();
             assertFalse(from.equals(to));
@@ -82,7 +82,7 @@ public class BeanPopulatorTest {
             from.setString("foo");
             Foo to = new Foo("to");
             assertFalse(from.equals(to));
-            BeanPopulator.newBeanPopulator(from, to)
+            new BeanPopulator(from, to)
                          .populate();
             assertFalse(from.equals(to));
             assertFalse(from.getProtectedSetString().equals(to.getProtectedSetString()));
@@ -101,7 +101,7 @@ public class BeanPopulatorTest {
             from.setBarString("barString");
             from.setBar(from);
             Bar to = new Bar("to");
-            BeanPopulator.newBeanPopulator(from, to)
+            new BeanPopulator(from, to)
                          .initTransformer(null)
                          .populate();
             assertFalse(from.getProtectedSetString().equals(to.getProtectedSetString()));
@@ -119,7 +119,7 @@ public class BeanPopulatorTest {
             from.setBarString("barString");
             from.setBar(from);
             Bar to = new Bar("to");
-            BeanPopulator.newBeanPopulator(from, to)
+            new BeanPopulator(from, to)
                          .populate();
             assertFalse(from.getProtectedSetString().equals(to.getProtectedSetString()));
             assertEquals(from.getString(), to.getString());
@@ -140,7 +140,7 @@ public class BeanPopulatorTest {
             from.setString("foo");
             Foo to = new Foo("to");
             assertFalse(from.equals(to));
-            BeanPopulator.newBeanPopulator(from, to)
+            new BeanPopulator(from, to)
                          .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
                          .initTransformer(null)
                          .populate();
@@ -155,7 +155,7 @@ public class BeanPopulatorTest {
             from.setString("foo");
             Foo to = new Foo("to");
             assertFalse(from.equals(to));
-            BeanPopulator.newBeanPopulator(from, to)
+            new BeanPopulator(from, to)
                 .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
                 .populate();
             assertEquals(from.getString(), to.getString());
@@ -175,7 +175,7 @@ public class BeanPopulatorTest {
             from.setBar(from);
             Bar to = new Bar("to");
             assertFalse(from.equals(to));
-            BeanPopulator.newBeanPopulator(from, to)
+            new BeanPopulator(from, to)
                          .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
                          .initTransformer(null)
                          .populate();
@@ -195,7 +195,7 @@ public class BeanPopulatorTest {
             from.setBar(from);
             Bar to = new Bar("to");
             assertFalse(from.equals(to));
-            BeanPopulator.newBeanPopulator(from, to)
+            new BeanPopulator(from, to)
                          .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
                          .populate();
             assertEquals(from.getProtectedSetString(), to.getProtectedSetString());
@@ -220,7 +220,7 @@ public class BeanPopulatorTest {
             t1.setType(type);
             
             Type2 t2 = new Type2();
-            BeanPopulator.newBeanPopulator(t1, t2)
+            new BeanPopulator(t1, t2)
                          .initTransformer(null)
                          .populate();
             assertEquals(t1.getF1(), t2.getF1());
@@ -239,7 +239,7 @@ public class BeanPopulatorTest {
             t1.setType(type);
             
             Type2 t2 = new Type2();
-            BeanPopulator.newBeanPopulator(t1, t2)
+            new BeanPopulator(t1, t2)
                          .populate();
             assertEquals(t1.getF1(), t2.getF1());
             assertEquals(t1.getF2(), t2.getF2());
