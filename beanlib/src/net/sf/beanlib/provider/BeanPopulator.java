@@ -41,7 +41,56 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Bean Populator.
+ * A Bean Populator can be used to populate the properties from a JavaBean instance to another JavaBean instance.
+ * For example,
+ * <blockquote><pre>
+ * Bean from = ...
+ * Bean to = ...
+ * new BeanPopulator(from, to).populate();
+ * </pre></blockquote>
+ * By default, every public setter method of the target JavaBean is invoked with the value retrieved 
+ * from the corresponding public getter method (of the same property name and type) of the source JavaBean.
+ * <p>
+ * How the set of setter methods and getter methods are determined can be overridden 
+ * via the methods {@link BeanPopulator#initSetterMethodCollector(BeanMethodCollector)}
+ * and {@link #initReaderMethodFinder(BeanMethodFinder)} 
+ * before the {@link #populate()} method is invoked. 
+ * <p>
+ * During the property propagation process, various options exist to override the default behavior:
+ * <ol>
+ * <li>A {@link DetailedBeanPopulatable} can be used to control whether a specific JavaBean property
+ *     should be propagated across.<br>
+ *     See {@link #initDetailedBeanPopulatable(DetailedBeanPopulatable)}.<br>
+ *     By default, there is no detailed bean populatable configured.
+ * </li>
+ * <li>Similar to {@link DetailedBeanPopulatable} but with a simpler API, 
+ *     a {@link BeanPopulatable} can be used to control whether a specific JavaBean property
+ *     should be propagated across.<br>
+ *     See {@link #initBeanPopulatable(BeanPopulatable)}.<br>
+ *     By default, there is no bean populatable configured.
+ * </li>
+ * <li>A {@link BeanSourceHandler} can be used to act as a call-back 
+ *     (to produce whatever side-effects deemed necessary)
+ *     after the property value has been retrieved from the source bean, 
+ *     but before being propagated across to the target bean.  <br>
+ *     See {@link #initBeanSourceHandler(BeanSourceHandler)}.<br>
+ *     By default, there is no bean source handler configured.
+ * </li>
+ * <li>A {@link Transformable} can be used to transform and replace the property value 
+ *     to be propagated across to the target bean.<br>
+ *     See {@link #initTransformer(Transformable)}.<br>
+ *     By default, there is no transformer configured.
+ * </li>
+ * <li>A {@link BeanPopulationExceptionHandler} can be used to handle any exception thrown.<br>
+ *     See {@link #initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler)} and
+ *     {@link BeanPopulationExceptionHandler}.<br>
+ *     By default, an abort policy is used in that any such exception will cause the propagation
+ *     to terminate immediately, and the exception itself
+ *     will get bubbled up as an unchecked exception.
+ * </li>
+ * </ol>
+ * Finally, all these options are grouped as a base configuration, 
+ * which can be alternatively changed via {@link #initBeanPopulatorBaseConfig(BeanPopulatorBaseConfig)}.
  * 
  * @author Joe D. Velopar
  */
@@ -51,8 +100,8 @@ public class BeanPopulator implements BeanPopulatorSpi
     public static final Factory factory = new Factory();
     
     /**
-     * Bean Populator Factory, which allows the instantiation of a BeanPopulator to be
-     * delayed.
+     * Bean Populator Factory, which implements the general factory interface 
+     * of a BeanPopulatorSpi instance.
      * 
      * @author Joe D. Velopar
      */
@@ -60,6 +109,11 @@ public class BeanPopulator implements BeanPopulatorSpi
     public static class Factory implements BeanPopulatorSpi.Factory {
         private Factory() {}
         
+         /**
+          * Notes the co-variant return type of a specific {@link BeanPopulatorSpi}.
+          * 
+          * @see net.sf.beanlib.spi.BeanPopulatorSpi.Factory#newBeanPopulator(java.lang.Object, java.lang.Object)
+          */
         public BeanPopulator newBeanPopulator(Object from, Object to)
         {
             return new BeanPopulator(from, to);
@@ -214,7 +268,7 @@ public class BeanPopulator implements BeanPopulatorSpi
     }
     
     /**
-     * @param beanPopulatable     optionally used to control if a specific value read should get populated across
+     * @param beanPopulatable optionally used to control if a specific value read should get populated across
      */
     public BeanPopulator initBeanPopulatable(BeanPopulatable beanPopulatable) {
         baseConfig.setBeanPopulatable(beanPopulatable);
