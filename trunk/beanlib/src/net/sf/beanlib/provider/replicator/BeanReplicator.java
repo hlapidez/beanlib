@@ -15,7 +15,6 @@
  */
 package net.sf.beanlib.provider.replicator;
 
-import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.provider.BeanTransformer;
 import net.sf.beanlib.spi.BeanTransformerSpi;
