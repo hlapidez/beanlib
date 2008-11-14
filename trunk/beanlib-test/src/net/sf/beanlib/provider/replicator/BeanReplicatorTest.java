@@ -67,7 +67,7 @@ public class BeanReplicatorTest
         map.put(from.getName(), from);
         from.setMap(map);
         
-        ComplexBean to = BeanReplicator.newBeanReplicatable().replicateBean(from);
+        ComplexBean to = new BeanReplicator().replicateBean(from);
         
         assertThat(from.getName(), is("foo"));
         assertThat(from.getArray()[0], sameInstance(from));

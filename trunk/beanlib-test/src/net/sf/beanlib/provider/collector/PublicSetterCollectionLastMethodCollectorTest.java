@@ -37,9 +37,9 @@ public class PublicSetterCollectionLastMethodCollectorTest {
         a1.addA(a2);
         assertTrue(2 == a1.getAset().size());
 
-        BeanTransformerSpi beanTransformer = BeanTransformer.newBeanTransformer();
+        BeanTransformerSpi beanTransformer = new BeanTransformer();
         beanTransformer.initSetterMethodCollector(new SortedMethodCollector(true));
-        A a1clone = BeanReplicator.newBeanReplicatable(beanTransformer)
+        A a1clone = new BeanReplicator(beanTransformer)
                                   .replicateBean(a1);
         // Note the missing element due to the element being added
         // to the Set before fully replicated.
@@ -57,9 +57,9 @@ public class PublicSetterCollectionLastMethodCollectorTest {
         a1.addA(a2);
         assertTrue(2 == a1.getAset().size());
 
-        BeanTransformerSpi beanTransformer = BeanTransformer.newBeanTransformer();
+        BeanTransformerSpi beanTransformer = new BeanTransformer();
         beanTransformer.initSetterMethodCollector(new SortedMethodCollector(false));
-        A a1clone = BeanReplicator.newBeanReplicatable(beanTransformer)
+        A a1clone = new BeanReplicator(beanTransformer)
                                   .replicateBean(a1);
         // Note the element is not missing this time, for A's name is populated before
         // being added to the Set.
@@ -74,9 +74,9 @@ public class PublicSetterCollectionLastMethodCollectorTest {
         a1.addA(a2);
         assertTrue(2 == a1.getAset().size());
 
-        BeanTransformerSpi beanTransformer = BeanTransformer.newBeanTransformer();
+        BeanTransformerSpi beanTransformer = new BeanTransformer();
         beanTransformer.initSetterMethodCollector(new PublicSetterCollectionLastMethodCollector());
-        A a1clone = BeanReplicator.newBeanReplicatable(beanTransformer)
+        A a1clone = new BeanReplicator(beanTransformer)
                                   .replicateBean(a1);
         assertTrue(a1clone.getAset().size() == 2);
     }

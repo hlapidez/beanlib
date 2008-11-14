@@ -35,7 +35,7 @@ public class BeanTransformerSpiTest {
     // BeanReplicator assumes there exists a default no-arg constructor by default.
     @Test(expected=NoSuchMethodException.class)
     public void testNoEmptyConstructorFailure() throws Throwable {
-        BeanReplicator beanReplicator = BeanReplicator.newBeanReplicatable();
+        BeanReplicator beanReplicator = new BeanReplicator();
         try {
             beanReplicator.replicateBean(a);
         } catch(BeanlibException ex) {
@@ -46,7 +46,7 @@ public class BeanTransformerSpiTest {
     // Uses a custom transfer to deal with there case when a default no-arg constructor doesn't exist.
     @Test
     public void testNoEmtyConstructor() {
-        BeanReplicator beanReplicator = BeanReplicator.newBeanReplicatable(customTransformer());
+        BeanReplicator beanReplicator = new BeanReplicator(customTransformer());
         A a2 = beanReplicator.replicateBean(a);
         assertNotSame(a, a2);
         assertEquals(a, a2);
@@ -62,7 +62,7 @@ public class BeanTransformerSpiTest {
     }
     
     private BeanTransformerSpi customTransformer() {
-        BeanTransformerSpi beanTransformer = BeanTransformer.newBeanTransformer();
+        BeanTransformerSpi beanTransformer = new BeanTransformer();
         return beanTransformer.initCustomTransformerFactory(new CustomBeanTransformerSpi.Factory() {
             public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi beanTransformer) {
                 return new CustomBeanTransformerSpi() {

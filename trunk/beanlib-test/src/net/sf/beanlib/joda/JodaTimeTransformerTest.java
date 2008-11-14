@@ -41,11 +41,11 @@ public class JodaTimeTransformerTest {
     @Test
     public void testIdentityTransformer() {
         BeanReplicator[] beanReplicators = {
-                BeanReplicator.newBeanReplicatable(
-                        BeanTransformer.newBeanTransformer(
+                new BeanReplicator(
+                        new BeanTransformer(
                                 new JodaTimeTransformer.Factory())),
-                BeanReplicator.newBeanReplicatable(
-                        BeanTransformer.newBeanTransformer(
+                new BeanReplicator(
+                        new BeanTransformer(
                                 new ChainedCustomBeanTransformer.Factory(
                                         new JodaTimeTransformer.Factory()))),
         };
@@ -76,7 +76,7 @@ public class JodaTimeTransformerTest {
         from.setLocalDateTime(new LocalDateTime());
         from.setLocalTime(new LocalTime());
         
-        BeanReplicator beanReplicator = BeanReplicator.newBeanReplicatable();
+        BeanReplicator beanReplicator = new BeanReplicator();
         JodaTestBean to = beanReplicator.replicateBean(from);
         
         assertThat(from.getDateTime(), not(sameInstance(to.getDateTime())));
@@ -101,8 +101,8 @@ public class JodaTimeTransformerTest {
         from.setLocalDateTime(new LocalDateTime());
         from.setLocalTime(new LocalTime());
         
-        BeanReplicator beanReplicator = BeanReplicator.newBeanReplicatable(
-                                            BeanTransformer.newBeanTransformer(
+        BeanReplicator beanReplicator = new BeanReplicator(
+                                            new BeanTransformer(
                                                     TrivialCustomBeanTransformerFactories.getNoopCustomTransformerFactory()));
         JodaTestBean to = beanReplicator.replicateBean(from);
         
@@ -122,13 +122,13 @@ public class JodaTimeTransformerTest {
     @Test
     public void testChainedNullTransformer() {
         BeanReplicator[] beanReplicators = {
-                BeanReplicator.newBeanReplicatable(
-                        BeanTransformer.newBeanTransformer(
+                new BeanReplicator(
+                        new BeanTransformer(
                                 new ChainedCustomBeanTransformer.Factory(
                                         new JodaTimeTransformer.Factory(), 
                                         TrivialCustomBeanTransformerFactories.getNullCustomTransformerFactory()))),
-                BeanReplicator.newBeanReplicatable(
-                        BeanTransformer.newBeanTransformer(
+                new BeanReplicator(
+                        new BeanTransformer(
                                 new ChainedCustomBeanTransformer.Factory(
                                         TrivialCustomBeanTransformerFactories.getNoopCustomTransformerFactory(),
                                         TrivialCustomBeanTransformerFactories.getNullCustomTransformerFactory()))),
