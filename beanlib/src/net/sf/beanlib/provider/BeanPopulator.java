@@ -76,13 +76,13 @@ public class BeanPopulator implements BeanPopulatorSpi
 
     private BeanPopulatorBaseConfig baseConfig = new BeanPopulatorBaseConfig();
     
-    private Transformable transformer = BeanTransformer.newBeanTransformer(factory);
+    private Transformable transformer = new BeanTransformer(factory);
     
     /**
      * @param fromBean from bean
      * @param toBean to bean
      */
-    private BeanPopulator(Object fromBean, Object toBean ) {
+    public BeanPopulator(Object fromBean, Object toBean ) {
         this.fromBean = fromBean;
         this.toBean = toBean;
     }

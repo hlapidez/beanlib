@@ -28,33 +28,6 @@ import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
  */
 public class BeanReplicator extends ReplicatorTemplate implements BeanReplicatorSpi
 {
-    private static final Factory factory = new Factory();
-    
-    /**
-     * Factory for {@link BeanReplicator}
-     * 
-     * @author Joe D. Velopar
-     */
-    @ThreadSafe
-    private static class Factory implements BeanReplicatorSpi.Factory {
-        private Factory() {}
-        
-        public BeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
-            return new BeanReplicator(beanTransformer);
-        }
-    }
-
-    public static BeanReplicator newBeanReplicatable(BeanTransformerSpi beanTransformer) {
-        return factory.newBeanReplicatable(beanTransformer);
-    }
-
-    /**
-     * Convenient factory method to use the default {@link BeanTransformer}.
-     */
-    public static BeanReplicator newBeanReplicatable() {
-        return factory.newBeanReplicatable(BeanTransformer.newBeanTransformer());
-    }
-    
     /**
      * Convenient constructor for passing in a bean transformer.
      */
@@ -67,7 +40,7 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
      * Convenient constructor to make use of the default {@link BeanTransformer}.
      */
     public BeanReplicator() {
-        super(BeanTransformer.newBeanTransformer());
+        super(new BeanTransformer());
     }
     
     /**
