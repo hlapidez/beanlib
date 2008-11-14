@@ -70,9 +70,9 @@ public class ByteArrayCopyTest
         parray.setPa(pa);
         
         {
-            PArray parray2 = BeanReplicator.newBeanReplicatable(
-                            BeanTransformer.newBeanTransformer())
-                                .replicateBean(parray, parray.getClass());
+            PArray parray2 = new BeanReplicator(
+                                new BeanTransformer())
+                                    .replicateBean(parray, parray.getClass());
             
             assertNotSame(parray, parray2);
             assertNotSame(parray.getPa(), parray2.getPa());
@@ -93,9 +93,9 @@ public class ByteArrayCopyTest
         byte[] bytes = { 1, 2, 3 };
         p1.setBytes(bytes);
         
-        P p2 = BeanReplicator.newBeanReplicatable(
-                                BeanTransformer.newBeanTransformer())
-                             .replicateBean(p1, p1.getClass());
+        P p2 = new BeanReplicator(
+                    new BeanTransformer())
+                        .replicateBean(p1, p1.getClass());
         assertNotSame(p1, p2);
         assertNotSame(p1.getBytes(), p2.getBytes());
         assertTrue(Arrays.equals(p1.getBytes(), p2.getBytes()));

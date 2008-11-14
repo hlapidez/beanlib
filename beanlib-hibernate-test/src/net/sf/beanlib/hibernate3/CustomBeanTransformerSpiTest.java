@@ -89,11 +89,11 @@ public class CustomBeanTransformerSpiTest {
         B2 fromB2 = new B2();
         fromB1.setB(fromB2);
         fromA.setB(fromB1);
-        A toA = BeanReplicator.newBeanReplicatable(
-                        BeanTransformer.newBeanTransformer()
-                                       .initCustomTransformer(
-                                               new MyCustomBeanTransformer.Factory()))
-                        .replicateBean(fromA, fromA.getClass());
+        A toA = new BeanReplicator(
+                    new BeanTransformer()
+                       .initCustomTransformerFactory(
+                               new MyCustomBeanTransformer.Factory()))
+                            .replicateBean(fromA, fromA.getClass());
         assertNotNull(toA);
         assertNotSame(fromA, toA);
 
@@ -113,8 +113,8 @@ public class CustomBeanTransformerSpiTest {
         B2 fromB2 = new B2();
         fromB1.setB(fromB2);
         fromA.setB(fromB1);
-        A toA = BeanReplicator.newBeanReplicatable(
-                                    BeanTransformer.newBeanTransformer())
+        A toA = new BeanReplicator(
+                                    new BeanTransformer())
                               .replicateBean(fromA, fromA.getClass());
         assertNotNull(toA);
         assertNotSame(fromA, toA);
@@ -137,7 +137,7 @@ public class CustomBeanTransformerSpiTest {
         fromB1.setB(fromB2);
         fromA.setB(fromB1);
         A toA = new Hibernate3BeanReplicator()
-                    .initCustomTransformer(
+                    .initCustomTransformerFactory(
                             new MyCustomBeanTransformer.Factory())
                     .copy(fromA);
         assertNotNull(toA);
