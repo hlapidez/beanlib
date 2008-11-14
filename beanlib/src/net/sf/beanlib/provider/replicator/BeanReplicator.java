@@ -28,7 +28,7 @@ import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 public class BeanReplicator extends ReplicatorTemplate implements BeanReplicatorSpi
 {
     /**
-     * Convenient constructor for passing in a bean transformer.
+     * Constructs with a given bean transformer.
      */
     public BeanReplicator(BeanTransformerSpi beanTransformer) 
     {
@@ -36,7 +36,7 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
     }
     
     /**
-     * Convenient constructor to make use of the default {@link BeanTransformer}.
+     * Constructs with the default {@link BeanTransformer}.
      */
     public BeanReplicator() {
         super(new BeanTransformer());

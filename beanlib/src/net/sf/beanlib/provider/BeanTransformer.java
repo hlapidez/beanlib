@@ -57,7 +57,7 @@ import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
 @NotThreadSafe
 public class BeanTransformer extends ReplicatorTemplate implements BeanTransformerSpi
 {
-    /** Convenient constructor that defaults to use {@link BeanPopulator#factory}. */
+    /** Constructs with the default {@link BeanPopulator#factory}. */
     public BeanTransformer() {
         this(BeanPopulator.factory);
     }

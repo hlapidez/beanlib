@@ -51,7 +51,8 @@ public class BeanPopulator implements BeanPopulatorSpi
     public static final Factory factory = new Factory();
     
     /**
-     * Bean Populator Factory.
+     * Bean Populator Factory, which allows the instantiation of a BeanPopulator to be
+     * delayed.
      * 
      * @author Joe D. Velopar
      */
@@ -63,10 +64,6 @@ public class BeanPopulator implements BeanPopulatorSpi
         {
             return new BeanPopulator(from, to);
         }
-    }
-
-    public static BeanPopulator newBeanPopulator(Object from, Object to) {
-        return factory.newBeanPopulator(from, to);
     }
 
     private final Log log = LogFactory.getLog(this.getClass());
