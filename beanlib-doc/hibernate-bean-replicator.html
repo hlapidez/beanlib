@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html><head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-  <title>BeanReplicator</title>
+  <title>HibernateBeanReplicator</title>
   <style type="text/css">
 <!--
 body,td,th {
@@ -10,13 +10,9 @@ body,td,th {
 -->
   </style>
 </head><body>
-<h1>Beanlib - BeanReplicator </h1>
-BeanReplicator, as it's name suggests, can be used to replicate JavaBean's.  
-In cloning a JavaBean, we may want to specify how deep we want to go in the object graph. 
-Is it a 100% deep clone, a skin deep shallow clone, or some other combinations ? 
-How about beans that involve a one-to-many collection, and circular references ? 
-The answer to these questions has a significant impact on both the performance and memory footprint of the cloning process.
-<h2>BeanReplicator - Quick Start</h2>
+<h1>Beanlib - HibernateBeanReplicator </h1>
+It's all about JavaBean replication.
+<h2>HibernateBeanReplicator</h2>
 To replicate a simple JavaBean with a class definition like:
 <pre><blockquote>public class SimpleBean {
     private String name;
@@ -30,7 +26,7 @@ To replicate a simple JavaBean with a class definition like:
 ...
 SimpleBean from = new SimpleBean("foo");
 </blockquote></pre>is a simple matter of:
-<pre><blockquote>SimpleBean to = new BeanReplicator().replicateBean(from);
+<pre><blockquote>SimpleBean to = BeanReplicator.newBeanReplicatable().replicateBean(from);
 </blockquote></pre>
 Notes a no-arg constructor is required.
 <p>But is that going to work for a more complex JavaBean ?  Let's try:
@@ -66,30 +62,10 @@ map.put(from.getName(), from);
 from.setMap(map);
 </blockquote></pre>
 It can be replicated in the same way:
-<pre><blockquote>ComplexBean to = new BeanReplicator().replicateBean(from);
+<pre><blockquote>ComplexBean to = BeanReplicator.newBeanReplicatable().replicateBean(from);
 <blockquote></pre>
 Note the "to" and "from" beans are different object instances, but otherwise the content (ie the entire object graph) has been replicated.  
 All it requires is that the from bean follows the JavaBean convention.  
 See <a href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib-test/src/net/sf/beanlib/provider/replicator/BeanReplicatorTest.java?revision=277&view=markup">BeanReplicatorTest.java</a> for more details.
 </pre>
-<h2>BeanReplicator - Options via BeanTransformerSpi</h2>
-a BeanReplicator Various options exist in overriding the default behavior of BeanReplicator via the BeanTransformerSpi:
-<ol>
-<li>To decide on whether a JavaBean property should be populated or not via the BeanPopulatable SPI.
-For example,
-<blockquote><pre>
-BeanPopulatable myPopulatable = ...
-
-ComplexBean to = new BeanReplicator(myTranformer).replicateBean(from);
-</pre></blockquote>
-</li>
-<p>
-<li>Shallow clone which will result in cloning the top level bean and the immediately contained member fields of Java primitive types, String, Date, etc., but will exclude instances of Collection and application specific types. The excluded member fields will be set to null;</li>
-<p>
-<li>Partial deep clone that extends only to a specified set of classes and a specified set of "collection properties". A collection property can be specified via a class named CollectionPropertyName. This allows an arbitrary portion of the object graph to be deeply cloned;</li>
-<p>
-<li>Provide your own customized "Vetoer" by implementing the BeanPopulatable interface to control the population decision of each bean property;</li>
-<p>
-<li>Provide your own customized BeanPopulatable and/or DetailedBeanPopulatable to completely override the population decision of each bean property.</li>
-</ol>
 </body></html>
