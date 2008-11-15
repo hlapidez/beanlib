@@ -167,17 +167,6 @@ public class HibernateBeanReplicator
 
     /** 
      * Initializes with a custom transformer factory.
-     * @deprecated this method has been a misnormer.  
-     * Use {@link #initCustomTransformerFactory(net.sf.beanlib.spi.CustomBeanTransformerSpi.Factory)} instead.
-     */
-    @Deprecated
-    public final HibernateBeanReplicator initCustomTransformer(CustomBeanTransformerSpi.Factory customTransformerFactory) {
-        this.hibernateBeanTransformer.initCustomTransformerFactory(customTransformerFactory);
-        return this;
-    }
-
-    /** 
-     * Initializes with a custom transformer factory.
      */
     public final HibernateBeanReplicator initCustomTransformerFactory(CustomBeanTransformerSpi.Factory customTransformerFactory) {
         this.hibernateBeanTransformer.initCustomTransformerFactory(customTransformerFactory);
