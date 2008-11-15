@@ -27,6 +27,6 @@ import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 public class Hibernate3BeanReplicator extends HibernateBeanReplicator
 {
 	public Hibernate3BeanReplicator() {
-		super(Hibernate3BeanTransformer.newBeanTransformer());
+		super(new Hibernate3BeanTransformer());
 	}
 }

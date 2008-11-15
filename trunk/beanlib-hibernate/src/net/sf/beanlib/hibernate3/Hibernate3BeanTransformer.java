@@ -15,12 +15,10 @@
  */
 package net.sf.beanlib.hibernate3;
 
-import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.hibernate.UnEnhancer;
 import net.sf.beanlib.provider.BeanPopulator;
 import net.sf.beanlib.provider.BeanTransformer;
 import net.sf.beanlib.spi.BeanPopulatorSpi;
-import net.sf.beanlib.spi.BeanTransformerSpi;
 
 /**
  * Hibernate 3 specific Bean Transformer.
@@ -29,40 +27,20 @@ import net.sf.beanlib.spi.BeanTransformerSpi;
  */
 public class Hibernate3BeanTransformer extends BeanTransformer
 {
-    private static final Factory factory = new Factory();
-    
-    /**
-     * Hibernate Bean Transformer Factory.
-     * 
-     * @author Joe D. Velopar
-     */
-    @ThreadSafe
-    private static class Factory implements BeanTransformerSpi.Factory {
-        private Factory() {}
-        
-        public Hibernate3BeanTransformer newBeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) 
-        {
-            Hibernate3BeanTransformer transformer = new Hibernate3BeanTransformer(beanPopulatorFactory);
-            transformer.initCollectionReplicatableFactory(
-                    Hibernate3CollectionReplicator.getFactory());
-            transformer.initMapReplicatableFactory(
-                    Hibernate3MapReplicator.getFactory());
-            transformer.initBlobReplicatableFactory(
-                    Hibernate3BlobReplicator.getFactory());
-            transformer.initBeanReplicatableFactory(
-                    Hibernate3JavaBeanReplicator.getFactory());
-            return transformer;
-        }
-    }
-    
-    /** Convenient factory method that defaults to use {@link BeanPopulator#factory}. */
-    public static Hibernate3BeanTransformer newBeanTransformer()
-    {
-        return factory.newBeanTransformer(BeanPopulator.factory);
+    public Hibernate3BeanTransformer() {
+        this(BeanPopulator.factory);
     }
 
-    protected Hibernate3BeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) {
+    public Hibernate3BeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) {
         super(beanPopulatorFactory);
+        this.initCollectionReplicatableFactory(
+                Hibernate3CollectionReplicator.getFactory());
+        this.initMapReplicatableFactory(
+                Hibernate3MapReplicator.getFactory());
+        this.initBlobReplicatableFactory(
+                Hibernate3BlobReplicator.getFactory());
+        this.initBeanReplicatableFactory(
+                Hibernate3JavaBeanReplicator.getFactory());
     }
     
     @Override
