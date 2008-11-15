@@ -83,7 +83,7 @@ import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
  * Note this works as long as these objects follow the JavaBean convention.
  * 
  * @see <a 
- * href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib-test/src/net/sf/beanlib/provider/replicator/BeanReplicatorTest.java?revision=277&view=markup"
+ * href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib-test/src/net/sf/beanlib/provider/replicator/BeanReplicatorTest.java?revision=283&view=markup"
  * >BeanReplicatorTest.java</a> for more details.
  * 
  * @author Joe D. Velopar
