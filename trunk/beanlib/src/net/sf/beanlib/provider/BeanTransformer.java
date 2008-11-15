@@ -34,6 +34,7 @@ import net.sf.beanlib.spi.BeanMethodFinder;
 import net.sf.beanlib.spi.BeanPopulatable;
 import net.sf.beanlib.spi.BeanPopulationExceptionHandler;
 import net.sf.beanlib.spi.BeanPopulatorBaseConfig;
+import net.sf.beanlib.spi.BeanPopulatorBaseSpi;
 import net.sf.beanlib.spi.BeanPopulatorSpi;
 import net.sf.beanlib.spi.BeanSourceHandler;
 import net.sf.beanlib.spi.BeanTransformerSpi;
@@ -50,8 +51,66 @@ import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
 import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
 
 /**
- * Bean Transformer.
- *
+ * Default implementation of {@link BeanTransformerSpi}.
+ * 
+ * A Bean Transformer can be used to transform object input typically in the form of a JavaBean property
+ * into an output object typically used to populate the corresponding property of a target JavaBean.
+ * <p>
+ * This class extends {@link ReplicatorTemplate} as the implementation typically 
+ * transforms a JavaBean property by replicating it into a separate instance.
+ * The replication is typically recursive in that the whole object graph of the input object is
+ * replicated into an equivalent output object graph, resolving circular references as necessary.
+ * However, the exact behavior of the replication process including<ul>
+ * <li>whether it's recursive or not; and 
+ * <li>to what extent the input object graph should be traversed and/or replicated</li>
+ * </ul> 
+ * can be controlled and/or supplemented by the client code via various options:
+ * <p>
+ * <ol>
+ * <li>All the configurable options of {@link BeanPopulatorBaseSpi} are available, as
+ * the replication of JavaBean properties inevitably involves bean population.</li>
+ * <p>
+ * <li>A Bean Transformer uses a best effort approach to perform object transformation and replication.
+ * The default implementations for replicating the common data types such as
+ * collection, map, dates, etc. can be selectively overridden via 
+ * the replicator factory initialization methods:
+ * <p>
+ * <ul>
+ * <table>
+ *   <tr><th width="20%" align="center">Type</th><th>Configuration method</th>
+ *   <tr><td><li>Immutable (such as enum)</li></td>
+ *   <td>{@link #initImmutableReplicatableFactory(net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi.Factory) 
+ *          #initImmutableReplicatableFactory(ImmutableReplicatorSpi.Factory)}</td>
+ *   <tr><td><li>Collection</li></td>
+ *   <td>{@link #initCollectionReplicatableFactory(net.sf.beanlib.spi.replicator.CollectionReplicatorSpi.Factory) 
+ *          #initCollectionReplicatableFactory(CollectionReplicatorSpi.Factory)}</td>
+ *   <tr><td><li>Map</li></td>
+ *   <td>{@link #initMapReplicatableFactory(net.sf.beanlib.spi.replicator.MapReplicatorSpi.Factory) 
+ *          #initMapReplicatableFactory(MapReplicatorSpi.Factory)}</td>
+ *   <tr><td><li>Primitive array</li></td>
+ *   <td>{@link #initArrayReplicatableFactory(net.sf.beanlib.spi.replicator.ArrayReplicatorSpi.Factory) 
+ *          #initArrayReplicatableFactory(ArrayReplicatorSpi.Factory)}</td>
+ *   <tr><td><li>Blob</li></td>
+ *   <td>{@link #initBlobReplicatableFactory(net.sf.beanlib.spi.replicator.BlobReplicatorSpi.Factory)
+ *          #initBlobReplicatableFactory(BlobReplicatorSpi.Factory)}</td>
+ *   <tr><td><li>Date</li></td>
+ *   <td>{@link #initDateReplicatableFactory(net.sf.beanlib.spi.replicator.DateReplicatorSpi.Factory)
+ *          #initDateReplicatableFactory(DateReplicatorSpi.Factory)}</td>
+ *   <tr><td><li>JavaBean (with no-arg constructor)</li></td>
+ *   <td>{@link #initBeanReplicatableFactory(net.sf.beanlib.spi.replicator.BeanReplicatorSpi.Factory)
+ *          #initBeanReplicatableFactory(BeanReplicatorSpi.Factory))}</td>
+ * </table>
+ * </ul>
+ * </li>
+ * <p>
+ * <li>For anything else that the existing implementation fails to tranform, client can provide
+ * one or multiple custom transformer factories via the constructor 
+ * {@link #BeanTransformer(net.sf.beanlib.spi.CustomBeanTransformerSpi.Factory...)
+ * new BeanTransformer(CustomBeanTransformerSpi.Factory...)}.
+ * </li>
+ * </ol>
+ * @see {@link CustomBeanTransformerSpi}
+ * 
  * @author Joe D. Velopar
  */
 @NotThreadSafe
@@ -120,16 +179,6 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         }
     }
     
-    /**
-     * A misnormer.  Use {@link #initCustomTransformerFactory(net.sf.beanlib.spi.CustomBeanTransformerSpi.Factory)} instead.
-     */
-    @Deprecated
-    public final BeanTransformer initCustomTransformer(CustomBeanTransformerSpi.Factory customTransformer) {
-        this.customTransformer = customTransformer.newCustomBeanTransformer(this);
-        return this;
-    }
-    
-    /** Initializes with a custom transformer factory. */
     public final BeanTransformer initCustomTransformerFactory(CustomBeanTransformerSpi.Factory customTransformer) {
         this.customTransformer = customTransformer.newCustomBeanTransformer(this);
         return this;
@@ -166,7 +215,7 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         return this;
     }
     
-    public BeanTransformer initCollectionReplicatable(CollectionReplicatorSpi.Factory factory) {
+    public BeanTransformer initCollectionReplicatableFactory(CollectionReplicatorSpi.Factory factory) {
         this.collectionReplicatable = factory.newCollectionReplicatable(this);
         return this;
     }
@@ -175,7 +224,7 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         return collectionReplicatable;
     }
     
-    public BeanTransformer initMapReplicatable(MapReplicatorSpi.Factory factory) {
+    public BeanTransformer initMapReplicatableFactory(MapReplicatorSpi.Factory factory) {
         this.mapReplicatable = factory.newMapReplicatable(this);
         return this;
     }
@@ -189,7 +238,7 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         return (Map<K,V>)clonedMap;
     }
     
-    public BeanTransformer initImmutableReplicatable(ImmutableReplicatorSpi.Factory immutableReplicatableFactory) 
+    public BeanTransformer initImmutableReplicatableFactory(ImmutableReplicatorSpi.Factory immutableReplicatableFactory) 
     {
         this.immutableReplicatable = immutableReplicatableFactory.newImmutableReplicatable(this);
         return this;
@@ -199,7 +248,7 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         return immutableReplicatable;
     }
 
-    public BeanTransformer initArrayReplicatable(ArrayReplicatorSpi.Factory arrayReplicatableFactory) {
+    public BeanTransformer initArrayReplicatableFactory(ArrayReplicatorSpi.Factory arrayReplicatableFactory) {
         this.arrayReplicatable = arrayReplicatableFactory.newArrayReplicatable(this);
         return this;
     }
@@ -208,7 +257,7 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         return arrayReplicatable;
     }
 
-    public BeanTransformer initBlobReplicatable(BlobReplicatorSpi.Factory blobReplicatableFactory) {
+    public BeanTransformer initBlobReplicatableFactory(BlobReplicatorSpi.Factory blobReplicatableFactory) {
         this.blobReplicatable = blobReplicatableFactory.newBlobReplicatable(this);
         return this;
     }
@@ -217,7 +266,7 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         return blobReplicatable;
     }
 
-    public BeanTransformer initBeanReplicatable(BeanReplicatorSpi.Factory objectReplicatableFactory) {
+    public BeanTransformer initBeanReplicatableFactory(BeanReplicatorSpi.Factory objectReplicatableFactory) {
         this.beanReplicatable = objectReplicatableFactory.newBeanReplicatable(this);
         return this;
     }
@@ -226,7 +275,7 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         return beanReplicatable;
     }
 
-    public BeanTransformerSpi initDateReplicatable(DateReplicatorSpi.Factory dateReplicatableFactory) {
+    public BeanTransformerSpi initDateReplicatableFactory(DateReplicatorSpi.Factory dateReplicatableFactory) {
         this.dateReplicatable = dateReplicatableFactory.newDateReplicatable(this);
         return this;
     }
