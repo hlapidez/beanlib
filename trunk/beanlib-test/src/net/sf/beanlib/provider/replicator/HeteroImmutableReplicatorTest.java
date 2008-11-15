@@ -113,7 +113,7 @@ public class HeteroImmutableReplicatorTest {
                 .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
                 .initTransformer(
                     new BeanTransformer()
-                                   .initImmutableReplicatable(HeteroImmutableReplicator.factory)
+                                   .initImmutableReplicatableFactory(HeteroImmutableReplicator.factory)
                                 )
                 .populate();
             assertTrue(to.getEnumMember() == from.getEnumMember());
@@ -167,7 +167,7 @@ public class HeteroImmutableReplicatorTest {
                 .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
                 .initTransformer(
                     new BeanTransformer()
-                                   .initImmutableReplicatable(HeteroImmutableReplicator.factory)
+                                   .initImmutableReplicatableFactory(HeteroImmutableReplicator.factory)
                 ).populate();
             assertTrue(to.getEnumMember() == ToEnum.values()[e.ordinal()]);
         }
