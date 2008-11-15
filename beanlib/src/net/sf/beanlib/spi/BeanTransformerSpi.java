@@ -44,50 +44,23 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
         public BeanTransformerSpi newBeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory);
     }
     
-    // Overrides here for co-variant return type.
-    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
-    public BeanTransformerSpi initBeanPopulatable(BeanPopulatable beanPopulatable);
-    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
-    public BeanTransformerSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable);
-    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
-    public BeanTransformerSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler);
-    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
-    public BeanTransformerSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder);
-    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
-    public BeanTransformerSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector);
-    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
-    public BeanTransformerSpi initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler beanPopulationExceptionHandler);
-    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
-    public BeanTransformerSpi initDebug(boolean debug);
-    /** Don't invoke this method, except from within the BeanPopulatorSpi implementation class. */
-    public BeanTransformerSpi initBeanPopulatorBaseConfig(BeanPopulatorBaseConfig baseConfig);
-
-    /** Don't invoke this method, except from within the replicator implementation class. */
-    public BeanPopulatorBaseConfig getBeanPopulatorBaseConfig();
-    
-    /** 
-     * Initializes with a custom transformer factory.
-     * @deprecated this method has been a misnormer.  
-     * Use {@link #initCustomTransformerFactory(net.sf.beanlib.spi.CustomBeanTransformerSpi.Factory)} instead.
-     */
-    @Deprecated
-    public BeanTransformerSpi initCustomTransformer(CustomBeanTransformerSpi.Factory customTransformerFactory);
-    
     /** 
      * Initializes with a custom transformer factory.
      */
     public BeanTransformerSpi initCustomTransformerFactory(CustomBeanTransformerSpi.Factory customTransformerFactory);
-    
+
+    // Used to resolve Object Identities and circular references
     public void reset();
-    
     public <K,V> Map<K,V> getClonedMap();
-    public BeanTransformerSpi initImmutableReplicatable(ImmutableReplicatorSpi.Factory immutableReplicatableFactory);
-    public BeanTransformerSpi initCollectionReplicatable(CollectionReplicatorSpi.Factory collectionReplicatableFactory);
-    public BeanTransformerSpi initMapReplicatable(MapReplicatorSpi.Factory mapReplicatableFactory);
-    public BeanTransformerSpi initArrayReplicatable(ArrayReplicatorSpi.Factory arrayReplicatableFactory);
-    public BeanTransformerSpi initBlobReplicatable(BlobReplicatorSpi.Factory blobReplicatableFactory);
-    public BeanTransformerSpi initDateReplicatable(DateReplicatorSpi.Factory dateReplicatableFactory);
-    public BeanTransformerSpi initBeanReplicatable(BeanReplicatorSpi.Factory beanReplicatableFactory);
+    
+    // Configure the replicator factories for some major/common types
+    public BeanTransformerSpi initImmutableReplicatableFactory(ImmutableReplicatorSpi.Factory immutableReplicatableFactory);
+    public BeanTransformerSpi initCollectionReplicatableFactory(CollectionReplicatorSpi.Factory collectionReplicatableFactory);
+    public BeanTransformerSpi initMapReplicatableFactory(MapReplicatorSpi.Factory mapReplicatableFactory);
+    public BeanTransformerSpi initArrayReplicatableFactory(ArrayReplicatorSpi.Factory arrayReplicatableFactory);
+    public BeanTransformerSpi initBlobReplicatableFactory(BlobReplicatorSpi.Factory blobReplicatableFactory);
+    public BeanTransformerSpi initDateReplicatableFactory(DateReplicatorSpi.Factory dateReplicatableFactory);
+    public BeanTransformerSpi initBeanReplicatableFactory(BeanReplicatorSpi.Factory beanReplicatableFactory);
     
     public ImmutableReplicatorSpi getImmutableReplicatable();
     public CollectionReplicatorSpi getCollectionReplicatable();
@@ -98,4 +71,32 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
     public BeanReplicatorSpi getBeanReplicatable();
     
     public BeanPopulatorSpi.Factory getBeanPopulatorSpiFactory();
+    public BeanPopulatorBaseConfig getBeanPopulatorBaseConfig();
+    
+    // -------------------------- BeanPopulatorBaseSpi -------------------------- 
+
+    // Overrides here for co-variant return type.
+    // Don't invoke this method, except from within the BeanPopulatorSpi implementation class.
+    public BeanTransformerSpi initBeanPopulatable(BeanPopulatable beanPopulatable);
+    // Overrides here for co-variant return type.
+    // Don't invoke this method, except from within the BeanPopulatorSpi implementation class.
+    public BeanTransformerSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable);
+    // Overrides here for co-variant return type.
+    // Don't invoke this method, except from within the BeanPopulatorSpi implementation class.
+    public BeanTransformerSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler);
+    // Overrides here for co-variant return type.
+    // Don't invoke this method, except from within the BeanPopulatorSpi implementation class.
+    public BeanTransformerSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder);
+    // Overrides here for co-variant return type.
+    // Don't invoke this method, except from within the BeanPopulatorSpi implementation class.
+    public BeanTransformerSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector);
+    // Overrides here for co-variant return type.
+    // Don't invoke this method, except from within the BeanPopulatorSpi implementation class.
+    public BeanTransformerSpi initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler beanPopulationExceptionHandler);
+    // Overrides here for co-variant return type.
+    // Don't invoke this method, except from within the BeanPopulatorSpi implementation class.
+    public BeanTransformerSpi initDebug(boolean debug);
+    // Overrides here for co-variant return type.
+    // Don't invoke this method, except from within the BeanPopulatorSpi implementation class.
+    public BeanTransformerSpi initBeanPopulatorBaseConfig(BeanPopulatorBaseConfig baseConfig);
 }
