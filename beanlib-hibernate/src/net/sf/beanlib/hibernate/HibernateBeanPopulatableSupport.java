@@ -36,14 +36,15 @@ public class HibernateBeanPopulatableSupport implements BeanPopulatable
 {
     // the set of entity bean to be populated; 
     // or null if all entity bean are to be populated.
-    private Set<Class> entityBeanClassSet;
+    private Set<Class<?>> entityBeanClassSet;
     // the set of Collection fields to be populated; 
     // or null if all Collection fields are to be populated.
     private Set<? extends CollectionPropertyName> collectionPropertyNameSet;
     
+    /** Used to veto the propagation of a JavaBean property. */
     private BeanPopulatable vetoer;
     
-    public HibernateBeanPopulatableSupport(Set<Class> entityBeanClassSet, 
+    public HibernateBeanPopulatableSupport(Set<Class<?>> entityBeanClassSet, 
         Set<? extends CollectionPropertyName> collectionPropertyNameSet, BeanPopulatable vetoer)
     {
         this.entityBeanClassSet = entityBeanClassSet;
