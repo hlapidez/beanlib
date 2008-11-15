@@ -50,7 +50,7 @@ public class EnumTest {
         // before beanlib was entirely moved to Java 5.
         HibernateBeanReplicator replicator = 
             new Hibernate3BeanReplicator()
-            .initCustomTransformer(
+            .initCustomTransformerFactory(
                 new CustomBeanTransformerSpi.Factory() 
                 {
                     public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi beanTransformer) 

@@ -76,7 +76,7 @@ public class DateTest
         // Replicate Timestamp into Date
         HibernateBeanReplicator replicator =
             new Hibernate3BeanReplicator()
-            .initCustomTransformer(
+            .initCustomTransformerFactory(
                 new CustomBeanTransformerSpi.Factory() 
                 {
                     public CustomBeanTransformerSpi newCustomBeanTransformer(final BeanTransformerSpi beanTransformer) 
