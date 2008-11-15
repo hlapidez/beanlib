@@ -26,7 +26,10 @@ package net.sf.beanlib.spi;
 public interface BeanPopulatorSpi extends BeanPopulatorBaseSpi 
 {
     /**
-     * Bean Populator Factory SPI.
+     * Bean Populator Factory SPI, which is used to create
+     * a bean populator which can then be used to determine 
+     * whether a specific JavaBean property should be propagated 
+     * from a source bean to a target bean.
      * 
      * @author Joe D. Velopar
      */
@@ -36,6 +39,9 @@ public interface BeanPopulatorSpi extends BeanPopulatorBaseSpi
     }
 
     /**
+     * Used to configure a transformer to transform a property value read from a source JavaBean
+     * into a value to be to set the corresponding property of a target JavaBean.
+     * 
      * @param transformer is used to transform every property value read from a source JavaBean
      * into a value to be to set the corresponding property of a target JavaBean.
      * 
@@ -49,7 +55,7 @@ public interface BeanPopulatorSpi extends BeanPopulatorBaseSpi
     public Transformable getTransformer();
     
     /** 
-     * Propagates every property from the source JavaBean to the target JavaBean. 
+     * Propagates properties from the source JavaBean to the target JavaBean. 
      */
     public <T> T populate(); 
     

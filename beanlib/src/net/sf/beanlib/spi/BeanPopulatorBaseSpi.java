@@ -25,6 +25,10 @@ package net.sf.beanlib.spi;
 public interface BeanPopulatorBaseSpi 
 {
     /**
+     * Used to configure a bean populatable to 
+     * determine whether a specific JavaBean property should be propagated
+     * from a source bean to a target bean.
+     * 
      * @param beanPopulatable is similar to {@link DetailedBeanPopulatable} but with a simpler API
      * that is used to control whether a specific JavaBean property should be propagated
      * from a source bean to a target bean.
@@ -34,6 +38,10 @@ public interface BeanPopulatorBaseSpi
     public BeanPopulatorBaseSpi initBeanPopulatable(BeanPopulatable beanPopulatable);
 
     /**
+     * Used to configure a detailed bean populatable (which has more context information) 
+     * to determine whether a specific JavaBean property
+     * should be propagated from the source bean to the target bean.
+     * 
      * @param detailedBeanPopulatable is used to control whether a specific JavaBean property
      * should be propagated from the source bean to the target bean.
      * 
@@ -42,6 +50,11 @@ public interface BeanPopulatorBaseSpi
     public BeanPopulatorBaseSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable);
     
     /**
+     * Used to configure a call-back 
+     * (to produce whatever side-effects deemed necessary) that is invoked
+     * after the property value has been retrieved from the source bean, 
+     * but before being propagated across to the target bean.
+     * 
      * @param beanSourceHandler can be used to act as a call-back 
      * (to produce whatever side-effects deemed necessary)
      * after the property value has been retrieved from the source bean, 
@@ -52,6 +65,8 @@ public interface BeanPopulatorBaseSpi
     public BeanPopulatorBaseSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler);
     
     /**
+     * Used to configure a finder to find the property getter methods of a source JavaBean.
+     * 
      * @param readerMethodFinder can be used to find the property getter methods of a source JavaBean.
      * 
      * @return the current object (ie this) for method chaining purposes.
@@ -59,6 +74,8 @@ public interface BeanPopulatorBaseSpi
     public BeanPopulatorBaseSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder);
     
     /**
+     * Used to configure a collector to collect the property setter methods of a target JavaBean.
+     * 
      * @param setterMethodCollector can be used to collect the property setter methods of a target JavaBean.
      * 
      * @return the current object (ie this) for method chaining purposes.
@@ -66,6 +83,8 @@ public interface BeanPopulatorBaseSpi
     public BeanPopulatorBaseSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector);
 
     /**
+     * Used to configure a handler to handle any exception thrown.
+     * 
      * @param beanPopulationExceptionHandler can be used to handle any exception thrown.
      * 
      * @return the current object (ie this) for method chaining purposes.
@@ -80,6 +99,9 @@ public interface BeanPopulatorBaseSpi
     public BeanPopulatorBaseSpi initDebug(boolean debug);
     
     /**
+     * Used to conveniently provide all the other configuration options as a single 
+     * configuration object.
+     * 
      * @param baseConfig is used to conveniently group all the other initializable options into a single unit.
      * 
      * @return the current object (ie this) for method chaining purposes.
