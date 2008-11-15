@@ -49,28 +49,60 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
      */
     public BeanTransformerSpi initCustomTransformerFactory(CustomBeanTransformerSpi.Factory customTransformerFactory);
 
-    // Used to resolve Object Identities and circular references
+    /**
+     * Reset the internal identity maps used to contain objects that have been replicated.
+     * (Warning: Don't invoke this method unless you really know what you are doing.)
+     */
     public void reset();
+    
+    /** 
+     * Returns a map of those (from-to) objects that have been replicated.
+     * This map is internally used to resolve object identities 
+     * and circular references in the object graph. 
+     */
     public <K,V> Map<K,V> getClonedMap();
     
     // Configure the replicator factories for some major/common types
+    /** Used to initialize the replicator factory for immutables. */
     public BeanTransformerSpi initImmutableReplicatableFactory(ImmutableReplicatorSpi.Factory immutableReplicatableFactory);
+    /** Used to initialize the replicator factory for collections. */
     public BeanTransformerSpi initCollectionReplicatableFactory(CollectionReplicatorSpi.Factory collectionReplicatableFactory);
+    /** Used to initialize the replicator factory for maps. */
     public BeanTransformerSpi initMapReplicatableFactory(MapReplicatorSpi.Factory mapReplicatableFactory);
+    /** Used to initialize the replicator factory for arrays. */
     public BeanTransformerSpi initArrayReplicatableFactory(ArrayReplicatorSpi.Factory arrayReplicatableFactory);
+    /** Used to initialize the replicator factory for blob's. */
     public BeanTransformerSpi initBlobReplicatableFactory(BlobReplicatorSpi.Factory blobReplicatableFactory);
+    /** Used to initialize the replicator factory for dates. */
     public BeanTransformerSpi initDateReplicatableFactory(DateReplicatorSpi.Factory dateReplicatableFactory);
+    /** Used to initialize the replicator factory for JavaBean's. */
     public BeanTransformerSpi initBeanReplicatableFactory(BeanReplicatorSpi.Factory beanReplicatableFactory);
     
+    /** Returns the current replicator for immutables. */
     public ImmutableReplicatorSpi getImmutableReplicatable();
+    /** Returns the current replicator for collections. */
     public CollectionReplicatorSpi getCollectionReplicatable();
+    /** Returns the current replicator for maps. */
     public MapReplicatorSpi getMapReplicatable();
+    /** Returns the current replicator for array. */
     public ArrayReplicatorSpi getArrayReplicatable();
+    /** Returns the current replicator for blobs. */
     public BlobReplicatorSpi getBlobReplicatable();
+    /** Returns the current replicator for dates. */
     public DateReplicatorSpi getDateReplicatable();
+    /** Returns the current replicator for JavaBeans. */
     public BeanReplicatorSpi getBeanReplicatable();
     
+    /** 
+     * Returns the current bean populator factory, which is used to create
+     * a bean populator which can then be used to determine 
+     * whether a specific JavaBean property should be propagated 
+     * from a source bean to a target bean. 
+     */
     public BeanPopulatorSpi.Factory getBeanPopulatorSpiFactory();
+    /**
+     * Returns all the configuration options as a single configuration object.     
+     */
     public BeanPopulatorBaseConfig getBeanPopulatorBaseConfig();
     
     // -------------------------- BeanPopulatorBaseSpi -------------------------- 

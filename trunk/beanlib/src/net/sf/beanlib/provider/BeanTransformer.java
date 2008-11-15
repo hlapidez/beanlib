@@ -70,7 +70,7 @@ import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
  * <li>All the configurable options of {@link BeanPopulatorBaseSpi} are available, as
  * the replication of JavaBean properties inevitably involves bean population.</li>
  * <p>
- * <li>A Bean Transformer uses a best effort approach to perform object transformation and replication.
+ * <li>A Bean Transformer adopts a best effort approach to perform object transformation and replication.
  * The default implementations for replicating the common data types such as
  * collection, map, dates, etc. can be selectively overridden via 
  * the replicator factory initialization methods:
@@ -123,7 +123,10 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     
     /** 
      * Convenient constructor that both defaults to use {@link BeanPopulator#factory},
-     * and allows plugging in one or more custom bean transformer factories that will be chained together.  
+     * and allows plugging in one or more custom bean transformer factories 
+     * that will be chained together.
+     * 
+     * @see ChainedCustomBeanTransformer
      */
     public BeanTransformer(final CustomBeanTransformerSpi.Factory ... customBeanTransformerFactories) {
         this(BeanPopulator.factory);
@@ -137,8 +140,20 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         }
     }
     
+    /**
+     * Bean populator factory, which is used to create
+     * a bean populator which can then be used to determine 
+     * whether a specific JavaBean property should be propagated 
+     * from a source bean to a target bean.
+     */
     private final BeanPopulatorSpi.Factory beanPopulatorFactory;
     
+    /**
+     * Constructs with the given bean populator factory, which is used to create
+     * a bean populator which can then be used to determine 
+     * whether a specific JavaBean property should be propagated 
+     * from a source bean to a target bean.
+     */
     protected BeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) {
         this.beanPopulatorFactory = beanPopulatorFactory;
     }
@@ -147,20 +162,50 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         return beanPopulatorFactory;
     }
     
-    // Contains those objects that have been replicated.
+    /** Used to contains those objects that have been replicated. */
     private Map<Object,Object> clonedMap = new IdentityHashMap<Object,Object>();
-    
+
+    /**
+     * Used to contain all the configuration options as a single configuration object. 
+     */
     private BeanPopulatorBaseConfig baseConfig = new BeanPopulatorBaseConfig();
     
     /** Custom Transformer.  Defaults is a NO_OP. */
     private CustomBeanTransformerSpi customTransformer = TrivialCustomBeanTransformerFactories.getNoopCustomTransformer();
     
+    /**
+     * Replicator for immutables.
+     */
     private ImmutableReplicatorSpi immutableReplicatable = ImmutableReplicator.newImmutableReplicatable(this);
+
+    /**
+     * Replicator for collections.
+     */
     private CollectionReplicatorSpi collectionReplicatable = CollectionReplicator.newCollectionReplicatable(this);
+    
+    /**
+     * Replicator for maps.
+     */
     private MapReplicatorSpi mapReplicatable = MapReplicator.newMapReplicatable(this);
+    
+    /**
+     * Replicator for arrays.
+     */
     private ArrayReplicatorSpi arrayReplicatable = ArrayReplicator.newArrayReplicatable(this);
+
+    /**
+     * Replicator for blobs.
+     */
     private BlobReplicatorSpi blobReplicatable = UnsupportedBlobReplicator.newBlobReplicatable(this);
+
+    /**
+     * Replicator for dates.
+     */
     private DateReplicatorSpi dateReplicatable = DateReplicator.newDateReplicatable(this);
+    
+    /**
+     * Replicator for JavaBeans.
+     */
     private BeanReplicatorSpi beanReplicatable = new BeanReplicator(this);
     
     public final void reset() {
