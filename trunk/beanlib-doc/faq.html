@@ -32,6 +32,12 @@ Yes, you can make use of a custom transformer to do that.  For example,
         return null; 
     } 
 }
+
+public class MyBeanTransformerFactory implements CustomBeanTransformerSpi.Factory {
+    public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi beanTransformer) {
+        return new MyBeanTransformer();
+    }
+}
 ...
 HibernateBeanReplicator replicator = new Hibernate3BeanReplicator();
 replicator.initCustomTransformerFactory(new MyBeanTransformerFactory());
