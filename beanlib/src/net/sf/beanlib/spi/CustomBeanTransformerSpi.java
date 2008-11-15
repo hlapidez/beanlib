@@ -96,7 +96,7 @@ import net.sf.beanlib.PropertyInfo;
  * replicator.copy(...);
  * </blockquote></pre>
  * 
- * @See {@link BeanTransformerSpi}
+ * @see BeanTransformerSpi
  * 
  * @author Joe D. Velopar
  */
