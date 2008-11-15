@@ -43,13 +43,13 @@ public class Hibernate3BeanTransformer extends BeanTransformer
         public Hibernate3BeanTransformer newBeanTransformer(BeanPopulatorSpi.Factory beanPopulatorFactory) 
         {
             Hibernate3BeanTransformer transformer = new Hibernate3BeanTransformer(beanPopulatorFactory);
-            transformer.initCollectionReplicatable(
+            transformer.initCollectionReplicatableFactory(
                     Hibernate3CollectionReplicator.getFactory());
-            transformer.initMapReplicatable(
+            transformer.initMapReplicatableFactory(
                     Hibernate3MapReplicator.getFactory());
-            transformer.initBlobReplicatable(
+            transformer.initBlobReplicatableFactory(
                     Hibernate3BlobReplicator.getFactory());
-            transformer.initBeanReplicatable(
+            transformer.initBeanReplicatableFactory(
                     Hibernate3JavaBeanReplicator.getFactory());
             return transformer;
         }
