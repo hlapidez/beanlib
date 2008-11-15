@@ -244,6 +244,7 @@ public class HibernateBeanReplicator
         return this.copy(from, toClass);
     }
     
+    /** Configures the default behavior when either shallow or deep copy is invoked. */
     private void setDefaultBehavior() {
         this.beanPopulatable = null;
         this.hibernateBeanTransformer.initDetailedBeanPopulatable(null);
@@ -278,6 +279,10 @@ public class HibernateBeanReplicator
         return this;
     }
 
+    /**
+     * Returns the set of collection and map properties that will be replicated.
+     * Null means all whereas empty means none.
+     */
     public final Set<? extends CollectionPropertyName> getCollectionPropertyNameSet() {
         return collectionPropertyNameSet;
     }
@@ -365,6 +370,11 @@ public class HibernateBeanReplicator
     }
     
     /**
+     * Used to configure a call-back 
+     * (to produce whatever side-effects deemed necessary) that is invoked
+     * after the property value has been retrieved from the source bean, 
+     * but before being propagated across to the target bean.
+     * 
      * @param beanSourceHandler can be used to act as a call-back 
      * (to produce whatever side-effects deemed necessary)
      * after the property value has been retrieved from the source bean, 
@@ -388,6 +398,8 @@ public class HibernateBeanReplicator
     }
 
     /**
+     * Used to configure a finder to find the property getter methods of a source JavaBean.
+     * 
      * @param readerMethodFinder can be used to find the property getter methods of a source JavaBean.
      * 
      * @return the current object (ie this) for method chaining purposes.
@@ -398,6 +410,8 @@ public class HibernateBeanReplicator
     }
 
     /**
+     * Used to configure a collector to collect the property setter methods of a target JavaBean.
+     * <p>
      * Note this method is only applicable if either the {@link #copy(Object)} 
      * or {@link #copy(Object, Class)} is directly invoked, 
      * and is ignored otherwise (ie ignored if deep or shallow copy is invoked instead).

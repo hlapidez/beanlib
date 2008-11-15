@@ -34,11 +34,16 @@ import net.sf.beanlib.spi.BeanPopulatable;
  */
 public class HibernateBeanPopulatableSupport implements BeanPopulatable 
 {
-    // the set of entity bean to be populated; 
-    // or null if all entity bean are to be populated.
+    /**
+     * The set of entity bean classes for matching properties that will be replicated.
+     * Null means all whereas empty means none.
+     */
     private Set<Class<?>> entityBeanClassSet;
-    // the set of Collection fields to be populated; 
-    // or null if all Collection fields are to be populated.
+    
+    /**
+     * The set of collection and map properties that will be replicated.
+     * Null means all whereas empty means none.
+     */
     private Set<? extends CollectionPropertyName> collectionPropertyNameSet;
     
     /** Used to veto the propagation of a JavaBean property. */
@@ -51,13 +56,7 @@ public class HibernateBeanPopulatableSupport implements BeanPopulatable
         this.collectionPropertyNameSet = collectionPropertyNameSet;
         this.vetoer = vetoer;
     }
-    /**
-     * @see net.sf.beanlib.spi.BeanPopulatable#shouldPopulate(String, Method)
-     * 
-     * @param propertyName property name.
-     * @param readerMethod reader method of the property.
-     * @return true if the property population should take place; false otherwise. 
-     */
+    
     public boolean shouldPopulate(String propertyName, Method readerMethod) 
     {
         boolean goAhead = false;
