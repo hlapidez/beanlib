@@ -21,7 +21,15 @@ import net.sf.beanlib.provider.BeanTransformer;
 import net.sf.beanlib.spi.BeanPopulatorSpi;
 
 /**
- * Hibernate 3 specific Bean Transformer.
+ * A Hibernate 3 Bean Transformer is simply a {@link BeanTransformer}
+ * with the extended capabilities of handling Hibernate (v3.x) objects.  
+ * By default, the Hibernate proxies are replaced
+ * with the actual instances, eagerly fetching from the database as necessary. 
+ * However, the exact behavior of the transformation process, including whether eager
+ * fetching is enabled or not, can be controlled using the same SPI as BeanTransformer.
+ * 
+ * @see BeanTransformer
+ * @see Hibernate3BeanReplicator
  * 
  * @author Joe D. Velopar
  */
