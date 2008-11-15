@@ -82,7 +82,7 @@ import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
  * but the content (ie the entire object graph) has been replicated.
  * Note this works as long as these objects follow the JavaBean convention.
  * 
- * @see <a 
+ * See <a 
  * href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib-test/src/net/sf/beanlib/provider/replicator/BeanReplicatorTest.java?revision=283&view=markup"
  * >BeanReplicatorTest.java</a> for more details.
  * 
@@ -144,7 +144,7 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
      */
     protected <V,T> T replicateBean(V from, Class<T> toClass, V originalFrom)
     {
-        Class fromClass = from.getClass();
+        Class<?> fromClass = from.getClass();
         String fromClassName = fromClass.getName();
         
         if (fromClassName.startsWith("net.sf.cglib.")) {

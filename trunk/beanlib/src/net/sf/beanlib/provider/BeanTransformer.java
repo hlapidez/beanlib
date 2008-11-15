@@ -109,7 +109,7 @@ import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
  * new BeanTransformer(CustomBeanTransformerSpi.Factory...)}.
  * </li>
  * </ol>
- * @see {@link CustomBeanTransformerSpi}
+ * @see CustomBeanTransformerSpi
  * 
  * @author Joe D. Velopar
  */
