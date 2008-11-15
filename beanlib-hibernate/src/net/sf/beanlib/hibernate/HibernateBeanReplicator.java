@@ -18,6 +18,7 @@ package net.sf.beanlib.hibernate;
 import java.util.Collections;
 import java.util.Set;
 
+import net.jcip.annotations.NotThreadSafe;
 import net.sf.beanlib.CollectionPropertyName;
 import net.sf.beanlib.provider.collector.ProtectedSetterMethodCollector;
 import net.sf.beanlib.spi.BeanMethodCollector;
@@ -29,10 +30,11 @@ import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 import net.sf.beanlib.spi.DetailedBeanPopulatable;
 
 /**
- * Hibernate Bean Replicator.  Not thread safe.
+ * Hibernate Bean Replicator.
  *  
  * @author Joe D. Velopar
  */
+@NotThreadSafe
 public class HibernateBeanReplicator 
 {
 //    private final Log log = LogFactory.getLog(this.getClass());
