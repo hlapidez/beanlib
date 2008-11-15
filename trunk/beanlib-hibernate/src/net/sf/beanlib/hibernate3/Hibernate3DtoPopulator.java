@@ -38,7 +38,7 @@ import net.sf.beanlib.spi.BeanPopulatable;
 class Hibernate3DtoPopulator implements BeanPopulatable {
     // the minimal set of entity bean to be populated; 
     // or null if all entity bean are to be populated.
-    private final Set<Class> entityBeanClassSet;
+    private final Set<Class<?>> entityBeanClassSet;
     // the minimal set of Set fields to be populated; 
     // or null if all set fields are to be populated.
     private final Set<CollectionPropertyName> collectionPropertyNameSet;
@@ -46,7 +46,7 @@ class Hibernate3DtoPopulator implements BeanPopulatable {
     private Hibernate3DtoCopier applicationBeanCopier;
     
     Hibernate3DtoPopulator(
-            Set<Class> entityBeanClassSet, 
+            Set<Class<?>> entityBeanClassSet, 
             Set<CollectionPropertyName> collectionPropertyNameSet)
     {
         this.entityBeanClassSet = entityBeanClassSet;
@@ -79,7 +79,7 @@ class Hibernate3DtoPopulator implements BeanPopulatable {
      */
     public boolean shouldPopulate(String propertyName, Method readerMethod) 
     {
-        Class returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
+        Class<?> returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
         
         if (immutable(returnType))
             return true;
@@ -109,7 +109,7 @@ class Hibernate3DtoPopulator implements BeanPopulatable {
         // An entity bean.
         boolean goAhead = entityBeanClassSet.contains(returnType) 
                        || applicationBeanCopier.isApplicationClass(returnType);
-        Class superClass = returnType;
+        Class<?> superClass = returnType;
         
         for (;;) {
             if (goAhead)
@@ -128,7 +128,7 @@ class Hibernate3DtoPopulator implements BeanPopulatable {
     private boolean checkCollectionProperty(String propertyName, Method readerMethod) 
     {
         // Only a specified set of Collection/Map properties needs to be populated
-        Class returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
+        Class<?> returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
         
         if (Collection.class.isAssignableFrom(returnType) 
         ||    Map.class.isAssignableFrom(returnType)) 
