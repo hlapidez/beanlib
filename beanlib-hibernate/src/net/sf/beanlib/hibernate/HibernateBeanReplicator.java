@@ -73,7 +73,7 @@ public class HibernateBeanReplicator
 
     /**
      * You probably want to construct a 
-     * {@link net.sf.beanlib.hibernate3.HibernateBean3Replicator HibernateBean3Replicator}
+     * {@link net.sf.beanlib.hibernate3.Hibernate3BeanReplicator Hibernate3BeanReplicator}
      * directly instead of this ?
      */
     public HibernateBeanReplicator(BeanTransformerSpi hibernateBeanTransformer) 
@@ -402,12 +402,15 @@ public class HibernateBeanReplicator
      * or {@link #copy(Object, Class)} is directly invoked, 
      * and is ignored otherwise (ie ignored if deep or shallow copy is invoked instead).
      * 
-     * @param setterMethodCollector can be used to collect the property setter methods of a target JavaBean.
+     * @param setterMethodCollector can be used to collect the property setter methods 
+     * of a target JavaBean.
      * 
      * @return the current object (ie this) for method chaining purposes.
      */
-    public final HibernateBeanReplicator initSetterMethodCollector(BeanMethodCollector setterMethodFinder) {
-        this.hibernateBeanTransformer.initSetterMethodCollector(setterMethodFinder);
+    public final HibernateBeanReplicator initSetterMethodCollector(
+                                            BeanMethodCollector setterMethodCollector) 
+    {
+        this.hibernateBeanTransformer.initSetterMethodCollector(setterMethodCollector);
         return this;
     }
 }
