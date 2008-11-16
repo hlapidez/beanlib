@@ -60,9 +60,9 @@ public interface BeanPopulatorSpi extends BeanPopulatorBaseSpi
     public <T> T populate(); 
     
     // Overrides for co-variant return type.
-    public BeanPopulatorSpi initBeanPopulatable(BeanPopulatable beanPopulatable);
+    public BeanPopulatorSpi initPropertyFilter(PropertyFilter propertyFilter);
     // Overrides for co-variant return type.
-    public BeanPopulatorSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable);
+    public BeanPopulatorSpi initDetailedPropertyFilter(DetailedPropertyFilter detailedPropertyFilter);
     // Overrides for co-variant return type.
     public BeanPopulatorSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler);
     // Overrides for co-variant return type.

@@ -25,29 +25,39 @@ package net.sf.beanlib.spi;
 public interface BeanPopulatorBaseSpi 
 {
     /**
-     * Used to configure a bean populatable to 
-     * determine whether a specific JavaBean property should be propagated
+     * Used to configure a property filter to 
+     * determine whether a specific property should be propagated
      * from a source bean to a target bean.
      * 
-     * @param beanPopulatable is similar to {@link DetailedBeanPopulatable} but with a simpler API
-     * that is used to control whether a specific JavaBean property should be propagated
+     * @param propertyFilter is similar to {@link DetailedPropertyFilter} but with a simpler API
+     * that is used to control whether a specific property should be propagated
      * from a source bean to a target bean.
      * 
      * @return the current object (ie this) for method chaining purposes.
      */
-    public BeanPopulatorBaseSpi initBeanPopulatable(BeanPopulatable beanPopulatable);
+    public BeanPopulatorBaseSpi initPropertyFilter(PropertyFilter propertyFilter);
+    
+    /**
+     * Returns the property filter configured.
+     */
+    public PropertyFilter getPropertyFilter();
 
     /**
-     * Used to configure a detailed bean populatable (which has more context information) 
-     * to determine whether a specific JavaBean property
+     * Used to configure a detailed prperty filter (which has more context information) 
+     * to determine whether a specific property
      * should be propagated from the source bean to the target bean.
      * 
-     * @param detailedBeanPopulatable is used to control whether a specific JavaBean property
+     * @param detailedPropertyFilter is used to control whether a specific property
      * should be propagated from the source bean to the target bean.
      * 
      * @return the current object (ie this) for method chaining purposes.
      */
-    public BeanPopulatorBaseSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable);
+    public BeanPopulatorBaseSpi initDetailedPropertyFilter(DetailedPropertyFilter detailedPropertyFilter);
+    
+    /**
+     * Returns the detailed property filter configured.
+     */
+    public DetailedPropertyFilter getDetailedPropertyFilter();
     
     /**
      * Used to configure a call-back 
@@ -65,6 +75,13 @@ public interface BeanPopulatorBaseSpi
     public BeanPopulatorBaseSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler);
     
     /**
+     * Returns the call-back configured that would be invoked 
+     * after the property value has been retrieved from the source bean, 
+     * but before being propagated across to the target bean.
+     */
+    public BeanSourceHandler getBeanSourceHandler();
+    
+    /**
      * Used to configure a finder to find the property getter methods of a source JavaBean.
      * 
      * @param readerMethodFinder can be used to find the property getter methods of a source JavaBean.
@@ -74,6 +91,11 @@ public interface BeanPopulatorBaseSpi
     public BeanPopulatorBaseSpi initReaderMethodFinder(BeanMethodFinder readerMethodFinder);
     
     /**
+     * Returns the finder configured to find the property getter methods of a source JavaBean.
+     */
+    public BeanMethodFinder getReaderMethodFinder();
+    
+    /**
      * Used to configure a collector to collect the property setter methods of a target JavaBean.
      * 
      * @param setterMethodCollector can be used to collect the property setter methods of a target JavaBean.
@@ -81,6 +103,11 @@ public interface BeanPopulatorBaseSpi
      * @return the current object (ie this) for method chaining purposes.
      */
     public BeanPopulatorBaseSpi initSetterMethodCollector(BeanMethodCollector setterMethodCollector);
+    
+    /**
+     * Returns the collector configured to collect the property setter methods of a target JavaBean.
+     */
+    public BeanMethodCollector getSetterMethodCollector();
 
     /**
      * Used to configure a handler to handle any exception thrown.
@@ -90,6 +117,11 @@ public interface BeanPopulatorBaseSpi
      * @return the current object (ie this) for method chaining purposes.
      */
     public BeanPopulatorBaseSpi initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler beanPopulationExceptionHandler);
+    
+    /**
+     * Returns the exception handler configured for bean population. 
+     */
+    public BeanPopulationExceptionHandler getBeanPopulationExceptionHandler();
 
     /**
      * Used to control whether debug messages should be logged.
@@ -97,6 +129,11 @@ public interface BeanPopulatorBaseSpi
      * @return the current object (ie this) for method chaining purposes.
      */
     public BeanPopulatorBaseSpi initDebug(boolean debug);
+    
+    /**
+     * Returns true if debug message logging is on; false otherwise.
+     */
+    public boolean isDebug();
     
     /**
      * Used to conveniently provide all the other configuration options as a single 
@@ -107,4 +144,10 @@ public interface BeanPopulatorBaseSpi
      * @return the current object (ie this) for method chaining purposes.
      */
     public BeanPopulatorBaseSpi initBeanPopulatorBaseConfig(BeanPopulatorBaseConfig baseConfig);
+    
+    /** 
+     * Returns the other configuration options as a single 
+     * configuration object.
+     */
+    public BeanPopulatorBaseConfig getBeanPopulatorBaseConfig();
 }

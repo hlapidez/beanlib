@@ -17,23 +17,20 @@ package net.sf.beanlib.provider;
 
 import java.lang.reflect.Method;
 
-import net.sf.beanlib.spi.DetailedBeanPopulatable;
+import net.sf.beanlib.spi.DetailedPropertyFilter;
 
 /**
- * Default implementation of {@link DetailedBeanPopulatable}.
+ * Default implementation of {@link DetailedPropertyFilter}.
  * 
  * @author Joe D. Velopar
  */
-public class JavaBeanPopulatableSupport implements DetailedBeanPopulatable {
-	public static final JavaBeanPopulatableSupport inst = new JavaBeanPopulatableSupport();
-	
-	private JavaBeanPopulatableSupport() {}
-
-	public boolean shouldPopulate(
-            @SuppressWarnings("unused") String propertyName, 
-            @SuppressWarnings("unused") Object fromBean, 
+public class JavaBeanDetailedPropertyFilter implements DetailedPropertyFilter 
+{
+	public boolean propagate(
+            String propertyName, 
+            Object fromBean, 
             Method readerMethod, 
-            @SuppressWarnings("unused") Object toBean, 
+            Object toBean, 
             Method setterMethod) 
 	{
 		Class<?> returnType = readerMethod.getReturnType();

@@ -28,13 +28,13 @@ import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.PropertyInfo;
 import net.sf.beanlib.spi.BeanMethodCollector;
 import net.sf.beanlib.spi.BeanMethodFinder;
-import net.sf.beanlib.spi.BeanPopulatable;
+import net.sf.beanlib.spi.PropertyFilter;
 import net.sf.beanlib.spi.BeanPopulationExceptionHandler;
 import net.sf.beanlib.spi.BeanPopulatorBaseConfig;
 import net.sf.beanlib.spi.BeanPopulatorSpi;
 import net.sf.beanlib.spi.BeanSourceHandler;
 import net.sf.beanlib.spi.BeanTransformerSpi;
-import net.sf.beanlib.spi.DetailedBeanPopulatable;
+import net.sf.beanlib.spi.DetailedPropertyFilter;
 import net.sf.beanlib.spi.Transformable;
 
 import org.apache.commons.logging.Log;
@@ -60,16 +60,16 @@ import org.apache.commons.logging.LogFactory;
  * <p>
  * During the property propagation process, various options exist to override the default behavior:
  * <ol>
- * <li>A {@link DetailedBeanPopulatable} can be used to control whether a specific JavaBean property
+ * <li>A {@link DetailedPropertyFilter} can be used to control whether a specific JavaBean property
  *     should be propagated across.<br>
- *     See {@link #initDetailedBeanPopulatable(DetailedBeanPopulatable)}.<br>
- *     By default, there is no detailed bean populatable configured.
+ *     See {@link #initDetailedPropertyFilter(DetailedPropertyFilter)}.<br>
+ *     By default, there is no detailed bean property selector configured.
  * </li>
- * <li>Similar to {@link DetailedBeanPopulatable} but with a simpler API, 
- *     a {@link BeanPopulatable} can be used to control whether a specific JavaBean property
+ * <li>Similar to {@link DetailedPropertyFilter} but with a simpler API, 
+ *     a {@link PropertyFilter} can be used to control whether a specific JavaBean property
  *     should be propagated across.<br>
- *     See {@link #initBeanPopulatable(BeanPopulatable)}.<br>
- *     By default, there is no bean populatable configured.
+ *     See {@link #initPropertyFilter(PropertyFilter)}.<br>
+ *     By default, there is no bean property selector configured.
  * </li>
  * <li>A {@link BeanSourceHandler} can be used to act as a call-back 
  *     (to produce whatever side-effects deemed necessary)
@@ -140,7 +140,7 @@ public class BeanPopulator implements BeanPopulatorSpi
         this.toBean = toBean;
     }
 
-    private BeanTransformerSpi getTransformerSpi() {
+    private BeanTransformerSpi getBeanTransformerSpi() {
         return (BeanTransformerSpi)(transformer instanceof BeanTransformerSpi ? transformer : null); 
     }
 
@@ -183,13 +183,13 @@ public class BeanPopulator implements BeanPopulatorSpi
     private <T> void doit(
             Method setterMethod, Method readerMethod, Class<T> paramType, final String propertyName)
     {
-        if (baseConfig.getDetailedBeanPopulatable() != null) {
-            if (!baseConfig.getDetailedBeanPopulatable()
-                           .shouldPopulate(propertyName, fromBean, readerMethod, toBean, setterMethod))
+        if (baseConfig.getDetailedPropertyFilter() != null) {
+            if (!baseConfig.getDetailedPropertyFilter()
+                           .propagate(propertyName, fromBean, readerMethod, toBean, setterMethod))
                 return;
         }
-        if (baseConfig.getBeanPopulatable() != null) {
-            if (!baseConfig.getBeanPopulatable().shouldPopulate(propertyName, readerMethod))
+        if (baseConfig.getPropertyFilter() != null) {
+            if (!baseConfig.getPropertyFilter().propagate(propertyName, readerMethod))
                 return;
         }
         Object propertyValue = this.invokeMethodAsPrivileged(fromBean, readerMethod, null);
@@ -256,16 +256,16 @@ public class BeanPopulator implements BeanPopulatorSpi
     public BeanPopulator initTransformer(Transformable transformer) {
         this.transformer = transformer;
         
-        if (this.getTransformerSpi() != null)
-            this.getTransformerSpi().initBeanPopulatorBaseConfig(baseConfig);
+        if (this.getBeanTransformerSpi() != null)
+            this.getBeanTransformerSpi().initBeanPopulatorBaseConfig(baseConfig);
         return this;
     }
 
     @SuppressWarnings("unchecked")
     public <T> T populate() 
     {
-        if (getTransformerSpi() != null)
-            getTransformerSpi().getClonedMap().put(fromBean, toBean);
+        if (getBeanTransformerSpi() != null)
+            getBeanTransformerSpi().getClonedMap().put(fromBean, toBean);
         // invoking all declaring setter methods of toBean from all matching getter methods of fromBean
         for (Method m : baseConfig.getSetterMethodCollector().collect(toBean))
             processSetterMethod(m);
@@ -274,36 +274,36 @@ public class BeanPopulator implements BeanPopulatorSpi
     
     // -------------------------- BeanPopulatorBaseSpi -------------------------- 
 
-    public BeanPopulator initBeanPopulatable(BeanPopulatable beanPopulatable) {
-        baseConfig.setBeanPopulatable(beanPopulatable);
+    public BeanPopulator initPropertyFilter(PropertyFilter propertyFilter) {
+        baseConfig.setPropertyFilter(propertyFilter);
 
-        if (this.getTransformerSpi() != null)
-            this.getTransformerSpi().initBeanPopulatable(beanPopulatable);
+        if (this.getBeanTransformerSpi() != null)
+            this.getBeanTransformerSpi().initPropertyFilter(propertyFilter);
         return this;
     }
     
     public BeanPopulator initBeanSourceHandler(BeanSourceHandler beanSourceHandler) {
         baseConfig.setBeanSourceHandler(beanSourceHandler);
         
-        if (this.getTransformerSpi() != null)
-            this.getTransformerSpi().initBeanSourceHandler(beanSourceHandler);
+        if (this.getBeanTransformerSpi() != null)
+            this.getBeanTransformerSpi().initBeanSourceHandler(beanSourceHandler);
         return this;
     }
     
     public BeanPopulator initDebug(boolean debug) {
         baseConfig.setDebug(debug);
 
-        if (this.getTransformerSpi() != null)
-            this.getTransformerSpi().initDebug(debug);
+        if (this.getBeanTransformerSpi() != null)
+            this.getBeanTransformerSpi().initDebug(debug);
         return this;
     }
     
-    public BeanPopulator initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable) 
+    public BeanPopulator initDetailedPropertyFilter(DetailedPropertyFilter detailedPropertyFilter) 
     {
-        baseConfig.setDetailedBeanPopulatable(detailedBeanPopulatable);
+        baseConfig.setDetailedPropertyFilter(detailedPropertyFilter);
 
-        if (this.getTransformerSpi() != null)
-            this.getTransformerSpi().initDetailedBeanPopulatable(detailedBeanPopulatable);
+        if (this.getBeanTransformerSpi() != null)
+            this.getBeanTransformerSpi().initDetailedPropertyFilter(detailedPropertyFilter);
         return this;
     }
     
@@ -311,8 +311,8 @@ public class BeanPopulator implements BeanPopulatorSpi
         if (readerMethodFinder != null) {
             baseConfig.setReaderMethodFinder(readerMethodFinder);
 
-            if (this.getTransformerSpi() != null)
-                this.getTransformerSpi().initReaderMethodFinder(readerMethodFinder);
+            if (this.getBeanTransformerSpi() != null)
+                this.getBeanTransformerSpi().initReaderMethodFinder(readerMethodFinder);
         }
         return this;
     }
@@ -321,8 +321,8 @@ public class BeanPopulator implements BeanPopulatorSpi
         if (setterMethodCollector != null) {
             baseConfig.setSetterMethodCollector(setterMethodCollector);
 
-            if (this.getTransformerSpi() != null)
-                this.getTransformerSpi().initSetterMethodCollector(setterMethodCollector);
+            if (this.getBeanTransformerSpi() != null)
+                this.getBeanTransformerSpi().initSetterMethodCollector(setterMethodCollector);
         }
         return this;
     }
@@ -330,13 +330,53 @@ public class BeanPopulator implements BeanPopulatorSpi
     public BeanPopulator initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler beanPopulationExceptionHandler) {
         baseConfig.setBeanPopulationExceptionHandler(beanPopulationExceptionHandler);
         
-        if (this.getTransformerSpi() != null)
-            this.getTransformerSpi().initBeanPopulationExceptionHandler(beanPopulationExceptionHandler);
+        if (this.getBeanTransformerSpi() != null)
+            this.getBeanTransformerSpi().initBeanPopulationExceptionHandler(beanPopulationExceptionHandler);
         return this;
     }
 
     public BeanPopulator initBeanPopulatorBaseConfig(BeanPopulatorBaseConfig baseConfig) {
         this.baseConfig = baseConfig;
+        
+        if (getBeanTransformerSpi() != null)
+            getBeanTransformerSpi().initBeanPopulatorBaseConfig(baseConfig);
         return this;
+    }
+
+    public PropertyFilter getPropertyFilter() { 
+        return baseConfig.getPropertyFilter(); 
+    }
+
+    public BeanPopulationExceptionHandler getBeanPopulationExceptionHandler() {
+        return baseConfig.getBeanPopulationExceptionHandler();
+    }
+
+    /**
+     * Notes if the returned base config is modified, a subsequent 
+     * {@link BeanPopulator#initBeanPopulatorBaseConfig(BeanPopulatorBaseConfig)}
+     * needs to be invoked to keep the configuration in sync.
+     */
+    public BeanPopulatorBaseConfig getBeanPopulatorBaseConfig() {
+        return baseConfig;
+    }
+
+    public BeanSourceHandler getBeanSourceHandler() {
+        return baseConfig.getBeanSourceHandler();
+    }
+
+    public boolean isDebug() {
+        return baseConfig.isDebug();
+    }
+
+    public DetailedPropertyFilter getDetailedPropertyFilter() {
+        return baseConfig.getDetailedPropertyFilter();
+    }
+
+    public BeanMethodFinder getReaderMethodFinder() {
+        return baseConfig.getReaderMethodFinder();
+    }
+
+    public BeanMethodCollector getSetterMethodCollector() {
+        return baseConfig.getSetterMethodCollector();
     }
 }

@@ -28,10 +28,6 @@ import net.sf.beanlib.spi.BeanMethodCollector;
  * @author Joe D. Velopar
  */
 public class ProtectedSetterMethodCollector implements BeanMethodCollector {
-	public static final ProtectedSetterMethodCollector inst = new ProtectedSetterMethodCollector();
-	
-	private ProtectedSetterMethodCollector() {}
-	
 	public Method[] collect(Object bean) {
 		Class beanClass = bean.getClass();
 		// Get all methods declared by the class or interface.
