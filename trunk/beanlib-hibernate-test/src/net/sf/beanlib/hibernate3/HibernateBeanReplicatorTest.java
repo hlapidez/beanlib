@@ -27,7 +27,7 @@ import net.sf.beanlib.provider.BeanPopulator;
 import net.sf.beanlib.provider.Foo;
 import net.sf.beanlib.provider.Type1;
 import net.sf.beanlib.provider.Type2;
-import net.sf.beanlib.spi.DetailedBeanPopulatable;
+import net.sf.beanlib.spi.DetailedPropertyFilter;
 
 import org.junit.Test;
 
@@ -207,7 +207,7 @@ public class HibernateBeanReplicatorTest
         
         Type2 t2 = new Type2();
         new BeanPopulator(t1, t2)
-            .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
+            .initDetailedPropertyFilter(DetailedPropertyFilter.ALWAYS_PROPAGATE)
             .initTransformer(new Hibernate3BeanTransformer())
             .populate();
         assertEquals(t1.getF1(), t2.getF1());

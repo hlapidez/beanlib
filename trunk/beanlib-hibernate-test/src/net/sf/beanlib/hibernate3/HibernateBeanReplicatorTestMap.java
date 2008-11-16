@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sf.beanlib.spi.BeanPopulatable;
+import net.sf.beanlib.spi.PropertyFilter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -106,8 +106,8 @@ public class HibernateBeanReplicatorTestMap
         }
         {
             FooWithMap toFooWithMap = new Hibernate3BeanReplicator()
-                                        .initVetoer(new BeanPopulatable() {
-                                            public boolean shouldPopulate(String propertyName, Method readerMethod) {
+                                        .initVetoer(new PropertyFilter() {
+                                            public boolean propagate(String propertyName, Method readerMethod) {
                                                 return !"map".equals(propertyName);
                                             }
                                         })
