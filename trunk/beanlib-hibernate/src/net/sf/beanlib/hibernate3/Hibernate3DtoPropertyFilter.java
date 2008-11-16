@@ -26,7 +26,7 @@ import java.util.Set;
 
 import net.sf.beanlib.CollectionPropertyName;
 import net.sf.beanlib.hibernate.UnEnhancer;
-import net.sf.beanlib.spi.BeanPopulatable;
+import net.sf.beanlib.spi.PropertyFilter;
 
 /**
  * Used by {@link Hibernate3DtoCopier} to dynamically expand the set of 
@@ -35,7 +35,7 @@ import net.sf.beanlib.spi.BeanPopulatable;
  * 
  * @author Joe D. Velopar
  */
-class Hibernate3DtoPopulator implements BeanPopulatable {
+class Hibernate3DtoPropertyFilter implements PropertyFilter {
     // the minimal set of entity bean to be populated; 
     // or null if all entity bean are to be populated.
     private final Set<Class<?>> entityBeanClassSet;
@@ -45,7 +45,7 @@ class Hibernate3DtoPopulator implements BeanPopulatable {
     
     private Hibernate3DtoCopier applicationBeanCopier;
     
-    Hibernate3DtoPopulator(
+    Hibernate3DtoPropertyFilter(
             Set<Class<?>> entityBeanClassSet, 
             Set<CollectionPropertyName> collectionPropertyNameSet)
     {
@@ -53,31 +53,31 @@ class Hibernate3DtoPopulator implements BeanPopulatable {
         this.collectionPropertyNameSet = collectionPropertyNameSet;
     }
 
-    Hibernate3DtoPopulator(Set<CollectionPropertyName> collectionPropertyNameSet)
+    Hibernate3DtoPropertyFilter(Set<CollectionPropertyName> collectionPropertyNameSet)
     {
         this.entityBeanClassSet = Collections.emptySet();
         this.collectionPropertyNameSet = collectionPropertyNameSet;
     }
     
-    Hibernate3DtoPopulator() {
+    Hibernate3DtoPropertyFilter() {
         this(null, null);
     }
 
     // TODO: assert this must be invoked after construction
-    Hibernate3DtoPopulator init(Hibernate3DtoCopier applicationBeanCopier) 
+    Hibernate3DtoPropertyFilter init(Hibernate3DtoCopier applicationBeanCopier) 
     {
         this.applicationBeanCopier = applicationBeanCopier;
         return this;
     }
     
     /**
-     * @see net.sf.beanlib.spi.BeanPopulatable#shouldPopulate(java.lang.String, java.lang.reflect.Method)
+     * @see net.sf.beanlib.spi.PropertyFilter#propagate(java.lang.String, java.lang.reflect.Method)
      * 
      * @param propertyName property name.
      * @param readerMethod reader method of the property.
      * @return true if the property population should take place; false otherwise. 
      */
-    public boolean shouldPopulate(String propertyName, Method readerMethod) 
+    public boolean propagate(String propertyName, Method readerMethod) 
     {
         Class<?> returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
         
@@ -139,9 +139,6 @@ class Hibernate3DtoPopulator implements BeanPopulatable {
                             UnEnhancer.unenhanceClass(
                                     readerMethod.getDeclaringClass()), propertyName))) 
             {
-//                // Collection/Map property to be included.
-//                // Now expand the c2p member class set.
-//                expandEntityBeanClassSet(propertyName);
                 return true; 
             }
             // Collection/Map property not included.
@@ -150,20 +147,4 @@ class Hibernate3DtoPopulator implements BeanPopulatable {
         // Not a Collection/Map property.
         return true;
     }
-    
-//    /** Expands the entity bean class set with the element type from the set property. */
-//    private void expandEntityBeanClassSet(String propertyName) {
-//        CollectionMetadata meta = sessionFactory.getCollectionMetadata(propertyName);
-//        
-//        if (meta != null) {
-//            Type elementType = meta.getElementType();
-//            Class elementClass = elementType.getReturnedClass();
-//            
-//            if (elementType != null) {
-//                Class[] c2pMemberClasses = 
-//                    applicationBeanCopier.getApplicationMemberClasses(elementClass, sessionFactory);
-//                this.entityBeanClassSet.addAll(Arrays.asList(c2pMemberClasses));
-//            }
-//        }
-//    }
 }
