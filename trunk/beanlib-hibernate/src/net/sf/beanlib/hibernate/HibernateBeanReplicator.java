@@ -115,9 +115,9 @@ public class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * Notes:
      * <ol>
      * <li>
-     * Use {@link HibernateBeanReplicator#copy(Object)} instead of this method 
-     * if you want to plug in a different 
-     * {@link DetailedPropertyFilter} or {@link BeanMethodCollector}.
+     * Use {@link HibernateBeanReplicator#copy(Object, Class)} instead of this method 
+     * if you want to plug in a different (detailed) property filter or 
+     * setter method finder.
      * </li>
      * <li>This method will cause both the public and protected setter methods 
      * to be invoked for property propagation.
@@ -142,8 +142,8 @@ public class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * <ol>
      * <li>
      * Use {@link HibernateBeanReplicator#copy(Object, Class)} instead of this method 
-     * if you want to plug in a different 
-     * {@link DetailedPropertyFilter} or {@link BeanMethodCollector}.
+     * if you want to plug in a different (detailed) property filter or 
+     * setter method finder.
      * </li>
      * <li>This method will cause both the public and protected setter methods 
      * to be invoked for property propagation.
@@ -169,9 +169,9 @@ public class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * Notes:
      * <ol>
      * <li>
-     * Use {@link HibernateBeanReplicator#copy(Object)} instead of this method 
-     * if you want to plug in a different 
-     * {@link DetailedPropertyFilter} or {@link BeanMethodCollector}.
+     * Use {@link HibernateBeanReplicator#copy(Object, Class)} instead of this method 
+     * if you want to plug in a different (detailed) property filter or 
+     * setter method finder.
      * </li>
      * <li>This method will cause both the public and protected setter methods 
      * to be invoked for property propagation.
@@ -200,8 +200,8 @@ public class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * <ol>
      * <li>
      * Use {@link HibernateBeanReplicator#copy(Object, Class)} instead of this method 
-     * if you want to plug in a different 
-     * {@link DetailedPropertyFilter} or {@link BeanMethodCollector}.
+     * if you want to plug in a different (detailed) property filter or 
+     * setter method finder.
      * </li>
      * <li>This method will cause both the public and protected setter methods 
      * to be invoked for property propagation.
