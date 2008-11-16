@@ -27,10 +27,6 @@ import net.sf.beanlib.spi.BeanMethodCollector;
  * @author Hanson Char
  */
 public class FluentSetterMethodCollector implements BeanMethodCollector {
-	public static final FluentSetterMethodCollector inst = new FluentSetterMethodCollector();
-	
-	private FluentSetterMethodCollector() {}
-	
 	public Method[] collect(Object bean) {
 		// Get all the public member methods of the class or interface,
 		// including those declared by the class or interface and

@@ -27,10 +27,6 @@ import net.sf.beanlib.spi.BeanMethodCollector;
  * @author Joe D. Velopar
  */
 public class PublicSetterMethodCollector implements BeanMethodCollector {
-	public static final PublicSetterMethodCollector inst = new PublicSetterMethodCollector();
-	
-	private PublicSetterMethodCollector() {}
-	
 	public Method[] collect(Object bean) {
 		// Get all the public member methods of the class or interface,
 		// including those declared by the class or interface and

@@ -23,10 +23,6 @@ import java.beans.Introspector;
  * @author Joe D. Velopar
  */
 public class SpringUtils {
-	public static final SpringUtils inst = new SpringUtils();
-	
-	private SpringUtils() {}
-
 	/**
 	 * Returns a bean name by unqalifying and decapitalizing 
 	 * the name of the given class. 

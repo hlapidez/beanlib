@@ -26,10 +26,6 @@ import net.sf.beanlib.spi.BeanMethodFinder;
  * @author Joe D. Velopar
  */
 public class ProtectedReaderMethodFinder implements BeanMethodFinder {
-	public static final ProtectedReaderMethodFinder inst = new ProtectedReaderMethodFinder();
-	
-	ProtectedReaderMethodFinder() {}
-	
 	public Method find(final String propertyName, Object bean) {
 		String s= propertyName;
 		

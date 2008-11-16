@@ -28,8 +28,7 @@ import net.sf.beanlib.BeanGetter;
 import net.sf.beanlib.BeanlibException;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * Bean Checker.
@@ -39,12 +38,9 @@ import org.apache.commons.logging.LogFactory;
 public class BeanChecker {
 	/** Singleton instance. */
 //	private static final boolean debug = false;
-	public static final BeanChecker inst = new BeanChecker();
-	private final Log log = LogFactory.getLog(this.getClass());
+	private final Logger log = Logger.getLogger(this.getClass());
+	private final BeanGetter beanGetter = new BeanGetter();
 
-	/** Singleton. */
-	private BeanChecker() {
-	}
 	/** 
 	 * Returns true if the fromBean is empty; or false otherwise.
 	 * It is considered empty if every publicly declared getter methods of the specified class 
@@ -68,7 +64,7 @@ public class BeanChecker {
 						Object attrValue = getter.invoke(fromBean);
 
 						if (attrValue == null) {
-							continue;
+                            continue;
 						}
 						if (attrValue instanceof String) {
 							String s = (String) attrValue;
@@ -114,7 +110,7 @@ public class BeanChecker {
 			BeanInfo bi_f = Introspector.getBeanInfo(fBean.getClass());
 			PropertyDescriptor[] pda_f = bi_f.getPropertyDescriptors();
 
-			Map tMap = BeanGetter.inst.getPropertyName2DescriptorMap(tBean.getClass());
+			Map tMap = beanGetter.getPropertyName2DescriptorMap(tBean.getClass());
 
 			if (pda_f.length != tMap.size())
 				return false;

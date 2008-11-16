@@ -26,9 +26,6 @@ import java.util.Arrays;
  */
 public class EqualsUtils {
 //	private static final boolean debug = false;
-	public static final EqualsUtils inst = new EqualsUtils();
-	private EqualsUtils() {
-	}
 	/**
 	 * Returns true if the two input arguments are equal, handling cases
 	 * when they are arrays.  

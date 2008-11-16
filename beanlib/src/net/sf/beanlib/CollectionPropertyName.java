@@ -26,10 +26,11 @@ import org.apache.commons.lang.builder.EqualsBuilder;
  * @author Joe D. Velopar
  */
 public class CollectionPropertyName {
-	public static final CollectionPropertyName[] EMPTY_ARRAY = {}; 
+	public static final CollectionPropertyName[] EMPTY_ARRAY = {};
 	private final Class declaringClass;
 	private final String collectionProperty;
 	private final int hashCode;
+	private final BeanGetter beanGetter = new BeanGetter();
 	/** Convenient factory method. */
 	public static CollectionPropertyName[] createCollectionPropertyNames(Class declaringClass, String[] collectionProperties)
 	{
@@ -46,7 +47,7 @@ public class CollectionPropertyName {
 	public CollectionPropertyName(Class declaringClass, String collectionProperty) {
 		this.declaringClass = declaringClass;
 		this.collectionProperty = collectionProperty;
-		this.hashCode = BeanGetter.inst.getBeanHashCode(this);
+		this.hashCode = beanGetter.getBeanHashCode(this);
 	}
 	public Class getDeclaringClass() {
 		return declaringClass;

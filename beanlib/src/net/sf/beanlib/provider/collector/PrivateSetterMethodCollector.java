@@ -28,10 +28,6 @@ import net.sf.beanlib.spi.BeanMethodCollector;
  * @author Joe D. Velopar
  */
 public class PrivateSetterMethodCollector implements BeanMethodCollector {
-	public static final PrivateSetterMethodCollector inst = new PrivateSetterMethodCollector();
-	
-	private PrivateSetterMethodCollector() {}
-	
 	public Method[] collect(Object bean) {
 		Class beanClass = bean.getClass();
 		// Get all methods declared by the class or interface.

@@ -22,10 +22,6 @@ package net.sf.beanlib.utils;
  */
 public class StringUtils {
 	public static final String[][] EMPTY_2D_ARRAY = {};
-	// inst is left here only for backward compatibility reason.
-	public static final StringUtils inst = new StringUtils();
-	
-	private StringUtils() {}
 
 	public static String capitalize(String name) {
 		if (name == null || name.length() == 0) {

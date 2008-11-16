@@ -33,12 +33,8 @@ public class BeanDebugger {
 	/** Singleton instance. */
 //	private static final boolean debug = false;
 //	private final Log log = LogFactory.getLog(this.getClass());
-	public static final BeanDebugger inst = new BeanDebugger();
 
-	/** Singleton. */
-	private BeanDebugger() {
-	}
-	/** Logs at debug level all readable properties of the given bean. */
+    /** Logs at debug level all readable properties of the given bean. */
 	public void debugBeanProperties(Object bean, Log log) {
         if (log.isDebugEnabled())
             log.debug("Reading bean properties for class " + bean.getClass());

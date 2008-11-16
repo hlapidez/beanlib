@@ -36,8 +36,10 @@ import net.sf.beanlib.spi.BeanMethodCollector;
  */
 public class PublicSetterCollectionLastMethodCollector implements BeanMethodCollector  
 {
+    private final BeanMethodCollector publicSetterMethodCollector = new PublicSetterMethodCollector();
+
     public Method[] collect(Object bean) {
-        Method[] ma = PublicSetterMethodCollector.inst.collect(bean);
+        Method[] ma = publicSetterMethodCollector.collect(bean);
         List<Method> colMethods = new ArrayList<Method>();
         
         for (Method m: ma) {
@@ -61,6 +63,6 @@ public class PublicSetterCollectionLastMethodCollector implements BeanMethodColl
     }
 
     public String getMethodPrefix() {
-        return PublicSetterMethodCollector.inst.getMethodPrefix();
+        return publicSetterMethodCollector.getMethodPrefix();
     }
 }
