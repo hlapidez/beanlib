@@ -25,10 +25,6 @@ import net.sf.beanlib.spi.BeanMethodFinder;
  * @author Joe D. Velopar
  */
 public class PublicReaderMethodFinder implements BeanMethodFinder {
-	public static final PublicReaderMethodFinder inst = new PublicReaderMethodFinder();
-	
-	private PublicReaderMethodFinder() {}
-	
 	public Method find(final String propertyName, Object bean) {
 		String s= propertyName;
 		

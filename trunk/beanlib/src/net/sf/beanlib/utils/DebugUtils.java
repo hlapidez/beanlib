@@ -25,9 +25,6 @@ import net.sf.beanlib.BeanlibException;
  * @author Joe D. Velopar
  */
 public class DebugUtils {
-	public static final DebugUtils inst = new DebugUtils(); 
-	private DebugUtils() {}
-	
 	/** 
 	 * Returns the value of a declared field regardless of the privacy modifier.
 	 * This breaks encapsulation, so please use it only for debugging purposes. 

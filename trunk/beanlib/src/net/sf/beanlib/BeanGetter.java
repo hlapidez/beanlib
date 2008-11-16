@@ -37,12 +37,8 @@ import org.apache.commons.logging.LogFactory;
 public class BeanGetter {
 	/** Singleton instance. */
 //	private static final boolean debug = false;
-	public static final BeanGetter inst = new BeanGetter();
 	private final Log log = LogFactory.getLog(this.getClass());
 
-	/** Singleton. */
-	private BeanGetter() {
-	}
 	/** Returns the string value of the given property of the specified java bean class. */
 	public final String getPropertyAsString(
 		Object bean,

@@ -26,8 +26,8 @@ import net.sf.beanlib.provider.finder.PublicReaderMethodFinder;
 public class BeanPopulatorBaseConfig implements Cloneable
 {
     // BeanPopulatorBaseSpi configurations
-    private BeanMethodCollector setterMethodCollector = PublicSetterMethodCollector.inst;
-    private BeanMethodFinder readerMethodFinder = PublicReaderMethodFinder.inst;
+    private BeanMethodCollector setterMethodCollector = new PublicSetterMethodCollector();
+    private BeanMethodFinder readerMethodFinder = new PublicReaderMethodFinder();
     private BeanSourceHandler beanSourceHandler;
     private PropertyFilter propertyFilter;
     private DetailedPropertyFilter detailedPropertyFilter = DetailedPropertyFilter.JAVABEAN_PROPAGATE;

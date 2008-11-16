@@ -33,12 +33,8 @@ import org.apache.commons.logging.LogFactory;
  * @author Joe D. Velopar
  */
 public class BlobUtils {
-	public static final BlobUtils inst = new BlobUtils();
 	private Log log = LogFactory.getLog(this.getClass());
 	
-	private BlobUtils() {
-	}
-
 	public byte[] toByteArray(Blob fromBlob) {
 		return toByteArray(fromBlob, 4000);
 	}

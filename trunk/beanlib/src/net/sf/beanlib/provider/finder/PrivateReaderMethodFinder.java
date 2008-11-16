@@ -24,10 +24,6 @@ import java.lang.reflect.Modifier;
  * @author Joe D. Velopar
  */
 public class PrivateReaderMethodFinder extends ProtectedReaderMethodFinder {
-	public static final PrivateReaderMethodFinder inst = new PrivateReaderMethodFinder();
-	
-	private PrivateReaderMethodFinder() {}
-	
 	@Override
     boolean found(Method m) {
 		final int modifier = m.getModifiers();
