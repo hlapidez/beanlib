@@ -31,7 +31,7 @@ import net.sf.beanlib.provider.replicator.ReplicatorTemplate;
 import net.sf.beanlib.provider.replicator.UnsupportedBlobReplicator;
 import net.sf.beanlib.spi.BeanMethodCollector;
 import net.sf.beanlib.spi.BeanMethodFinder;
-import net.sf.beanlib.spi.BeanPopulatable;
+import net.sf.beanlib.spi.PropertyFilter;
 import net.sf.beanlib.spi.BeanPopulationExceptionHandler;
 import net.sf.beanlib.spi.BeanPopulatorBaseConfig;
 import net.sf.beanlib.spi.BeanPopulatorBaseSpi;
@@ -40,7 +40,7 @@ import net.sf.beanlib.spi.BeanSourceHandler;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.ChainedCustomBeanTransformer;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
-import net.sf.beanlib.spi.DetailedBeanPopulatable;
+import net.sf.beanlib.spi.DetailedPropertyFilter;
 import net.sf.beanlib.spi.TrivialCustomBeanTransformerFactories;
 import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
@@ -229,8 +229,8 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         return this;
     }
     
-    public final BeanTransformer initBeanPopulatable(BeanPopulatable beanPopulatable) {
-        baseConfig.setBeanPopulatable(beanPopulatable);
+    public final BeanTransformer initPropertyFilter(PropertyFilter propertyFilter) {
+        baseConfig.setPropertyFilter(propertyFilter);
         return this;
     }
 
@@ -244,9 +244,9 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         return this;
     }
 
-    public final BeanTransformer initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable) 
+    public final BeanTransformer initDetailedPropertyFilter(DetailedPropertyFilter detailedPropertyFilter) 
     {
-        baseConfig.setDetailedBeanPopulatable(detailedBeanPopulatable);
+        baseConfig.setDetailedPropertyFilter(detailedPropertyFilter);
         return this;
     }
 
@@ -342,5 +342,33 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
 
     public BeanPopulatorBaseConfig getBeanPopulatorBaseConfig() {
         return baseConfig;
+    }
+
+    public PropertyFilter getPropertyFilter() { 
+        return baseConfig.getPropertyFilter(); 
+    }
+
+    public BeanPopulationExceptionHandler getBeanPopulationExceptionHandler() {
+        return baseConfig.getBeanPopulationExceptionHandler();
+    }
+
+    public BeanSourceHandler getBeanSourceHandler() {
+        return baseConfig.getBeanSourceHandler();
+    }
+
+    public boolean isDebug() {
+        return baseConfig.isDebug();
+    }
+
+    public DetailedPropertyFilter getDetailedPropertyFilter() {
+        return baseConfig.getDetailedPropertyFilter();
+    }
+
+    public BeanMethodFinder getReaderMethodFinder() {
+        return baseConfig.getReaderMethodFinder();
+    }
+
+    public BeanMethodCollector getSetterMethodCollector() {
+        return baseConfig.getSetterMethodCollector();
     }
 }

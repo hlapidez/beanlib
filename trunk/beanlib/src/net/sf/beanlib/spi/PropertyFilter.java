@@ -22,13 +22,13 @@ import java.lang.reflect.Method;
  * 
  * @author Joe D. Velopar
  */
-public interface BeanPopulatable {
+public interface PropertyFilter {
     /**
-     * Returns true if the given JavaBean property should be populated;
+     * Returns true if the given JavaBean property should be propagated;
      * false otherwise.
      * @param propertyName JavaBean property name.
      * @param readerMethod reader method of the JavaBean property name.
-     * @return true if the given JavaBean property should be populated.
+     * @return true if the given JavaBean property should be propagated.
      */
-    public boolean shouldPopulate(String propertyName, Method readerMethod);
+    public boolean propagate(String propertyName, Method readerMethod);
 }

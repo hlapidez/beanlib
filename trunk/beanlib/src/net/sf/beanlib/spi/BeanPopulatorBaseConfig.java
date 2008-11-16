@@ -29,16 +29,16 @@ public class BeanPopulatorBaseConfig implements Cloneable
     private BeanMethodCollector setterMethodCollector = PublicSetterMethodCollector.inst;
     private BeanMethodFinder readerMethodFinder = PublicReaderMethodFinder.inst;
     private BeanSourceHandler beanSourceHandler;
-    private BeanPopulatable beanPopulatable;
-    private DetailedBeanPopulatable detailedBeanPopulatable = DetailedBeanPopulatable.JAVABEAN_POPULATE;
+    private PropertyFilter propertyFilter;
+    private DetailedPropertyFilter detailedPropertyFilter = DetailedPropertyFilter.JAVABEAN_PROPAGATE;
     private BeanPopulationExceptionHandler beanPopulationExceptionHandler = BeanPopulationExceptionHandler.ABORT;
     private boolean debug;
     
-    public BeanPopulatable getBeanPopulatable() {
-        return beanPopulatable;
+    public PropertyFilter getPropertyFilter() {
+        return propertyFilter;
     }
-    public void setBeanPopulatable(BeanPopulatable beanPopulatable) {
-        this.beanPopulatable = beanPopulatable;
+    public void setPropertyFilter(PropertyFilter propertyFilter) {
+        this.propertyFilter = propertyFilter;
     }
     public BeanPopulationExceptionHandler getBeanPopulationExceptionHandler() {
         return beanPopulationExceptionHandler;
@@ -59,12 +59,11 @@ public class BeanPopulatorBaseConfig implements Cloneable
     public void setDebug(boolean debug) {
         this.debug = debug;
     }
-    public DetailedBeanPopulatable getDetailedBeanPopulatable() {
-        return detailedBeanPopulatable;
+    public DetailedPropertyFilter getDetailedPropertyFilter() {
+        return detailedPropertyFilter;
     }
-    public void setDetailedBeanPopulatable(
-            DetailedBeanPopulatable detailedBeanPopulatable) {
-        this.detailedBeanPopulatable = detailedBeanPopulatable;
+    public void setDetailedPropertyFilter(DetailedPropertyFilter detailedPropertyFilter) {
+        this.detailedPropertyFilter = detailedPropertyFilter;
     }
     public BeanMethodFinder getReaderMethodFinder() {
         return readerMethodFinder;

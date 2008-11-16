@@ -109,10 +109,10 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
 
     // Overrides here for co-variant return type.
     // Don't invoke this method, except from within the BeanPopulatorSpi implementation class.
-    public BeanTransformerSpi initBeanPopulatable(BeanPopulatable beanPopulatable);
+    public BeanTransformerSpi initPropertyFilter(PropertyFilter propertyFilter);
     // Overrides here for co-variant return type.
     // Don't invoke this method, except from within the BeanPopulatorSpi implementation class.
-    public BeanTransformerSpi initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable);
+    public BeanTransformerSpi initDetailedPropertyFilter(DetailedPropertyFilter detailedPropertyFilter);
     // Overrides here for co-variant return type.
     // Don't invoke this method, except from within the BeanPopulatorSpi implementation class.
     public BeanTransformerSpi initBeanSourceHandler(BeanSourceHandler beanSourceHandler);
