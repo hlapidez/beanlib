@@ -25,7 +25,7 @@ import java.util.Date;
 
 import junit.framework.JUnit4TestAdapter;
 import net.sf.beanlib.provider.BeanPopulator;
-import net.sf.beanlib.spi.DetailedBeanPopulatable;
+import net.sf.beanlib.spi.DetailedPropertyFilter;
 
 import org.junit.Test;
 
@@ -85,7 +85,7 @@ public class DateReplicatorTest {
         assertNull(to.getTimestamp());
         
         new BeanPopulator(from, to)
-            .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
+            .initDetailedPropertyFilter(DetailedPropertyFilter.ALWAYS_PROPAGATE)
             .populate();
 
         assertEquals(from.getDate(), to.getDate());

@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 import junit.framework.JUnit4TestAdapter;
 import net.sf.beanlib.provider.BeanPopulator;
 import net.sf.beanlib.provider.BeanTransformer;
-import net.sf.beanlib.spi.DetailedBeanPopulatable;
+import net.sf.beanlib.spi.DetailedPropertyFilter;
 
 import org.junit.Test;
 
@@ -78,7 +78,7 @@ public class HeteroImmutableReplicatorTest {
             assertNull(to.getEnumMember());
             
             new BeanPopulator(from, to)
-                .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
+                .initDetailedPropertyFilter(DetailedPropertyFilter.ALWAYS_PROPAGATE)
                 .populate();
             assertTrue(to.getEnumMember() == from.getEnumMember());
         }
@@ -91,7 +91,7 @@ public class HeteroImmutableReplicatorTest {
             assertNull(to.getEnumMember());
             
             new BeanPopulator(from, to)
-                .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
+                .initDetailedPropertyFilter(DetailedPropertyFilter.ALWAYS_PROPAGATE)
                 .initTransformer(null)
                 .populate();
             assertTrue(to.getEnumMember() == from.getEnumMember());
@@ -110,7 +110,7 @@ public class HeteroImmutableReplicatorTest {
             assertNull(to.getEnumMember());
             
             new BeanPopulator(from, to)
-                .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
+                .initDetailedPropertyFilter(DetailedPropertyFilter.ALWAYS_PROPAGATE)
                 .initTransformer(
                     new BeanTransformer()
                                    .initImmutableReplicatableFactory(HeteroImmutableReplicator.factory)
@@ -127,7 +127,7 @@ public class HeteroImmutableReplicatorTest {
             assertNull(to.getEnumMember());
             
             new BeanPopulator(from, to)
-                .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
+                .initDetailedPropertyFilter(DetailedPropertyFilter.ALWAYS_PROPAGATE)
                 .initTransformer(null)
                 .populate();
             assertTrue(to.getEnumMember() == from.getEnumMember());
@@ -146,7 +146,7 @@ public class HeteroImmutableReplicatorTest {
             assertNull(to.getEnumMember());
             
             new BeanPopulator(from, to)
-                .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
+                .initDetailedPropertyFilter(DetailedPropertyFilter.ALWAYS_PROPAGATE)
                 .populate();
             assertTrue(to.getEnumMember() == null);
         }
@@ -164,7 +164,7 @@ public class HeteroImmutableReplicatorTest {
             assertNull(to.getEnumMember());
             
             new BeanPopulator(from, to)
-                .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
+                .initDetailedPropertyFilter(DetailedPropertyFilter.ALWAYS_PROPAGATE)
                 .initTransformer(
                     new BeanTransformer()
                                    .initImmutableReplicatableFactory(HeteroImmutableReplicator.factory)

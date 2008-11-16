@@ -141,7 +141,7 @@ public class BeanPopulatorTest {
             Foo to = new Foo("to");
             assertFalse(from.equals(to));
             new BeanPopulator(from, to)
-                         .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
+                         .initSetterMethodCollector(new ProtectedSetterMethodCollector())
                          .initTransformer(null)
                          .populate();
             assertEquals(from.getString(), to.getString());
@@ -156,7 +156,7 @@ public class BeanPopulatorTest {
             Foo to = new Foo("to");
             assertFalse(from.equals(to));
             new BeanPopulator(from, to)
-                .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
+                .initSetterMethodCollector(new ProtectedSetterMethodCollector())
                 .populate();
             assertEquals(from.getString(), to.getString());
             assertEquals(from.getProtectedSetString(), to.getProtectedSetString());
@@ -176,7 +176,7 @@ public class BeanPopulatorTest {
             Bar to = new Bar("to");
             assertFalse(from.equals(to));
             new BeanPopulator(from, to)
-                         .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
+                         .initSetterMethodCollector(new ProtectedSetterMethodCollector())
                          .initTransformer(null)
                          .populate();
             assertEquals(from.getProtectedSetString(), to.getProtectedSetString());
@@ -196,7 +196,7 @@ public class BeanPopulatorTest {
             Bar to = new Bar("to");
             assertFalse(from.equals(to));
             new BeanPopulator(from, to)
-                         .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
+                         .initSetterMethodCollector(new ProtectedSetterMethodCollector())
                          .populate();
             assertEquals(from.getProtectedSetString(), to.getProtectedSetString());
             assertEquals(from.getString(), to.getString());
