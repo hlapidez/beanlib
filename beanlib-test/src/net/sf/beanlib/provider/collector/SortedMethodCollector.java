@@ -27,13 +27,14 @@ import net.sf.beanlib.spi.BeanMethodCollector;
 class SortedMethodCollector implements BeanMethodCollector  
 {
     private final boolean asc;
+    private final BeanMethodCollector methodCollector = new PublicSetterMethodCollector();
     
     SortedMethodCollector(boolean asc) {
         this.asc = asc;
     }
     
     public Method[] collect(Object bean) {
-        Method[] ma = PublicSetterMethodCollector.inst.collect(bean);
+        Method[] ma = methodCollector.collect(bean);
         Comparator<? super Method> comp = new Comparator<Method>() {
             public int compare(Method m1, Method m2) {
                 int ret = m1.getName().compareTo(m2.getName());
@@ -45,6 +46,6 @@ class SortedMethodCollector implements BeanMethodCollector
     }
 
     public String getMethodPrefix() {
-        return PublicSetterMethodCollector.inst.getMethodPrefix();
+        return methodCollector.getMethodPrefix();
     }
 }

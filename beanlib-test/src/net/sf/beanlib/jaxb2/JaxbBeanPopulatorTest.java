@@ -52,7 +52,7 @@ public class JaxbBeanPopulatorTest
         };
         
         new BeanPopulator(from, to)
-            .initSetterMethodCollector(FluentSetterMethodCollector.inst)
+            .initSetterMethodCollector(new FluentSetterMethodCollector())
             .populate()
             ;
         Assert.assertEquals("Foo",to.getStuff());
@@ -132,7 +132,7 @@ public class JaxbBeanPopulatorTest
         };
         
         new BeanPopulator(from, to)
-            .initSetterMethodCollector(FluentSetterMethodCollector.inst)
+            .initSetterMethodCollector(new FluentSetterMethodCollector())
             .populate()
             ;
         Assert.assertNull(to.getStuff());
