@@ -52,10 +52,12 @@ public class Hibernate3BlobReplicator implements BlobReplicatorSpi {
         return factory.newBlobReplicatable(beanTransformer);
     }
     
+    private final BlobUtils blobUtils = new BlobUtils();
+    
     private Hibernate3BlobReplicator() {}
     
     public <T> T replicateBlob(Blob fromBlob, Class<T> toClass) {
-        byte[] byteArray = BlobUtils.inst.toByteArray(fromBlob);
+        byte[] byteArray = blobUtils.toByteArray(fromBlob);
         return (T)Hibernate.createBlob(byteArray);
     }
 }
