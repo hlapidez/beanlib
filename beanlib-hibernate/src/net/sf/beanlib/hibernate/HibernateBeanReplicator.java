@@ -20,14 +20,18 @@ import java.util.Set;
 
 import net.jcip.annotations.NotThreadSafe;
 import net.sf.beanlib.CollectionPropertyName;
+import net.sf.beanlib.provider.BeanPopulator;
 import net.sf.beanlib.provider.collector.ProtectedSetterMethodCollector;
 import net.sf.beanlib.spi.BeanMethodCollector;
 import net.sf.beanlib.spi.BeanMethodFinder;
-import net.sf.beanlib.spi.BeanPopulatable;
+import net.sf.beanlib.spi.BeanPopulationExceptionHandler;
+import net.sf.beanlib.spi.BeanPopulatorBaseConfig;
+import net.sf.beanlib.spi.BeanPopulatorBaseSpi;
+import net.sf.beanlib.spi.PropertyFilter;
 import net.sf.beanlib.spi.BeanSourceHandler;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
-import net.sf.beanlib.spi.DetailedBeanPopulatable;
+import net.sf.beanlib.spi.DetailedPropertyFilter;
 
 /**
  * Hibernate Bean Replicator.  
@@ -39,37 +43,12 @@ import net.sf.beanlib.spi.DetailedBeanPopulatable;
  * @author Joe D. Velopar
  */
 @NotThreadSafe
-public class HibernateBeanReplicator 
+public class HibernateBeanReplicator implements BeanPopulatorBaseSpi 
 {
 //    private final Log log = LogFactory.getLog(this.getClass());
     
     /** Used to do the heavy lifting of Hibernate object transformation and replication. */
     private final BeanTransformerSpi hibernateBeanTransformer;
-
-    /**
-     * The set of entity bean classes for matching properties that will be replicated.
-     * Null means all whereas empty means none.
-     */
-    private Set<Class<?>> entityBeanClassSet;
-
-    /**
-     * The set of collection and map properties that will be replicated.
-     * Null means all whereas empty means none.
-     */
-    private Set<? extends CollectionPropertyName> collectionPropertyNameSet;
-    
-    /** Used to control what properties get propagated across and what get skipped. */
-    private BeanPopulatable beanPopulatable; 
-    
-    /**
-     * In the context of using 
-     * {@link HibernateBeanPopulatableSupport}, which is the default,
-     * for controlling the propagation of properties, 
-     * a vetoer can be used to further veto the propagation of specific properties.
-     * 
-     * @see HibernateBeanPopulatableSupport
-     */
-    private BeanPopulatable vetoer; 
 
     /**
      * You probably want to construct a 
@@ -123,9 +102,6 @@ public class HibernateBeanReplicator
     public final <T> T copy(Object from, Class<T> toClass) {
         if (from == null)
             return null;
-        if (this.beanPopulatable == null)
-            this.beanPopulatable = new HibernateBeanPopulatableSupport(entityBeanClassSet, collectionPropertyNameSet, vetoer);
-        hibernateBeanTransformer.initBeanPopulatable(beanPopulatable);
         try {
             return hibernateBeanTransformer.transform(from, toClass, null);
         } finally {
@@ -141,7 +117,7 @@ public class HibernateBeanReplicator
      * <li>
      * Use {@link HibernateBeanReplicator#copy(Object)} instead of this method 
      * if you want to plug in a different 
-     * {@link DetailedBeanPopulatable} or {@link BeanMethodCollector}.
+     * {@link DetailedPropertyFilter} or {@link BeanMethodCollector}.
      * </li>
      * <li>This method will cause both the public and protected setter methods 
      * to be invoked for property propagation.
@@ -167,7 +143,7 @@ public class HibernateBeanReplicator
      * <li>
      * Use {@link HibernateBeanReplicator#copy(Object, Class)} instead of this method 
      * if you want to plug in a different 
-     * {@link DetailedBeanPopulatable} or {@link BeanMethodCollector}.
+     * {@link DetailedPropertyFilter} or {@link BeanMethodCollector}.
      * </li>
      * <li>This method will cause both the public and protected setter methods 
      * to be invoked for property propagation.
@@ -180,8 +156,7 @@ public class HibernateBeanReplicator
      * @return an instance of the given class with values deeply copied from the given object.
      */
     public final <T> T deepCopy(Object from, Class<T> toClass) {
-        this.entityBeanClassSet = null;
-        this.collectionPropertyNameSet = null;
+        hibernateBeanTransformer.initPropertyFilter(new HibernatePropertyFilter());
         this.setDefaultBehavior();
         return this.copy(from, toClass);
     }
@@ -196,14 +171,14 @@ public class HibernateBeanReplicator
      * <li>
      * Use {@link HibernateBeanReplicator#copy(Object)} instead of this method 
      * if you want to plug in a different 
-     * {@link DetailedBeanPopulatable} or {@link BeanMethodCollector}.
+     * {@link DetailedPropertyFilter} or {@link BeanMethodCollector}.
      * </li>
      * <li>This method will cause both the public and protected setter methods 
      * to be invoked for property propagation.
      * </li>
      * </ol>
      * 
-     * @see HibernateBeanPopulatableSupport
+     * @see HibernatePropertyFilter
      * 
      * @param <T> from object type.
      * @param from given object to be copied.
@@ -226,7 +201,7 @@ public class HibernateBeanReplicator
      * <li>
      * Use {@link HibernateBeanReplicator#copy(Object, Class)} instead of this method 
      * if you want to plug in a different 
-     * {@link DetailedBeanPopulatable} or {@link BeanMethodCollector}.
+     * {@link DetailedPropertyFilter} or {@link BeanMethodCollector}.
      * </li>
      * <li>This method will cause both the public and protected setter methods 
      * to be invoked for property propagation.
@@ -238,17 +213,21 @@ public class HibernateBeanReplicator
      * @return an instance of the given class with values shallow copied from the given object.
      */
     public final <T> T shallowCopy(Object from, Class<T> toClass) {
-        this.entityBeanClassSet = Collections.emptySet();
-        this.collectionPropertyNameSet = Collections.emptySet();
+        Set<? extends CollectionPropertyName> emptyCollectionPropertyNameSet = Collections.emptySet();
+        Set<Class<?>> emptyEntityBeanClassSet = Collections.emptySet();
+        
+        hibernateBeanTransformer.initPropertyFilter(
+                new HibernatePropertyFilter()
+                    .initCollectionPropertyNameSet(emptyCollectionPropertyNameSet)
+                    .initEntityBeanClassSet(emptyEntityBeanClassSet));
         this.setDefaultBehavior();
         return this.copy(from, toClass);
     }
     
     /** Configures the default behavior when either shallow or deep copy is invoked. */
     private void setDefaultBehavior() {
-        this.beanPopulatable = null;
-        this.hibernateBeanTransformer.initDetailedBeanPopulatable(null);
-        this.hibernateBeanTransformer.initSetterMethodCollector(ProtectedSetterMethodCollector.inst);        
+        this.hibernateBeanTransformer.initDetailedPropertyFilter(null);
+        this.hibernateBeanTransformer.initSetterMethodCollector(new ProtectedSetterMethodCollector());        
     }
 
     /** 
@@ -261,10 +240,23 @@ public class HibernateBeanReplicator
 
     /**
      * Returns the set of entity bean classes for matching properties that will be replicated.
+     * Only applicable if the current {@link PropertyFilter} is an instance of {@link HibernatePropertyFilter}.
      * Null means all whereas empty means none.
+     * 
+     * @throws UnsupportedOperationException 
+     * if this method is invoked when the underlying bean transformer is not a {@link HibernatePropertyFilter}.
      */
-    public final Set<Class<?>> getEntityBeanClassSet() {
-        return entityBeanClassSet;
+    public final Set<Class<?>> getEntityBeanClassSet() throws UnsupportedOperationException
+    {
+        PropertyFilter s = this.hibernateBeanTransformer.getPropertyFilter();
+
+        if (s instanceof HibernatePropertyFilter)
+        {
+            HibernatePropertyFilter hs = (HibernatePropertyFilter)s;
+            return hs.getEntityBeanClassSet();
+        }
+        throw new UnsupportedOperationException("Method getEntityBeanClassSet is only supported if the bean transformer is " 
+                + HibernatePropertyFilter.class.getSimpleName());
     }
 
     /**
@@ -273,18 +265,42 @@ public class HibernateBeanReplicator
      *  @param entityBeanClassSet the set of entity beans to be populated;
      *  or null if all entity bean are to be populated.
      *  @return the current HibernateBeanReplicator instance for command chaining.
+     * 
+     * @throws UnsupportedOperationException 
+     * if this method is invoked when the underlying bean transformer is not a {@link HibernatePropertyFilter}.
      */
-    public final HibernateBeanReplicator initEntityBeanClassSet(Set<Class<?>> entityBeanClassSet) {
-        this.entityBeanClassSet = entityBeanClassSet;
-        return this;
+    public final HibernateBeanReplicator initEntityBeanClassSet(Set<Class<?>> entityBeanClassSet) throws UnsupportedOperationException
+    {
+        PropertyFilter s = this.hibernateBeanTransformer.getPropertyFilter();
+
+        if (s instanceof HibernatePropertyFilter)
+        {
+            HibernatePropertyFilter hs = (HibernatePropertyFilter)s;
+            hs.initEntityBeanClassSet(entityBeanClassSet);
+            return this;
+        }
+        throw new UnsupportedOperationException("Method initEntityBeanClassSet is only supported if the bean transformer is " 
+                + HibernatePropertyFilter.class.getSimpleName());
     }
 
     /**
      * Returns the set of collection and map properties that will be replicated.
      * Null means all whereas empty means none.
+     * 
+     * @throws UnsupportedOperationException 
+     * if this method is invoked when the underlying bean transformer is not a {@link HibernatePropertyFilter}.
      */
-    public final Set<? extends CollectionPropertyName> getCollectionPropertyNameSet() {
-        return collectionPropertyNameSet;
+    public final Set<? extends CollectionPropertyName> getCollectionPropertyNameSet() throws UnsupportedOperationException 
+    {
+        PropertyFilter s = this.hibernateBeanTransformer.getPropertyFilter();
+
+        if (s instanceof HibernatePropertyFilter)
+        {
+            HibernatePropertyFilter hs = (HibernatePropertyFilter)s;
+            return hs.getCollectionPropertyNameSet();
+        }
+        throw new UnsupportedOperationException("Method getCollectionPropertyNameSet is only supported if the bean transformer is " 
+                + HibernatePropertyFilter.class.getSimpleName());
     }
 
     /**
@@ -293,38 +309,74 @@ public class HibernateBeanReplicator
      * @param collectionPropertyNameSet the set of Collection fields to be populated;
      * or null if all Collection fields are to be populated.
      * @return the current HibernateBeanReplicator instance for command chaining.
+     * 
+     * @throws UnsupportedOperationException 
+     * if this method is invoked when the underlying bean transformer is not a {@link HibernatePropertyFilter}.
      */
-    public final HibernateBeanReplicator initCollectionPropertyNameSet(Set<? extends CollectionPropertyName> collectionPropertyNameSet) 
+    public final HibernateBeanReplicator initCollectionPropertyNameSet(Set<? extends CollectionPropertyName> collectionPropertyNameSet)
+        throws UnsupportedOperationException
     {
-        this.collectionPropertyNameSet = collectionPropertyNameSet;
-        return this;
+        PropertyFilter s = this.hibernateBeanTransformer.getPropertyFilter();
+
+        if (s instanceof HibernatePropertyFilter)
+        {
+            HibernatePropertyFilter hs = (HibernatePropertyFilter)s;
+            hs.initCollectionPropertyNameSet(collectionPropertyNameSet);
+            return this;
+        }
+        throw new UnsupportedOperationException("Method initCollectionPropertyNameSet is only supported if the bean transformer is " 
+                + HibernatePropertyFilter.class.getSimpleName());
     }
     
     /**
      * Returns the vetoer in the context of using 
-     * {@link HibernateBeanPopulatableSupport}, which is the default,
+     * {@link HibernatePropertyFilter}, which is the default,
      * for controlling the propagation of properties. 
      * A vetoer is used to further veto the propagation of specific properties.
      * <p>
-     * Irrelevant if {@link HibernateBeanPopulatableSupport} is not used.
+     * Irrelevant if {@link HibernatePropertyFilter} is not used.
      * 
-     * @see HibernateBeanPopulatableSupport
+     * @see HibernatePropertyFilter
+     * 
+     * @throws UnsupportedOperationException 
+     * if this method is invoked when the underlying bean transformer is not a {@link HibernatePropertyFilter}.
      */
-    public final BeanPopulatable getVetoer() {
-        return vetoer;
+    public final PropertyFilter getVetoer() throws UnsupportedOperationException
+    {
+        PropertyFilter s = this.hibernateBeanTransformer.getPropertyFilter();
+
+        if (s instanceof HibernatePropertyFilter)
+        {
+            HibernatePropertyFilter hs = (HibernatePropertyFilter)s;
+            return hs.getVetoer();
+        }
+        throw new UnsupportedOperationException("Method getVetoer is only supported if the bean transformer is " 
+                + HibernatePropertyFilter.class.getSimpleName());
     }
 
     /**
-     * This method is only relevant if {@link HibernateBeanPopulatableSupport}, which is the default,
+     * This method is only relevant if {@link HibernatePropertyFilter}, which is the default,
      * is used for controlling the propagation of properties.
      * 
      * @param vetoer can be used to further veto the propagation of specific properties.
      * 
-     * @see HibernateBeanPopulatableSupport
+     * @see HibernatePropertyFilter
+     * 
+     * @throws UnsupportedOperationException 
+     * if this method is invoked when the underlying bean transformer is not a {@link HibernatePropertyFilter}.
      */
-    public final HibernateBeanReplicator initVetoer(BeanPopulatable vetoer) {
-        this.vetoer = vetoer;
-        return this;
+    public final HibernateBeanReplicator initVetoer(PropertyFilter vetoer) throws UnsupportedOperationException
+    {
+        PropertyFilter s = this.hibernateBeanTransformer.getPropertyFilter();
+
+        if (s instanceof HibernatePropertyFilter)
+        {
+            HibernatePropertyFilter hs = (HibernatePropertyFilter)s;
+            hs.initVetoer(vetoer);
+            return this;
+        }
+        throw new UnsupportedOperationException("Method initVetoer is only supported if the bean transformer is " 
+                + HibernatePropertyFilter.class.getSimpleName());
     }
 
     // ========================== Bean Population configuration ========================== 
@@ -332,9 +384,11 @@ public class HibernateBeanReplicator
     /**
      * Returns the populator that is used to control 
      * what properties get propagated across and what get skipped.
+     * Note if the returned value is null, the default behavior will make use
+     * of {@link HibernatePropertyFilter}.
      */
-    public final BeanPopulatable getBeanPopulatable() {
-        return beanPopulatable;
+    public final PropertyFilter getPropertyFilter() {
+        return hibernateBeanTransformer.getPropertyFilter();
     }
     
     /**
@@ -342,14 +396,14 @@ public class HibernateBeanReplicator
      * or {@link #copy(Object, Class)} is directly invoked, 
      * and is ignored otherwise (ie ignored if deep or shallow copy is invoked instead).
      * 
-     * @param beanPopulatable is similar to {@link DetailedBeanPopulatable} but with a simpler API
+     * @param propertyFilter is similar to {@link DetailedPropertyFilter} but with a simpler API
      * that is used to control whether a specific JavaBean property should be propagated
      * from a source bean to a target bean.
      * 
      * @return the current object (ie this) for method chaining purposes.
      */
-    public final HibernateBeanReplicator initBeanPopulatable(BeanPopulatable beanPopulatable) {
-        this.beanPopulatable = beanPopulatable;
+    public final HibernateBeanReplicator initPropertyFilter(PropertyFilter propertyFilter) {
+        this.hibernateBeanTransformer.initPropertyFilter(propertyFilter);
         return this;
     }
 
@@ -358,14 +412,14 @@ public class HibernateBeanReplicator
      * or {@link #copy(Object, Class)} is directly invoked, 
      * and is ignored otherwise (ie ignored if deep or shallow copy is invoked instead).
      * 
-     * @param detailedBeanPopulatable is used to control whether a specific JavaBean property
+     * @param detailedPropertyFilter is used to control whether a specific JavaBean property
      * should be propagated from the source bean to the target bean.
      * 
      * @return the current object (ie this) for method chaining purposes.
      */
-    public final HibernateBeanReplicator initDetailedBeanPopulatable(DetailedBeanPopulatable detailedBeanPopulatable) 
+    public final HibernateBeanReplicator initDetailedPropertyFilter(DetailedPropertyFilter detailedPropertyFilter) 
     {
-        this.hibernateBeanTransformer.initDetailedBeanPopulatable(detailedBeanPopulatable);
+        this.hibernateBeanTransformer.initDetailedPropertyFilter(detailedPropertyFilter);
         return this;
     }
     
@@ -426,5 +480,65 @@ public class HibernateBeanReplicator
     {
         this.hibernateBeanTransformer.initSetterMethodCollector(setterMethodCollector);
         return this;
+    }
+
+    public HibernateBeanReplicator initBeanPopulationExceptionHandler(
+            BeanPopulationExceptionHandler beanPopulationExceptionHandler) 
+    {
+        this.hibernateBeanTransformer.initBeanPopulationExceptionHandler(beanPopulationExceptionHandler);
+        return this;
+    }
+
+    /**
+     * Used to conveniently provide the bean population related configuration options as a single 
+     * configuration object.
+     * <p>
+     * Note the detailedPropertyFilter and setterMethodCollector in the given config are 
+     * only applicable if either the {@link #copy(Object)} 
+     * or {@link #copy(Object, Class)} is directly invoked, 
+     * and is ignored otherwise (ie ignored if deep or shallow copy is invoked instead).
+     * 
+     * @param baseConfig is used to conveniently group all the other initializable options into a single unit.
+     * 
+     * @return the current object (ie this) for method chaining purposes.
+     */
+    public BeanPopulatorBaseSpi initBeanPopulatorBaseConfig(
+            BeanPopulatorBaseConfig baseConfig) 
+    {
+        this.hibernateBeanTransformer.initBeanPopulatorBaseConfig(baseConfig);
+        return this;
+    }
+
+    public BeanPopulationExceptionHandler getBeanPopulationExceptionHandler() {
+        return hibernateBeanTransformer.getBeanPopulationExceptionHandler();
+    }
+
+    /**
+     * Notes if the returned base config is modified, a subsequent 
+     * {@link BeanPopulator#initBeanPopulatorBaseConfig(BeanPopulatorBaseConfig)}
+     * needs to be invoked to keep the configuration in sync.
+     */
+    public BeanPopulatorBaseConfig getBeanPopulatorBaseConfig() {
+        return hibernateBeanTransformer.getBeanPopulatorBaseConfig();
+    }
+
+    public BeanSourceHandler getBeanSourceHandler() {
+        return hibernateBeanTransformer.getBeanSourceHandler();
+    }
+
+    public boolean isDebug() {
+        return hibernateBeanTransformer.isDebug();
+    }
+
+    public DetailedPropertyFilter getDetailedPropertyFilter() {
+        return hibernateBeanTransformer.getDetailedPropertyFilter();
+    }
+
+    public BeanMethodFinder getReaderMethodFinder() {
+        return hibernateBeanTransformer.getReaderMethodFinder();
+    }
+
+    public BeanMethodCollector getSetterMethodCollector() {
+        return hibernateBeanTransformer.getSetterMethodCollector();
     }
 }

@@ -16,6 +16,7 @@
 package net.sf.beanlib.hibernate3;
 
 import net.jcip.annotations.NotThreadSafe;
+import net.sf.beanlib.hibernate.HibernatePropertyFilter;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 
 /**
@@ -27,6 +28,7 @@ import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 public class Hibernate3BeanReplicator extends HibernateBeanReplicator
 {
 	public Hibernate3BeanReplicator() {
-		super(new Hibernate3BeanTransformer());
+		super(new Hibernate3BeanTransformer()
+		        .initPropertyFilter(new HibernatePropertyFilter()));
 	}
 }

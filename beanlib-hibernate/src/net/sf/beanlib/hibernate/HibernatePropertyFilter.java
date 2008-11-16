@@ -24,15 +24,15 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sf.beanlib.CollectionPropertyName;
-import net.sf.beanlib.spi.BeanPopulatable;
+import net.sf.beanlib.spi.PropertyFilter;
 
 /**
  * The default implemenation to determine if a Hibernate JavaBean property should be populated.
- * Each population decision can be vetoed by plugging in a custom {@link net.sf.beanlib.spi.BeanPopulatable vetoer}.
+ * Each population decision can be vetoed by plugging in a custom {@link net.sf.beanlib.spi.PropertyFilter vetoer}.
  *
  * @author Joe D. Velopar
  */
-public class HibernateBeanPopulatableSupport implements BeanPopulatable 
+public class HibernatePropertyFilter implements PropertyFilter 
 {
     /**
      * The set of entity bean classes for matching properties that will be replicated.
@@ -40,6 +40,35 @@ public class HibernateBeanPopulatableSupport implements BeanPopulatable
      */
     private Set<Class<?>> entityBeanClassSet;
     
+    public Set<Class<?>> getEntityBeanClassSet() {
+        return entityBeanClassSet;
+    }
+
+    public HibernatePropertyFilter initEntityBeanClassSet(Set<Class<?>> entityBeanClassSet) {
+        this.entityBeanClassSet = entityBeanClassSet;
+        return this;
+    }
+
+    public Set<? extends CollectionPropertyName> getCollectionPropertyNameSet() {
+        return collectionPropertyNameSet;
+    }
+
+    public HibernatePropertyFilter initCollectionPropertyNameSet(
+            Set<? extends CollectionPropertyName> collectionPropertyNameSet) 
+    {
+        this.collectionPropertyNameSet = collectionPropertyNameSet;
+        return this;
+    }
+
+    public PropertyFilter getVetoer() {
+        return vetoer;
+    }
+
+    public HibernatePropertyFilter initVetoer(PropertyFilter vetoer) {
+        this.vetoer = vetoer;
+        return this;
+    }
+
     /**
      * The set of collection and map properties that will be replicated.
      * Null means all whereas empty means none.
@@ -47,17 +76,19 @@ public class HibernateBeanPopulatableSupport implements BeanPopulatable
     private Set<? extends CollectionPropertyName> collectionPropertyNameSet;
     
     /** Used to veto the propagation of a JavaBean property. */
-    private BeanPopulatable vetoer;
+    private PropertyFilter vetoer;
     
-    public HibernateBeanPopulatableSupport(Set<Class<?>> entityBeanClassSet, 
-        Set<? extends CollectionPropertyName> collectionPropertyNameSet, BeanPopulatable vetoer)
+    public HibernatePropertyFilter(Set<Class<?>> entityBeanClassSet, 
+        Set<? extends CollectionPropertyName> collectionPropertyNameSet, PropertyFilter vetoer)
     {
         this.entityBeanClassSet = entityBeanClassSet;
         this.collectionPropertyNameSet = collectionPropertyNameSet;
         this.vetoer = vetoer;
     }
     
-    public boolean shouldPopulate(String propertyName, Method readerMethod) 
+    public HibernatePropertyFilter() {}
+    
+    public boolean propagate(String propertyName, Method readerMethod) 
     {
         boolean goAhead = false;
                     
@@ -84,7 +115,7 @@ public class HibernateBeanPopulatableSupport implements BeanPopulatable
             
             if (immutable(returnType))
             {
-                return vetoer == null ? true : vetoer.shouldPopulate(propertyName, readerMethod);
+                return vetoer == null ? true : vetoer.propagate(propertyName, readerMethod);
             }
             
             if (isJavaPackage(returnType)) {
@@ -112,7 +143,7 @@ public class HibernateBeanPopulatableSupport implements BeanPopulatable
                 
                 for (;;) {
                     if (goAhead)
-                        return vetoer == null ? true : vetoer.shouldPopulate(propertyName, readerMethod);
+                        return vetoer == null ? true : vetoer.propagate(propertyName, readerMethod);
                     // check if it's ancestor is specified in entityBeanClassSet
                     superClass = superClass.getSuperclass();
                     
@@ -123,7 +154,7 @@ public class HibernateBeanPopulatableSupport implements BeanPopulatable
             }
         }
         if (goAhead)
-            return vetoer == null ? true : vetoer.shouldPopulate(propertyName, readerMethod);
+            return vetoer == null ? true : vetoer.propagate(propertyName, readerMethod);
         return false;
     }
 //    /** Returns the given array as a set. */

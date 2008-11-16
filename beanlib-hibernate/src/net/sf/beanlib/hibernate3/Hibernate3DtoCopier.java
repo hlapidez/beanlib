@@ -27,8 +27,8 @@ import net.sf.beanlib.CollectionPropertyName;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 import net.sf.beanlib.hibernate.UnEnhancer;
 import net.sf.beanlib.provider.collector.ProtectedSetterMethodCollector;
-import net.sf.beanlib.spi.BeanPopulatable;
-import net.sf.beanlib.spi.DetailedBeanPopulatable;
+import net.sf.beanlib.spi.PropertyFilter;
+import net.sf.beanlib.spi.DetailedPropertyFilter;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -90,7 +90,7 @@ public class Hibernate3DtoCopier
         return (T)(entityBean == null 
                    ? null 
                    : createHibernateBeanReplicator()
-                            .initBeanPopulatable(new Hibernate3DtoPopulator()
+                            .initPropertyFilter(new Hibernate3DtoPropertyFilter()
                                                     .init(this))
                             .copy(entityBean));
     }
@@ -101,7 +101,7 @@ public class Hibernate3DtoCopier
             return null;
         List<Object> list = new ArrayList<Object>(hibernateBeans.size());
         HibernateBeanReplicator replicator = createHibernateBeanReplicator()
-                                                .initBeanPopulatable(new Hibernate3DtoPopulator()
+                                                .initPropertyFilter(new Hibernate3DtoPropertyFilter()
                                                                          .init(this));
         
         for (Object obj : hibernateBeans)
@@ -122,9 +122,7 @@ public class Hibernate3DtoCopier
     {
         if (entityBean == null)
             return null;
-//        Class[] entityBeanClassArray = getApplicationMemberClasses(entityBean.getClass(), sessionFactory);
-//        return copy(targetEntityType, entityBean, entityBeanClassArray /*, sessionFactory */);
-        return copy(targetEntityType, entityBean, ArrayUtils.EMPTY_CLASS_ARRAY /*, sessionFactory */);
+        return copy(targetEntityType, entityBean, ArrayUtils.EMPTY_CLASS_ARRAY);
     }
     
     /** 
@@ -145,30 +143,8 @@ public class Hibernate3DtoCopier
     {
         if (entityBean == null)
             return null;
-//        Class[] entityBeanClassArray =
-//            aggregateEntityTypes(entityBean, interestedEntityTypes, sessionFactory);
-//        return copy(targetEntityType, entityBean, entityBeanClassArray, collectionPropertyNames /*, sessionFactory */);
-        return copy(targetEntityType, entityBean, interestedEntityTypes, collectionPropertyNames /*, sessionFactory */);
+        return copy(targetEntityType, entityBean, interestedEntityTypes, collectionPropertyNames);
     }
-    
-//    /**
-//     * Returns the total list of interested entity types.
-//     *   
-//     * @param entityBean enityt bean
-//     * @param interestedEntityTypes interested entity types; null means no extra interested entity types.
-//     * @param sessionFactory Hibernate session factory
-//     * @return the total list of interested entity types.
-//     */
-//    private Class[] aggregateEntityTypes(Object entityBean, Class[] interestedEntityTypes, SessionFactory sessionFactory) 
-//    {
-//        Set<Class> classSet = new HashSet<Class>();
-//        
-//        if (interestedEntityTypes != null)
-//            classSet.addAll(Arrays.asList(interestedEntityTypes));
-//        classSet.addAll(Arrays.asList(getApplicationMemberClasses(entityBean.getClass(), sessionFactory)));
-//        Class[] entityBeanClassArray = classSet.toArray(ArrayUtils.EMPTY_CLASS_ARRAY);
-//        return entityBeanClassArray;
-//    }
     
     /** 
      * Returns a list of DTO's by cloning portion of the object graph of the given collection of Hibernate beans. 
@@ -182,8 +158,6 @@ public class Hibernate3DtoCopier
         List<Object> list = new ArrayList<Object>(hibernateBeans.size());
         
         for (Object entityBean : hibernateBeans) {
-//            Class[] entityBeanClassArray = getApplicationMemberClasses(entityBean.getClass(), sessionFactory);
-//            Object to = copy(entityBean, entityBeanClassArray /*, sessionFactory */);
             Object to = copy(entityBean, ArrayUtils.EMPTY_CLASS_ARRAY);
             list.add(to);
         }
@@ -195,25 +169,21 @@ public class Hibernate3DtoCopier
      * @param hibernateBeans given collection of Hibernate Beans.
      */
     public <E> List<E> hibernate2dto(Class<E> targetEntityType, 
-        Collection<?> hibernateBeans, Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNameArray 
-        /* ,SessionFactory sessionFactory */)
+        Collection<?> hibernateBeans, Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNameArray)
     {
         if (hibernateBeans == null)
             return null;
         List<E> list = new ArrayList<E>(hibernateBeans.size());
         
         for (Object entityBean : hibernateBeans) {
-//            Class[] entityBeanClassArray =
-//                aggregateEntityTypes(entityBean, interestedEntityTypes, sessionFactory);
-//            E to = copy(targetEntityType, entityBean, entityBeanClassArray, collectionPropertyNameArray /*, sessionFactory */);
             E to = copy(targetEntityType, entityBean, interestedEntityTypes, collectionPropertyNameArray);
             list.add(to);
         }
         return list;
     }
     
-    /** Copy with a Application specific BeanPopulatable excluding all member Set properties. */
-    private Object copy(Object from, Class<?>[] entityBeanClassArray /* , SessionFactory sessionFactory */) 
+    /** Copy with an application specific PropertyFilter excluding all member Set properties. */
+    private Object copy(Object from, Class<?>[] entityBeanClassArray ) 
     {
         if (from == null)
             return null;
@@ -245,7 +215,6 @@ public class Hibernate3DtoCopier
             else
                 // entity classes explicitely specified
                 entityBeanClassSet = new HashSet<Class<?>>(Arrays.asList(entityBeanClassArray));
-            replicator.initEntityBeanClassSet(entityBeanClassSet);
         }
         // Assumes all Collection properties
         Set<CollectionPropertyName> collectionPropertyNameSet = null;
@@ -255,84 +224,20 @@ public class Hibernate3DtoCopier
                 // No Collection properties.
                 collectionPropertyNameSet = Collections.emptySet();
             else 
-                // Collection properties explicitely specified. 
+                // Collection properties explicitly specified. 
                 collectionPropertyNameSet = new HashSet<CollectionPropertyName>(Arrays.asList(collectionPropertyNameArray));
-            replicator.initCollectionPropertyNameSet(collectionPropertyNameSet);
         }
-        BeanPopulatable beanPopulatable = new Hibernate3DtoPopulator(entityBeanClassSet, collectionPropertyNameSet)
+        PropertyFilter propertyFilter = new Hibernate3DtoPropertyFilter(entityBeanClassSet, collectionPropertyNameSet)
                                             .init(this);
         replicator
-          .initBeanPopulatable(beanPopulatable)
-          .initCollectionPropertyNameSet(collectionPropertyNameSet)
-          .initDetailedBeanPopulatable(DetailedBeanPopulatable.ALWAYS_POPULATE)
-          .initEntityBeanClassSet(entityBeanClassSet)
-          .initSetterMethodCollector(ProtectedSetterMethodCollector.inst)
+          .initPropertyFilter(propertyFilter)
+          .initDetailedPropertyFilter(DetailedPropertyFilter.ALWAYS_PROPAGATE)
+          .initSetterMethodCollector(new ProtectedSetterMethodCollector())
           ;
         return (E)replicator.copy(from, 
                                   UnEnhancer.unenhanceClass(targetEntityType));
         
     }
-    
-//    /** 
-//     * Returns the application member classes of the given class and the given class itself, 
-//     * including all their ancestor application classes, or an empty array in all other cases. 
-//     */
-//    Class[] getApplicationMemberClasses(Class c, SessionFactory sessionFactory) 
-//    {
-//        // Defensively dig out the pre CGLIB enhanced class, if any.
-//        c = unenhance(c);
-//        
-//        if (!isApplicationClass(c))
-//            return ArrayUtils.EMPTY_CLASS_ARRAY;
-//        Set<Class> set = new HashSet<Class>();
-//        // Add the given class itself to the set.
-//        // and all ancestor classes which are application classes.
-//        addClassWithAncestors(set, c);
-//        Method[] ma = c.getMethods();
-//        // find the return types of all getter methods
-//        for (int i = 0; i < ma.length; i++) {
-//            Method method = ma[i];
-//            String methodName = method.getName();
-//
-//            if (!methodName.startsWith("get")
-//            || !Modifier.isPublic(method.getModifiers()))
-//                continue;
-//            // Public getter method
-//            Class returnType = unenhance(method.getReturnType());
-//            
-//            if (isApplicationClass(returnType)) {
-//                addClassWithAncestors(set, returnType);
-//                ClassMetadata meta = sessionFactory.getClassMetadata(returnType);
-//                
-//                if (meta != null) {
-//                    Type idType = meta.getIdentifierType();
-//
-//                    if (idType != null) {
-//                        Class idClass = unenhance(idType.getReturnedClass());
-//                        
-//                        if (isApplicationClass(idClass)) {
-//                            if (log.isDebugEnabled())
-//                                log.debug("idType="+idType+", idClass="+idClass);
-//                            addClassWithAncestors(set, idClass);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        Class[] ret = set.toArray(ArrayUtils.EMPTY_CLASS_ARRAY);
-//        return ret;
-//    }
-//
-//    /**
-//     * Add to the given set the given class itself,
-//     * and all ancestor classes which are application classes.
-//     */
-//    private void addClassWithAncestors(Set<Class> set, Class c) {
-//        do {
-//            set.add(c);
-//            c = c.getSuperclass();
-//        } while (isApplicationClass(c));
-//    }
     
     /** Returns true iff c is a application class. */
     public boolean isApplicationClass(Class c) {
