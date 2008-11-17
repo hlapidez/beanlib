@@ -17,7 +17,7 @@ package net.sf.beanlib.spi;
 
 import java.lang.reflect.Method;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 /** 
  * Used to handle exception thrown during the population of a bean property.
@@ -31,7 +31,7 @@ public interface BeanPopulationExceptionHandler {
     public static final BeanPopulationExceptionHandler CONTINUE = new BeanPopulationExceptionHandlerAdapter() 
     {
         @Override
-        public void handleException(Throwable t, Log log) 
+        public void handleException(Throwable t, Logger log) 
         {
             log.warn("\n" 
                     + "propertyName=" + propertyName + "\n"
@@ -44,7 +44,7 @@ public interface BeanPopulationExceptionHandler {
     };
     
     /** Handles the exception thrown during the population of a bean property. */
-    public void handleException(Throwable t, Log log);
+    public void handleException(Throwable t, Logger log);
     /** Sets the name of the property being populated. */
     public BeanPopulationExceptionHandler initPropertyName(String propertyName);
     /** Sets the bean from which the property is populated from, ie the source bean. */

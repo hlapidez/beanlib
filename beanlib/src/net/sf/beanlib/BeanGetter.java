@@ -26,8 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * Bean Getter.
@@ -37,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
 public class BeanGetter {
 	/** Singleton instance. */
 //	private static final boolean debug = false;
-	private final Log log = LogFactory.getLog(this.getClass());
+	private final Logger log = Logger.getLogger(this.getClass());
 
 	/** Returns the string value of the given property of the specified java bean class. */
 	public final String getPropertyAsString(

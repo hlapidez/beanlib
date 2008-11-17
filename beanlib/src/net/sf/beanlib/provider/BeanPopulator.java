@@ -28,17 +28,16 @@ import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.PropertyInfo;
 import net.sf.beanlib.spi.BeanMethodCollector;
 import net.sf.beanlib.spi.BeanMethodFinder;
-import net.sf.beanlib.spi.PropertyFilter;
 import net.sf.beanlib.spi.BeanPopulationExceptionHandler;
 import net.sf.beanlib.spi.BeanPopulatorBaseConfig;
 import net.sf.beanlib.spi.BeanPopulatorSpi;
 import net.sf.beanlib.spi.BeanSourceHandler;
 import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.DetailedPropertyFilter;
+import net.sf.beanlib.spi.PropertyFilter;
 import net.sf.beanlib.spi.Transformable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * Default implementation of {@link BeanPopulatorSpi}.
@@ -122,7 +121,7 @@ public class BeanPopulator implements BeanPopulatorSpi
         }
     }
 
-    private final Log log = LogFactory.getLog(this.getClass());
+    private final Logger log = Logger.getLogger(this.getClass());
 
     private final Object fromBean;
     private final Object toBean;
