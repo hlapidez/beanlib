@@ -27,57 +27,51 @@ import net.sf.beanlib.CollectionPropertyName;
 import net.sf.beanlib.spi.PropertyFilter;
 
 /**
- * The default implemenation to determine if a Hibernate JavaBean property should be populated.
- * Each population decision can be vetoed by plugging in a custom {@link net.sf.beanlib.spi.PropertyFilter vetoer}.
+ * A default implementation used to determine if a Hibernate property 
+ * that follows the JavaBean getter/setter convention should be propagated.
+ * Each propagation decision can be controlled by specifying
+ * <ul>
+ * <li>The set of entity bean classes for matching properties that will be replicated;</li>
+ * <li>The set of collection and map properties that will be replicated;</li>
+ * <li>A {@link net.sf.beanlib.spi.PropertyFilter vetoer} used to veto the propagation of a property</li>
+ * </ul>
  *
  * @author Joe D. Velopar
  */
 public class HibernatePropertyFilter implements PropertyFilter 
 {
     /**
-     * The set of entity bean classes for matching properties that will be replicated.
+     * The set of entity bean classes for matching properties that will be replicated, 
+     * eagerly fetching if necessary.
      * Null means all whereas empty means none.
      */
     private Set<Class<?>> entityBeanClassSet;
-    
-    public Set<Class<?>> getEntityBeanClassSet() {
-        return entityBeanClassSet;
-    }
-
-    public HibernatePropertyFilter initEntityBeanClassSet(Set<Class<?>> entityBeanClassSet) {
-        this.entityBeanClassSet = entityBeanClassSet;
-        return this;
-    }
-
-    public Set<? extends CollectionPropertyName> getCollectionPropertyNameSet() {
-        return collectionPropertyNameSet;
-    }
-
-    public HibernatePropertyFilter initCollectionPropertyNameSet(
-            Set<? extends CollectionPropertyName> collectionPropertyNameSet) 
-    {
-        this.collectionPropertyNameSet = collectionPropertyNameSet;
-        return this;
-    }
-
-    public PropertyFilter getVetoer() {
-        return vetoer;
-    }
-
-    public HibernatePropertyFilter initVetoer(PropertyFilter vetoer) {
-        this.vetoer = vetoer;
-        return this;
-    }
 
     /**
-     * The set of collection and map properties that will be replicated.
+     * The set of collection and map properties that will be replicated, 
+     * eagerly fetching if necessary.
      * Null means all whereas empty means none.
      */
     private Set<? extends CollectionPropertyName> collectionPropertyNameSet;
     
-    /** Used to veto the propagation of a JavaBean property. */
+    /** Used to veto the propagation of a property. */
     private PropertyFilter vetoer;
     
+    /**
+     * Constructs with the specified options of controlling what to be replicated and what not.
+     * 
+     * @param entityBeanClassSet
+     * The set of entity bean classes for matching properties that will be replicated, 
+     * eagerly fetching if necessary.
+     * Null means all whereas empty means none.
+
+     * @param collectionPropertyNameSet
+     * The set of collection and map properties that will be replicated, 
+     * eagerly fetching if necessary.
+     * Null means all whereas empty means none.
+     * 
+     * @param vetoer used to veto the propagation of a JavaBean property.
+     */
     public HibernatePropertyFilter(Set<Class<?>> entityBeanClassSet, 
         Set<? extends CollectionPropertyName> collectionPropertyNameSet, PropertyFilter vetoer)
     {
@@ -86,7 +80,80 @@ public class HibernatePropertyFilter implements PropertyFilter
         this.vetoer = vetoer;
     }
     
+    /**
+     * Constructs with the default behavior of replicating all properties recursively.
+     */
     public HibernatePropertyFilter() {}
+    
+    /**
+     * Returns the configured set of entity bean classes for matching properties that will be replicated, 
+     * eagerly fetching if necessary;
+     * null if all entity bean classes are to be replicated; 
+     * or empty if no entity bean class is to be replicated.
+     */
+    public Set<Class<?>> getEntityBeanClassSet() {
+        return entityBeanClassSet;
+    }
+
+    /**
+     * Used to configure the set of entity bean classes for matching properties that will be replicated, 
+     * eagerly fetching if necessary.
+     * 
+     * @param entityBeanClassSet the set of entity bean classes for matching properties that will be replicated, 
+     * eagerly fetching if necessary.
+     * null if all entity bean classes are to be replicated; 
+     * or empty if no entity bean class is to be replicated.
+     * 
+     * @return the current instance for method chaining purposes.
+     */
+    public HibernatePropertyFilter initEntityBeanClassSet(Set<Class<?>> entityBeanClassSet) {
+        this.entityBeanClassSet = entityBeanClassSet;
+        return this;
+    }
+
+    /**
+     * Returns the configured set of collection and map properties that are to be replicated, 
+     * eagerly fetching if necessary;
+     * null if all collection and map properties are to be replicated; 
+     * or empty if no collection nor map properties are to be replicated.
+     */
+    public Set<? extends CollectionPropertyName> getCollectionPropertyNameSet() {
+        return collectionPropertyNameSet;
+    }
+
+    /**
+     * Used to configure the set of collection and map properties that will be replicated, eagerly fetching if necessary.
+     * 
+     * @param collectionPropertyNameSet set of collection and map properties that will be replicated, 
+     * eagerly fetching if necessary;
+     * null if all collection and map properties are to be replicated;
+     * or empty if no collection nor map properties are to be replicated.
+     * 
+     * @return the current instance for method chaining purposes.
+     */
+    public HibernatePropertyFilter initCollectionPropertyNameSet(
+            Set<? extends CollectionPropertyName> collectionPropertyNameSet) 
+    {
+        this.collectionPropertyNameSet = collectionPropertyNameSet;
+        return this;
+    }
+
+    /**
+     * Returns the vetoer configured for vetoing the propagation of a property.
+     */
+    public PropertyFilter getVetoer() {
+        return vetoer;
+    }
+
+    /**
+     * Used to configure a vetoer for vetoing the propagation of a property.
+     * 
+     * @return the current instance for method chaining purposes.
+     */
+    public HibernatePropertyFilter initVetoer(PropertyFilter vetoer) {
+        this.vetoer = vetoer;
+        return this;
+    }
     
     public boolean propagate(String propertyName, Method readerMethod) 
     {
@@ -111,7 +178,7 @@ public class HibernatePropertyFilter implements PropertyFilter
         }
         else {
             // Only a subset of entity bean to be populated.
-            Class returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
+            Class<?> returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
             
             if (immutable(returnType))
             {
@@ -139,7 +206,7 @@ public class HibernatePropertyFilter implements PropertyFilter
             else {
                 // An entity bean.
                 goAhead = entityBeanClassSet.contains(returnType);
-                Class superClass = returnType;
+                Class<?> superClass = returnType;
                 
                 for (;;) {
                     if (goAhead)
@@ -157,8 +224,4 @@ public class HibernatePropertyFilter implements PropertyFilter
             return vetoer == null ? true : vetoer.propagate(propertyName, readerMethod);
         return false;
     }
-//    /** Returns the given array as a set. */
-//    private Set toSet(Object[] array) {
-//        return array == null ? null : new HashSet(Arrays.asList(array));
-//    }
 }
