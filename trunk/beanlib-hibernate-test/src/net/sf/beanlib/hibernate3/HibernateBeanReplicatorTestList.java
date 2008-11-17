@@ -27,15 +27,14 @@ import java.util.Set;
 import junit.framework.JUnit4TestAdapter;
 import net.sf.beanlib.CollectionPropertyName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 /**
  * @author Joe D. Velopar
  */
 public class HibernateBeanReplicatorTestList {
-	private Log log = LogFactory.getLog(this.getClass());
+	private Logger log = Logger.getLogger(this.getClass());
     
 	@Test public void testDeepCopyList() {
 		FooWithList fooList = new FooWithList();

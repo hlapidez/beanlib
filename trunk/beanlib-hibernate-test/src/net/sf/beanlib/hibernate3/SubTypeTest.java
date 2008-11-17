@@ -24,15 +24,14 @@ import java.util.List;
 import junit.framework.JUnit4TestAdapter;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 /**
  * @author Joe D. Velopar
  */
 public class SubTypeTest {
-	Log log = LogFactory.getLog(this.getClass());
+	Logger log = Logger.getLogger(this.getClass());
 	public static abstract class A{};
 	public static class B extends A{};
 	public static class C extends A{};

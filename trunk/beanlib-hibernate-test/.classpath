@@ -4,9 +4,9 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/beanlib"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/beanlib-test"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/beanlib-hibernate"/>
-	<classpathentry kind="lib" path="/beanlib/lib/commons/commons-logging.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM 1.5"/>
 	<classpathentry kind="lib" path="/beanlib-test/lib/junit/hamcrest-all-1.1.jar"/>
 	<classpathentry kind="lib" path="/beanlib-test/lib/junit/junit-4.4.jar"/>
+	<classpathentry kind="lib" path="/beanlib/lib/log4j-1.2.14.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
