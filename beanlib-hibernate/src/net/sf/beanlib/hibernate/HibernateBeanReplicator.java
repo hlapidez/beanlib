@@ -54,7 +54,7 @@ import net.sf.beanlib.spi.PropertyFilter;
  * <li>All the configurable options of {@link BeanPopulatorBaseSpi} are available, as
  * the replication of JavaBean properties inevitably involves bean population.</li>
  * <p>
- * <li>If the default property filter {@link HibernatePropertyFilter} is used:
+ * <li>If the default property filter {@link HibernatePropertyFilter} is used,
  * <ul>
  *   <li>The set of entity bean classes for matching properties that will be replicated;</li>
  *   <li>The set of collection and map properties that will be replicated;</li>

@@ -77,7 +77,7 @@ public class Hibernate3BeanReplicator extends HibernateBeanReplicator
      * <li>The set of collection and map properties that will be replicated;</li>
      * <li>A {@link PropertyFilter vetoer} used to veto the propagation of specific properties</li>
      * </ol>
-     * <>p>
+     * <p>
      * Note this constructor is relevant only if the default property filter {@link HibernatePropertyFilter} is used.
 	 * @param entityBeanClassSet
      * The set of entity bean classes for matching properties that will be replicated, 
