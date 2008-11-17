@@ -106,7 +106,7 @@ public class HibernatePropertyFilter implements PropertyFilter
      * 
      * @return the current instance for method chaining purposes.
      */
-    public HibernatePropertyFilter initEntityBeanClassSet(Set<Class<?>> entityBeanClassSet) {
+    public HibernatePropertyFilter withEntityBeanClassSet(Set<Class<?>> entityBeanClassSet) {
         this.entityBeanClassSet = entityBeanClassSet;
         return this;
     }
@@ -131,7 +131,7 @@ public class HibernatePropertyFilter implements PropertyFilter
      * 
      * @return the current instance for method chaining purposes.
      */
-    public HibernatePropertyFilter initCollectionPropertyNameSet(
+    public HibernatePropertyFilter withCollectionPropertyNameSet(
             Set<? extends CollectionPropertyName> collectionPropertyNameSet) 
     {
         this.collectionPropertyNameSet = collectionPropertyNameSet;
@@ -150,7 +150,7 @@ public class HibernatePropertyFilter implements PropertyFilter
      * 
      * @return the current instance for method chaining purposes.
      */
-    public HibernatePropertyFilter initVetoer(PropertyFilter vetoer) {
+    public HibernatePropertyFilter withVetoer(PropertyFilter vetoer) {
         this.vetoer = vetoer;
         return this;
     }

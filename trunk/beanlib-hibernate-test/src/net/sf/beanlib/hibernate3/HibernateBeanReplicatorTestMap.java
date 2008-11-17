@@ -86,9 +86,9 @@ public class HibernateBeanReplicatorTestMap
             assertEquals(toMap.size(), 2);
         }
         {
-            FooWithMap toFooWithMap = new Hibernate3BeanReplicator()
-                                                    .initCollectionPropertyNameSet(null)
-                                                    .copy(fooMap)
+            Hibernate3BeanReplicator r = new Hibernate3BeanReplicator();
+            r.getHibernatePropertyFilter().withCollectionPropertyNameSet(null);
+            FooWithMap toFooWithMap = r.copy(fooMap)
                                                     ;
             Map toMap = toFooWithMap.getMap();
             toMap.size();
@@ -96,22 +96,20 @@ public class HibernateBeanReplicatorTestMap
             assertEquals(toMap.size(), 2);
         }
         {
-            FooWithMap toFooWithMap = new Hibernate3BeanReplicator()
-                                        .initCollectionPropertyNameSet(Collections.EMPTY_SET)
-                                        .copy(fooMap)
-                                        ;
+            Hibernate3BeanReplicator r = new Hibernate3BeanReplicator();
+            r.getHibernatePropertyFilter().withCollectionPropertyNameSet(Collections.EMPTY_SET);
+            FooWithMap toFooWithMap = r.copy(fooMap);
             Map toMap = toFooWithMap.getMap();
             assertNull(toMap);
         }
         {
-            FooWithMap toFooWithMap = new Hibernate3BeanReplicator()
-                                        .initVetoer(new PropertyFilter() {
+            Hibernate3BeanReplicator r = new Hibernate3BeanReplicator();
+            r.getHibernatePropertyFilter().withVetoer(new PropertyFilter() {
                                             public boolean propagate(String propertyName, Method readerMethod) {
                                                 return !"map".equals(propertyName);
                                             }
-                                        })
-                                        .copy(fooMap)
-                                        ;
+                                        });
+            FooWithMap toFooWithMap = r.copy(fooMap);
             Map toMap = toFooWithMap.getMap();
             assertNull(toMap);
         }
