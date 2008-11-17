@@ -24,8 +24,7 @@ import java.sql.SQLException;
 import net.sf.beanlib.BeanlibException;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * Blob Utilities.
@@ -33,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Joe D. Velopar
  */
 public class BlobUtils {
-	private Log log = LogFactory.getLog(this.getClass());
+	private Logger log = Logger.getLogger(this.getClass());
 	
 	public byte[] toByteArray(Blob fromBlob) {
 		return toByteArray(fromBlob, 4000);

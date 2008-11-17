@@ -22,7 +22,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 /**
  * Bean Debugger.
@@ -35,7 +35,7 @@ public class BeanDebugger {
 //	private final Log log = LogFactory.getLog(this.getClass());
 
     /** Logs at debug level all readable properties of the given bean. */
-	public void debugBeanProperties(Object bean, Log log) {
+	public void debugBeanProperties(Object bean, Logger log) {
         if (log.isDebugEnabled())
             log.debug("Reading bean properties for class " + bean.getClass());
 		try {

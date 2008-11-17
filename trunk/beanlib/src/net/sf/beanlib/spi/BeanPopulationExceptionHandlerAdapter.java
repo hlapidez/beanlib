@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 
 import net.sf.beanlib.BeanlibException;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 /**
  * Adapter class for {@link BeanPopulationExceptionHandler}.
@@ -34,7 +34,7 @@ public class BeanPopulationExceptionHandlerAdapter implements BeanPopulationExce
     protected Object toBean;
     protected Method setterMethod;
 
-    public void handleException(Throwable t, Log log)
+    public void handleException(Throwable t, Logger log)
     {
         log.error("\n" 
                 + "propertyName=" + propertyName + "\n"
