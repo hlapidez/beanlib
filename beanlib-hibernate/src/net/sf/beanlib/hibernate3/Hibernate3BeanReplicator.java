@@ -15,11 +15,15 @@
  */
 package net.sf.beanlib.hibernate3;
 
+import java.util.Set;
+
 import net.jcip.annotations.NotThreadSafe;
+import net.sf.beanlib.CollectionPropertyName;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 import net.sf.beanlib.hibernate.HibernatePropertyFilter;
 import net.sf.beanlib.spi.BeanPopulatorBaseSpi;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
+import net.sf.beanlib.spi.PropertyFilter;
 
 /**
  * Hibernate 3 Bean Replicator.
@@ -65,4 +69,37 @@ public class Hibernate3BeanReplicator extends HibernateBeanReplicator
 		super(new Hibernate3BeanTransformer()
 		        .initPropertyFilter(new HibernatePropertyFilter()));
 	}
+	
+    /**
+     * Convenient constructor to specify:
+     * <ol>
+     * <li>The set of entity bean classes for matching properties that will be replicated;</li>
+     * <li>The set of collection and map properties that will be replicated;</li>
+     * <li>A {@link PropertyFilter vetoer} used to veto the propagation of specific properties</li>
+     * </ol>
+     * <>p>
+     * Note this constructor is relevant only if the default property filter {@link HibernatePropertyFilter} is used.
+	 * @param entityBeanClassSet
+     * The set of entity bean classes for matching properties that will be replicated, 
+     * eagerly fetching if necessary.
+     * Null means all whereas empty means none.
+     * 
+     * @param collectionPropertyNameSet
+     * The set of collection and map properties that will be replicated, 
+     * eagerly fetching if necessary.
+     * Null means all whereas empty means none.
+     * 
+     * @param vetoer used to veto the propagation of specific properties.
+	 */
+    public Hibernate3BeanReplicator(
+            Set<Class<?>> entityBeanClassSet, 
+            Set<? extends CollectionPropertyName> collectionPropertyNameSet, PropertyFilter vetoer) 
+    {
+        super(new Hibernate3BeanTransformer()
+              .initPropertyFilter(
+                    new HibernatePropertyFilter()
+                    .withEntityBeanClassSet(entityBeanClassSet)
+                    .withCollectionPropertyNameSet(collectionPropertyNameSet)
+                    .withVetoer(vetoer)));
+    }
 }

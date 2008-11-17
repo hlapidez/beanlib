@@ -27,8 +27,8 @@ import net.sf.beanlib.CollectionPropertyName;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 import net.sf.beanlib.hibernate.UnEnhancer;
 import net.sf.beanlib.provider.collector.ProtectedSetterMethodCollector;
-import net.sf.beanlib.spi.PropertyFilter;
 import net.sf.beanlib.spi.DetailedPropertyFilter;
+import net.sf.beanlib.spi.PropertyFilter;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -40,24 +40,6 @@ import org.apache.commons.lang.ArrayUtils;
  */
 public class Hibernate3DtoCopier
 {
-//    /**
-//     * Factory for {@link Hibernate3DtoCopier}.
-//     * 
-//     * @author Joe D. Velopar
-//     */
-//    public static class Factory 
-//    {
-//        public static Hibernate3DtoCopier getInstance(
-//                String applicationPackagePrefix, Class<?> applicationSampleClass) 
-//        {
-//            return new Hibernate3DtoCopier().init(applicationPackagePrefix, applicationSampleClass);
-//        }
-//
-//        public static Hibernate3DtoCopier getInstance(String applicationPackagePrefix) {
-//            return new Hibernate3DtoCopier().init(applicationPackagePrefix, null);
-//        }
-//    }
-////    private static final Logger log = Logger.getLogger(Hibernate3DtoCopier.class);
     private final String applicationPackagePrefix; 
 
     /** Must be constructed only via the factory. */
@@ -86,23 +68,6 @@ public class Hibernate3DtoCopier
     protected Hibernate3BeanReplicator createHibernateBeanReplicator() {
         return new Hibernate3BeanReplicator();
     }
-//    /** 
-//     * Used to specify the application package prefix, with a sample application class for verification purposes. 
-//     */
-//    protected Hibernate3DtoCopier init(String applicationPackagePrefix, Class<?> applicationSampleClass) {
-//        this.applicationPackagePrefix = applicationPackagePrefix;
-//        
-//        if (applicationSampleClass != null) {
-//            String thisPackageName = org.apache.commons.lang.ClassUtils.getPackageName(applicationSampleClass);
-//                    
-//            if (!thisPackageName.startsWith(applicationPackagePrefix)) {
-//                throw new IllegalStateException(
-//                    "The specified application package prefix " + applicationPackagePrefix 
-//                    + " is not consistent with the given sample application class " + applicationSampleClass);
-//            }
-//        }
-//        return this;
-//    }
     
     /** Returns a DTO by deep cloning the given Hibernate bean. */
     public <T> T hibernate2dtoFully(Object entityBean) {
