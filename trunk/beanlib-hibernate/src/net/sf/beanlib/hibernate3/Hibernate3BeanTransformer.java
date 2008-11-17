@@ -51,6 +51,11 @@ public class Hibernate3BeanTransformer extends BeanTransformer
                 Hibernate3JavaBeanReplicator.getFactory());
     }
     
+    /**
+     * Creates a target instance from either the class of the given "from" object or the given toClass, 
+     * giving priority to the one which is more specific whenever possible.  Note the class of the given 
+     * from object is un-enhanced if it is found to be an enhanced object either via cglib or javassist.
+     */
     @Override
     protected <T> T createToInstance(Object from, Class<T> toClass)
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
@@ -60,7 +65,15 @@ public class Hibernate3BeanTransformer extends BeanTransformer
         Class<T> targetClass = chooseClass(actualClass, toClass);
         return newInstanceAsPrivileged(targetClass);
     }
-
+    
+    /**
+     * Replicate the given from object, recursively if necessary.
+     * 
+     * 
+     * Currently a property is replicated if it is an instance
+     * of Collection, Map, Timestamp, Date, Blob, Hibernate entity, 
+     * JavaBean, or an array.
+     */
     @Override
     protected Object replicate(Object from)
     {

@@ -27,26 +27,57 @@ import net.sf.beanlib.spi.BeanMethodFinder;
 import net.sf.beanlib.spi.BeanPopulationExceptionHandler;
 import net.sf.beanlib.spi.BeanPopulatorBaseConfig;
 import net.sf.beanlib.spi.BeanPopulatorBaseSpi;
-import net.sf.beanlib.spi.PropertyFilter;
 import net.sf.beanlib.spi.BeanSourceHandler;
 import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.ChainedCustomBeanTransformer;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 import net.sf.beanlib.spi.DetailedPropertyFilter;
+import net.sf.beanlib.spi.PropertyFilter;
 
 /**
- * Hibernate Bean Replicator.  
+ * Hibernate Bean Replicator.
+ * <p> 
+ * This class can be used to conveniently replicate Hibernate objects 
+ * that follow the JavaBean getter/setter convention.
+ *   
+ * The replication is typically recursive in that 
+ * the whole object graph of the input object is replicated into an equivalent output object graph, 
+ * resolving circular references, and eager fetching proxied instances as necessary.
+ * 
+ * However, the exact behavior of the replication process including<ul>
+ * <li>to what extent the input object graph should be traversed and/or replicated; and </li>
+ * <li>whether proxied instances should be eagerly fetched or not</li>
+ * </ul> 
+ * can be controlled and/or supplemented by the client code via various options:
+ * <p>
+ * <ol>
+ * <li>All the configurable options of {@link BeanPopulatorBaseSpi} are available, as
+ * the replication of JavaBean properties inevitably involves bean population.</li>
+ * <p>
+ * <li>The set of entity bean classes for matching properties that will be replicated;</li>
+ * <p>
+ * <li>The set of collection and map properties that will be replicated;</li>
+ * <p>
+ * <li>A {@link net.sf.beanlib.spi.PropertyFilter vetoer} used to veto the propagation of a property</li>
+ * <p>
+ * <li>For anything else that the existing implementation fails to transform, client can provide
+ * one or multiple custom transformer factories via  
+ * {@link #initCustomTransformerFactory(net.sf.beanlib.spi.CustomBeanTransformerSpi.Factory...)}.
+ * </li>
+ * </ol>
+ * <p>
  * This was originally the base class for both the Hibernate 2.x and Hibernate 3.x
  * replicators, but now Hibernate 2 is no longer supported.
+ * 
+ * @see CustomBeanTransformerSpi
  * 
  * @see net.sf.beanlib.hibernate3.Hibernate3BeanReplicator 
  *  
  * @author Joe D. Velopar
  */
 @NotThreadSafe
-public class HibernateBeanReplicator implements BeanPopulatorBaseSpi 
+public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi 
 {
-//    private final Log log = LogFactory.getLog(this.getClass());
-    
     /** Used to do the heavy lifting of Hibernate object transformation and replication. */
     private final BeanTransformerSpi hibernateBeanTransformer;
 
@@ -55,7 +86,7 @@ public class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * {@link net.sf.beanlib.hibernate3.Hibernate3BeanReplicator Hibernate3BeanReplicator}
      * directly instead of this ?
      */
-    public HibernateBeanReplicator(BeanTransformerSpi hibernateBeanTransformer) 
+    protected HibernateBeanReplicator(BeanTransformerSpi hibernateBeanTransformer) 
     {
         if (hibernateBeanTransformer == null)
             throw new IllegalArgumentException("Argument hibernateBeanTransformer must not be null");
@@ -231,10 +262,23 @@ public class HibernateBeanReplicator implements BeanPopulatorBaseSpi
     }
 
     /** 
-     * Initializes with a custom transformer factory.
+     * Initializes with one or more custom bean transformer factories 
+     * that will be chained together.
+     * 
+     * @see ChainedCustomBeanTransformer
      */
-    public final HibernateBeanReplicator initCustomTransformerFactory(CustomBeanTransformerSpi.Factory customTransformerFactory) {
-        this.hibernateBeanTransformer.initCustomTransformerFactory(customTransformerFactory);
+    public final HibernateBeanReplicator initCustomTransformerFactory(
+            CustomBeanTransformerSpi.Factory ...customBeanTransformerFactories) 
+    {
+        if (customBeanTransformerFactories != null && customBeanTransformerFactories.length > 0) 
+        {
+            hibernateBeanTransformer.initCustomTransformerFactory(customBeanTransformerFactories.length == 1
+                            ? customBeanTransformerFactories[0]
+                            : new ChainedCustomBeanTransformer.Factory(customBeanTransformerFactories))
+                            ;
+        }
+        else
+            hibernateBeanTransformer.initCustomTransformerFactory(null);
         return this;
     }
 
