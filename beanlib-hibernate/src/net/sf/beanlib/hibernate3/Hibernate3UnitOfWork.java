@@ -15,8 +15,7 @@
  */
 package net.sf.beanlib.hibernate3;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -31,7 +30,7 @@ import org.hibernate.Transaction;
  * @author Joe D. Velopar
  */
 public abstract class Hibernate3UnitOfWork {
-	private static final Log logger = LogFactory.getLog(Hibernate3UnitOfWork.class);
+	private static final Logger logger = Logger.getLogger(Hibernate3UnitOfWork.class);
 
 	protected final Session session;
 	
