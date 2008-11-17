@@ -63,8 +63,7 @@ public class Hibernate3DtoCopierTest
         child.setParent(parent);
         parent.setFoo(child);
         
-        Hibernate3DtoCopier copier =
-            Hibernate3DtoCopier.Factory.getInstance("net.sf.beanlib", this.getClass());
+        Hibernate3DtoCopier copier = new Hibernate3DtoCopier("net.sf.beanlib", this.getClass());
         Child childCopy = copier.hibernate2dto(child);
         
         assertNotSame(childCopy, child);
