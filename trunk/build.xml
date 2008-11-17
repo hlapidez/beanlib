@@ -3,7 +3,7 @@
 <project name="beanlib" default="call">
 
   <property name="target" value="full"/>
-  <property name="version" value="3.3.0beta21"/>
+  <property name="version" value="5.0.0beta"/>
   <property name="published.javadoc.dir" value="${version}/api"/>
   <property name="published.cobertura.dir" value="${version}/cobertura"/>
 
@@ -62,7 +62,6 @@
         </classpath>
         <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
         <link href="http://www.hibernate.org/hib_docs/v3/api/"/>
-        <link href="http://jakarta.apache.org/commons/logging/apidocs/"/>
         <link href="http://jakarta.apache.org/commons/lang/api/"/>
         <link href="http://xstream.codehaus.org/javadoc/"/>
         <link href="http://cglib.sourceforge.net/apidocs/" />
