@@ -40,37 +40,36 @@ import org.apache.commons.lang.ArrayUtils;
  */
 public class Hibernate3DtoCopier
 {
-    /**
-     * Factory for {@link Hibernate3DtoCopier}.
-     * 
-     * @author Joe D. Velopar
-     */
-    public static class Factory 
-    {
-        public static Hibernate3DtoCopier getInstance(
-                String applicationPackagePrefix, Class<?> applicationSampleClass) 
-        {
-            return new Hibernate3DtoCopier().init(applicationPackagePrefix, applicationSampleClass);
-        }
-
-        public static Hibernate3DtoCopier getInstance(String applicationPackagePrefix) {
-            return new Hibernate3DtoCopier().init(applicationPackagePrefix, null);
-        }
-    }
-//    private static final Logger log = Logger.getLogger(Hibernate3DtoCopier.class);
-    private String applicationPackagePrefix = "#";  // By default no application package is specified. 
+//    /**
+//     * Factory for {@link Hibernate3DtoCopier}.
+//     * 
+//     * @author Joe D. Velopar
+//     */
+//    public static class Factory 
+//    {
+//        public static Hibernate3DtoCopier getInstance(
+//                String applicationPackagePrefix, Class<?> applicationSampleClass) 
+//        {
+//            return new Hibernate3DtoCopier().init(applicationPackagePrefix, applicationSampleClass);
+//        }
+//
+//        public static Hibernate3DtoCopier getInstance(String applicationPackagePrefix) {
+//            return new Hibernate3DtoCopier().init(applicationPackagePrefix, null);
+//        }
+//    }
+////    private static final Logger log = Logger.getLogger(Hibernate3DtoCopier.class);
+    private final String applicationPackagePrefix; 
 
     /** Must be constructed only via the factory. */
-	private Hibernate3DtoCopier() {
+	public Hibernate3DtoCopier() {
+	    this.applicationPackagePrefix = "#";    // By default no application package is specified.
 	}
-
-    protected Hibernate3BeanReplicator createHibernateBeanReplicator() {
-        return new Hibernate3BeanReplicator();
-    }
-    /** 
-     * Used to specify the application package prefix, with a sample application class for verification purposes. 
-     */
-    protected Hibernate3DtoCopier init(String applicationPackagePrefix, Class<?> applicationSampleClass) {
+	
+	public Hibernate3DtoCopier(String applicationPackagePrefix) {
+	    this.applicationPackagePrefix = applicationPackagePrefix;
+	}
+	
+    public Hibernate3DtoCopier(String applicationPackagePrefix, Class<?> applicationSampleClass) {
         this.applicationPackagePrefix = applicationPackagePrefix;
         
         if (applicationSampleClass != null) {
@@ -82,8 +81,28 @@ public class Hibernate3DtoCopier
                     + " is not consistent with the given sample application class " + applicationSampleClass);
             }
         }
-        return this;
     }
+    
+    protected Hibernate3BeanReplicator createHibernateBeanReplicator() {
+        return new Hibernate3BeanReplicator();
+    }
+//    /** 
+//     * Used to specify the application package prefix, with a sample application class for verification purposes. 
+//     */
+//    protected Hibernate3DtoCopier init(String applicationPackagePrefix, Class<?> applicationSampleClass) {
+//        this.applicationPackagePrefix = applicationPackagePrefix;
+//        
+//        if (applicationSampleClass != null) {
+//            String thisPackageName = org.apache.commons.lang.ClassUtils.getPackageName(applicationSampleClass);
+//                    
+//            if (!thisPackageName.startsWith(applicationPackagePrefix)) {
+//                throw new IllegalStateException(
+//                    "The specified application package prefix " + applicationPackagePrefix 
+//                    + " is not consistent with the given sample application class " + applicationSampleClass);
+//            }
+//        }
+//        return this;
+//    }
     
     /** Returns a DTO by deep cloning the given Hibernate bean. */
     public <T> T hibernate2dtoFully(Object entityBean) {
@@ -150,7 +169,7 @@ public class Hibernate3DtoCopier
      * Returns a list of DTO's by cloning portion of the object graph of the given collection of Hibernate beans. 
      * @param hibernateBeans given collection of Hibernate Beans.
      */
-    public List<?> hibernate2dto(Collection<?> hibernateBeans /*, SessionFactory sessionFactory */) 
+    public List<?> hibernate2dto(Collection<?> hibernateBeans) 
     {
         if (hibernateBeans == null)
             return null;
@@ -182,8 +201,8 @@ public class Hibernate3DtoCopier
         return list;
     }
     
-    /** Copy with an application specific PropertyFilter excluding all member Set properties. */
-    private Object copy(Object from, Class<?>[] entityBeanClassArray ) 
+    /** Returns a DTO by cloning the object graph excluding all collection and map properties. */
+    private Object copy(Object from, Class<?>[] entityBeanClassArray) 
     {
         if (from == null)
             return null;
@@ -239,8 +258,8 @@ public class Hibernate3DtoCopier
         
     }
     
-    /** Returns true iff c is a application class. */
-    public boolean isApplicationClass(Class c) {
+    /** Returns true iff c is an application class. */
+    public boolean isApplicationClass(Class<?> c) {
         if (c == null)
             return false;
         String pn = org.apache.commons.lang.ClassUtils.getPackageName(c);

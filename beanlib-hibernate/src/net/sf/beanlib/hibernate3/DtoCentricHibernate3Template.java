@@ -65,7 +65,7 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
         if (applicationPackagePrefix == null)
             throw new NullPointerException(
                     "Application package prefix must be initialized via the init method after DtoCentricHibernate3Template is constructed.");
-        return Hibernate3DtoCopier.Factory.getInstance(applicationPackagePrefix, applicationSampleClass);
+        return new Hibernate3DtoCopier(applicationPackagePrefix, applicationSampleClass);
     }
     
     //-------------------------------------------------------------------------
