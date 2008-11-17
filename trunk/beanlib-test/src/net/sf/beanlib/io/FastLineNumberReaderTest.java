@@ -25,8 +25,7 @@ import java.io.StringWriter;
 import junit.framework.JUnit4TestAdapter;
 import net.sf.beanlib.utils.StringUtils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 /**
@@ -34,7 +33,7 @@ import org.junit.Test;
  */
 public class FastLineNumberReaderTest 
 {
-    private static final Log log = LogFactory.getLog(FastLineNumberReaderTest.class);
+    private static final Logger log = Logger.getLogger(FastLineNumberReaderTest.class);
     private static final String LINE_1 = "Line one.";
     private static final String LINE_2 = "Line two.";
 
