@@ -52,6 +52,13 @@ public abstract class ReplicatorTemplate
         this.beanTransformer = (BeanTransformerSpi)this;
     }
     
+    /**
+     * Replicate the given from object, recursively if necessary.
+     * 
+     * Currently a property is replicated if it is an instance
+     * of Collection, Map, Timestamp, Date, Blob, Hibernate entity, 
+     * JavaBean, or an array.
+     */
     protected Object replicate(Object from)
     {
         if (from == null)
@@ -62,9 +69,12 @@ public abstract class ReplicatorTemplate
             throw new BeanlibException(e);
         }
     }
+    
     /**
-     * Recursively replicate, if necessary, the given objects.
-     * Currently an object is replicated if it is an instance
+     * Replicate the given from object, recursively if necessary, 
+     * to an instance of the toClass.
+     * 
+     * Currently a property is replicated if it is an instance
      * of Collection, Map, Timestamp, Date, Blob, Hibernate entity, 
      * JavaBean, or an array.
      */
@@ -115,30 +125,20 @@ public abstract class ReplicatorTemplate
         return beanTransformer.getBeanReplicatable()
                               .replicateBean(from, toClass);
     }
-    
-//    /** 
-//     * Creates a non cglib enhanced instance of the given object.
-//     */
+
+    /**
+     * Creates a target instance using the class of the given object.
+     */
     protected final Object createToInstance(Object from) 
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
     {
         return createToInstance(from, from.getClass());
     }
     
-//    /** 
-//     * Creates a non cglib enhanced instance of the given class, which could itself be the class of a cglib enhanced object.
-//     */
-//    @SuppressWarnings("unchecked")
-//    protected <T> T createToInstance(Class<T> toClass) 
-//        throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
-//    {
-//        //      if (Enhancer.isEnhanced(toClass)) {
-//        //      // figure out the pre-enhanced class
-//        //      toClass = (Class<T>)toClass.getSuperclass();
-//        //  }
-//        return newInstanceAsPrivileged(toClass);
-//    }
-    
+    /**
+     * Creates a target instance from either the class of the given "from" object or the given toClass, 
+     * giving priority to the one which is more specific whenever possible.
+     */
     @SuppressWarnings("unchecked")
     protected <T> T createToInstance(Object from, Class<T> toClass)
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
@@ -179,22 +179,15 @@ public abstract class ReplicatorTemplate
                        .populate();
     }
     
-    
-    protected Object createToInstanceWithComparator(Object from, Comparator comparator)
+    protected Object createToInstanceWithComparator(Object from, Comparator<?> comparator)
         throws SecurityException, NoSuchMethodException
     {
         return createToInstanceWithComparator(from.getClass(), comparator);
     }
 
-    private <T> T createToInstanceWithComparator(Class<T> toClass, Comparator comparator) 
+    private <T> T createToInstanceWithComparator(Class<T> toClass, Comparator<?> comparator) 
         throws SecurityException, NoSuchMethodException
     {
-//        Class toClass = fromClass;
-        
-//        if (Enhancer.isEnhanced(toClass)) {
-//            // figure out the pre-enhanced class
-//            toClass = toClass.getSuperclass();
-//        }
         return newInstanceWithComparatorAsPrivileged(toClass, comparator);
     }
 
@@ -209,7 +202,7 @@ public abstract class ReplicatorTemplate
     protected final <T> T newInstanceAsPrivileged(Class<T> c) 
         throws SecurityException, NoSuchMethodException, InstantiationException, IllegalAccessException
     {
-        final Constructor constructor = c.getDeclaredConstructor();
+        final Constructor<?> constructor = c.getDeclaredConstructor();
         
         if (Modifier.isPublic(constructor.getModifiers()))
             return c.newInstance();
@@ -230,10 +223,10 @@ public abstract class ReplicatorTemplate
         }));
     }
 
-    private <T> T newInstanceWithComparatorAsPrivileged(Class<T> c, final Comparator comparator) 
+    private <T> T newInstanceWithComparatorAsPrivileged(Class<T> c, final Comparator<?> comparator) 
         throws SecurityException, NoSuchMethodException
     {
-        final Constructor constructor = c.getDeclaredConstructor(Comparator.class);
+        final Constructor<?> constructor = c.getDeclaredConstructor(Comparator.class);
         
         if (Modifier.isPublic(constructor.getModifiers())) {
             try {
