@@ -45,14 +45,15 @@ import net.sf.beanlib.spi.PropertyFilter;
  * <li>All the configurable options of {@link BeanPopulatorBaseSpi} are available, as
  * the replication of JavaBean properties inevitably involves bean population.</li>
  * <p>
- * <li>An application package prefix used to determine if a property 
- * with a type of an entity bean class will be included for replication;</li>
+ * <li>Specifying an application package prefix: 
+ * property with a type of an entity bean class with package name that matchs the prefix will be replicated;</li>
  * <p>
- * <li>The set of entity bean classes for matching properties that will be replicated;</li>
+ * <li>Specifying a set of entity bean classes: property with a type of an entity bean class 
+ * that is part of the set will be replicated;</li>
  * <p>
- * <li>The set of collection and map properties that will be replicated;</li>
+ * <li>Specifying a set of collection and map properties that will be replicated;</li>
  * <p>
- * <li>A {@link net.sf.beanlib.spi.PropertyFilter vetoer} used to veto the propagation of a property</li>
+ * <li>Specifying a {@link net.sf.beanlib.spi.PropertyFilter vetoer} used to veto the propagation of a property</li>
  * <p>
  * <li>For anything else that the existing implementation fails to transform, client can provide
  * one or multiple custom transformer factories via  
