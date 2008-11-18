@@ -36,6 +36,8 @@ import net.sf.beanlib.spi.PropertyFilter;
  * @author Joe D. Velopar
  */
 class Hibernate3DtoPropertyFilter implements PropertyFilter {
+    private final String applicationPackagePrefix; 
+    
     // the minimal set of entity bean to be populated; 
     // or null if all entity bean are to be populated.
     private final Set<Class<?>> entityBeanClassSet;
@@ -43,31 +45,24 @@ class Hibernate3DtoPropertyFilter implements PropertyFilter {
     // or null if all set fields are to be populated.
     private final Set<CollectionPropertyName> collectionPropertyNameSet;
     
-    private Hibernate3DtoCopier applicationBeanCopier;
-    
-    Hibernate3DtoPropertyFilter(
+    Hibernate3DtoPropertyFilter(String applicationPackagePrefix,
             Set<Class<?>> entityBeanClassSet, 
             Set<CollectionPropertyName> collectionPropertyNameSet)
     {
+        this.applicationPackagePrefix = applicationPackagePrefix;
         this.entityBeanClassSet = entityBeanClassSet;
         this.collectionPropertyNameSet = collectionPropertyNameSet;
     }
 
-    Hibernate3DtoPropertyFilter(Set<CollectionPropertyName> collectionPropertyNameSet)
+    Hibernate3DtoPropertyFilter(String applicationPackagePrefix, Set<CollectionPropertyName> collectionPropertyNameSet)
     {
+        this.applicationPackagePrefix = applicationPackagePrefix;
         this.entityBeanClassSet = Collections.emptySet();
         this.collectionPropertyNameSet = collectionPropertyNameSet;
     }
     
-    Hibernate3DtoPropertyFilter() {
-        this(null, null);
-    }
-
-    // TODO: assert this must be invoked after construction
-    Hibernate3DtoPropertyFilter init(Hibernate3DtoCopier applicationBeanCopier) 
-    {
-        this.applicationBeanCopier = applicationBeanCopier;
-        return this;
+    Hibernate3DtoPropertyFilter(String applicationPackagePrefix) {
+        this(applicationPackagePrefix, null, null);
     }
     
     /**
@@ -108,7 +103,7 @@ class Hibernate3DtoPropertyFilter implements PropertyFilter {
         }
         // An entity bean.
         boolean goAhead = entityBeanClassSet.contains(returnType) 
-                       || applicationBeanCopier.isApplicationClass(returnType);
+                       || isApplicationClass(returnType);
         Class<?> superClass = returnType;
         
         for (;;) {
@@ -120,7 +115,7 @@ class Hibernate3DtoPropertyFilter implements PropertyFilter {
             if (superClass == null)
                 break;        // not specified in entityBeanClassSet
             goAhead = entityBeanClassSet.contains(superClass) 
-                   || applicationBeanCopier.isApplicationClass(superClass);
+                   || isApplicationClass(superClass);
         }
         return goAhead;
     }
@@ -146,5 +141,14 @@ class Hibernate3DtoPropertyFilter implements PropertyFilter {
         }
         // Not a Collection/Map property.
         return true;
+    }
+    
+    /** Returns true iff c is an application class. */
+    public boolean isApplicationClass(Class<?> c) {
+        if (c == null)
+            return false;
+        String pn = org.apache.commons.lang.ClassUtils.getPackageName(c);
+        // TODO: can pn ever be null ?
+        return pn.startsWith(applicationPackagePrefix);
     }
 }
