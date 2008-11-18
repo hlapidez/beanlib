@@ -54,7 +54,7 @@ import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
  * Default implementation of {@link BeanTransformerSpi}.
  * 
  * A Bean Transformer can be used to transform object input typically in the form of a property
- * that follows the JavaBean getter/setter convention
+ * that follows the JavaBean getter/setter convention, on a best attempt basis,
  * into an output object typically used to populate the corresponding property of a target JavaBean.
  * <p>
  * This class extends {@link ReplicatorTemplate} as the implementation typically 

@@ -38,14 +38,14 @@ import org.apache.commons.lang.ArrayUtils;
  * <p>
  * This class provides a simplified (but limited) API for the common use cases
  * to conveniently replicate Hibernate objects 
- * that follow the JavaBean getter/setter convention.
+ * that follow the JavaBean getter/setter convention on a best attempt basis.
  * <p>
  * Those application specific Hibernate objects would typically 
  * have the same package prefix.
  * <p>  
  * The replication is typically recursive in that 
  * the whole object graph of the input object is replicated into an equivalent output object graph, 
- * resolving circular references, and eager fetching proxied instances as necessary.
+ * resolving circular references, and eagerly fetching proxied instances as necessary.
  * 
  * However, the exact behavior of the replication process can be controlled 
  * and/or supplemented by the client code via 3 main options:
@@ -113,20 +113,23 @@ public class Hibernate3DtoCopier
         }
     }
     
+    /** Returns the implementation instance that performs the actual replication. */
     protected Hibernate3BeanReplicator createHibernateBeanReplicator() {
         return new Hibernate3BeanReplicator();
     }
     
-    /** Returns a DTO by deep cloning the given Hibernate bean. */
-    public <T> T hibernate2dtoFully(Object entityBean) {
-        return (T)(entityBean == null 
+    /** Returns a DTO by deep cloning the given Hibernate "from" instance. */
+    public <T> T hibernate2dtoFully(Object from) {
+        return (T)(from == null 
                    ? null 
                    : createHibernateBeanReplicator()
                             .initPropertyFilter(new HibernatePropertyFilter(applicationPackagePrefix))
-                            .copy(entityBean));
+                            .copy(from));
     }
     
-    /** Returns a list of DTO's by deep cloning the given collection of Hibernate beans. */
+    /** 
+     * Returns a list of DTO's by deep cloning the given collection of Hibernate beans. 
+     */
     public List<?> hibernate2dtoFully(Collection<?> hibernateBeans) {
         if (hibernateBeans == null)
             return null;
@@ -143,6 +146,9 @@ public class Hibernate3DtoCopier
      * Returns a DTO by cloning portion of the object graph of the given Hibernate bean,
      * excluding all collection and map properties, and including only those properties
      * with package names that match the application package prefix.
+     * <p>
+     * The replication is typically recursive in that the object graph of the input object is basically replicated 
+     * into an equivalent output object graph, resolving circular references, and eagerly fetching proxied instances as necessary.
      *
      * @param entityBean Hibernate entity bean to be cloned
      * 
@@ -158,6 +164,9 @@ public class Hibernate3DtoCopier
      * by cloning portion of the object graph of the given Hibernate bean,
      * excluding all collection and map properties, and including only those properties
      * with package names that match the application package prefix.
+     * <p>
+     * The replication is typically recursive in that the object graph of the input object is basically replicated 
+     * into an equivalent output object graph, resolving circular references, and eagerly fetching proxied instances as necessary.
      *
      * @param targetEntityType target entity type
      * @param entityBean Hibernate entity bean to be cloned
@@ -172,44 +181,63 @@ public class Hibernate3DtoCopier
     }
     
     /** 
-     * Returns a DTO by cloning portion of the object graph of the given Hibernate entity bean.
+     * Returns a DTO 
+     * by partially cloning the object graph of the given Hibernate "from" instance
+     * that follows the JavaBean getter/setter convention on a best attempt basis,
+     * including only those properties that are explicitly specified, 
+     * or implied by the application package prefix.
      * 
-     * @param entityBean given Hibernate entity bean to be cloned
+     * @param from given Hibernate entity bean to be cloned
      * @param interestedEntityTypes properties of these types will be included for cloning
      * @param collectionPropertyNames collection and map properties to be included in the cloning
+     * 
+     * @see #applicationPackagePrefix
      */
-    public <T> T hibernate2dto(T entityBean, 
+    public <T> T hibernate2dto(T from, 
         Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames) 
     {
         return (T)hibernate2dto(
-                    UnEnhancer.getActualClass(entityBean), 
-                    entityBean, interestedEntityTypes, collectionPropertyNames);
+                    UnEnhancer.getActualClass(from), 
+                    from, interestedEntityTypes, collectionPropertyNames);
     }
     
     /** 
      * Returns a DTO of the specified target entity type
-     * by cloning portion of the object graph of the given Hibernate entity bean.
+     * by partially cloning the object graphs of the given Hibernate "from" instance
+     * that follows the JavaBean getter/setter convention on a best attempt basis,
+     * including only those properties that are explicitly specified, 
+     * or implied by the application package prefix.
+     * <p>
+     * The replication is typically recursive in that the object graph of the input object is basically replicated 
+     * into an equivalent output object graph, resolving circular references, and eagerly fetching proxied instances as necessary.
      * 
      * @param targetEntityType target entity type
-     * @param entityBean given Hibernate entity bean to be cloned
+     * @param from given Hibernate entity bean to be cloned
      * @param interestedEntityTypes properties of these types will be included for cloning
      * @param collectionPropertyNames collection and map properties to be included in the cloning
+     * 
+     * @see Hibernate3DtoCopier#applicationPackagePrefix
      */
-    public <E, T> E hibernate2dto(Class<E> targetEntityType, T entityBean,
+    public <E, T> E hibernate2dto(Class<E> targetEntityType, T from,
         Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames) 
     {
-        if (entityBean == null)
+        if (from == null)
             return null;
-        return copy(targetEntityType, entityBean, interestedEntityTypes, collectionPropertyNames);
+        return copy(targetEntityType, from, interestedEntityTypes, collectionPropertyNames);
     }
     
-    /** 
-     * Returns a list of DTO's by cloning portion of the object graph 
-     * of the given collection of Hibernate entity beans,
+    /**
+     * Returns a list of DTO's
+     * by partially cloning the object graphs of the given collection of Hibernate entity beans,
      * excluding all collection and map properties, and including only those properties
      * with package names that match the application package prefix.
+     * <p>
+     * The replication is typically recursive in that the object graph of the input object is basically replicated 
+     * into an equivalent output object graph, resolving circular references, and eagerly fetching proxied instances as necessary.
      * 
      * @param hibernateBeans given collection of Hibernate Beans.
+     * 
+     * @see #applicationPackagePrefix
      */
     public List<?> hibernate2dto(Collection<?> hibernateBeans) 
     {
@@ -225,13 +253,18 @@ public class Hibernate3DtoCopier
         return list;
     }
     
-    /** 
+    /**
      * Returns a list of DTO's of the specified target entity type
-     * by cloning portion of the object graph of the given collection of Hibernate entity beans.
+     * by partially cloning the object graphs of the given collection of Hibernate entity beans
+     * that follows the JavaBean getter/setter convention on a best attempt basis,
+     * including only those properties that are explicitly specified, 
+     * or implied by the application package prefix.
      *  
      * @param hibernateBeans given collection of Hibernate entity beans to be cloned
      * @param interestedEntityTypes properties of these types will be included for cloning
      * @param collectionPropertyNames collection and map properties to be included in the cloning
+     * 
+     * @see #applicationPackagePrefix
      */
     public <E> List<E> hibernate2dto(Class<E> targetEntityType, 
         Collection<?> hibernateBeans, Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames)
@@ -248,10 +281,17 @@ public class Hibernate3DtoCopier
     }
     
     /** 
-     * Returns a DTO by cloning the object graph excluding all collection and map properties.
-     *  
+     * Returns a DTO by partially cloning the object graph of the given Hibernate "from" instance 
+     * that follows the JavaBean getter/setter convention on a best attempt basis, 
+     * excluding all collection and map properties.
+     * <p>
+     * The replication is typically recursive in that the object graph of the input object is basically replicated 
+     * into an equivalent output object graph, resolving circular references, and eagerly fetching proxied instances as necessary.
+     *   
      * @param from given entity bean to be cloned
      * @param interestedEntityTypes properties of these types will be included for cloning
+     * 
+     * @see #applicationPackagePrefix
      */
     private Object copy(Object from, Class<?>[] interestedEntityTypes) 
     {
@@ -263,11 +303,18 @@ public class Hibernate3DtoCopier
     
     /** 
      * Returns a DTO of the specified target entity type 
-     * by cloning the object graph excluding all collection and map properties.
+     * by partially cloning the object graph of the given Hibernate "from" instance
+     * that follows the JavaBean getter/setter convention on a best attempt basis, 
+     * excluding all collection and map properties.
+     * <p>
+     * The replication is typically recursive in that the object graph of the input object is basically replicated 
+     * into an equivalent output object graph, resolving circular references, and eagerly fetching proxied instances as necessary.
      *  
      * @param targetEntityType target entity type
      * @param from given entity bean to be cloned
      * @param interestedEntityTypes properties of these types will be included for cloning
+     * 
+     * @see #applicationPackagePrefix
      */
     private <E> E copy(Class<E> targetEntityType, Object from, Class<?>[] interestedEntityTypes) 
     {
@@ -278,12 +325,20 @@ public class Hibernate3DtoCopier
 
     /** 
      * Returns a DTO of the specified target entity type
-     * by cloning portion of the object graph of the given Hibernate entity bean.
+     * by partially cloning the object graph of the given Hibernate "from" instance
+     * that follows the JavaBean getter/setter convention on a best attempt basis,
+     * including only those properties that are explicitly specified, 
+     * or implied by the application package prefix.
+     * <p>
+     * The replication is typically recursive in that the object graph of the input object is basically replicated 
+     * into an equivalent output object graph, resolving circular references, and eagerly fetching proxied instances as necessary.
      *  
      * @param targetEntityType target entity type
      * @param from given Hibernate entity bean to be cloned
      * @param interestedEntityTypes properties of these types will be included for cloning
      * @param collectionPropertyNames collection and map properties to be included in the cloning
+     * 
+     * @see #applicationPackagePrefix
      */
     @SuppressWarnings("unchecked")
     private <E> E copy(Class<E> targetEntityType, Object from, 
