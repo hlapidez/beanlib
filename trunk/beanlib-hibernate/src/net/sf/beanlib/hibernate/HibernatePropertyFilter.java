@@ -20,6 +20,7 @@ import static net.sf.beanlib.utils.ClassUtils.isJavaPackage;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,6 +32,8 @@ import net.sf.beanlib.spi.PropertyFilter;
  * that follows the JavaBean getter/setter convention should be propagated.
  * Each propagation decision can be controlled by specifying
  * <ul>
+ * <li>An application package prefix used to determine if a property 
+ * with a type of an entity bean class will be included for replication;</li>
  * <li>The set of entity bean classes for matching properties that will be replicated;</li>
  * <li>The set of collection and map properties that will be replicated;</li>
  * <li>A {@link net.sf.beanlib.spi.PropertyFilter vetoer} used to veto the propagation of a property</li>
@@ -57,6 +60,12 @@ public class HibernatePropertyFilter implements PropertyFilter
     /** Used to veto the propagation of a property. */
     private PropertyFilter vetoer;
 
+    /** 
+     * An entity bean under a package with a name 
+     * that matches this prefix will be included for replication,
+     * eagerly fetched if necessary.  
+     * Otherwise, the semantics of {@link #entityBeanClassSet} applies. 
+     */ 
     private final String applicationPackagePrefix; 
     
     /**
@@ -66,7 +75,7 @@ public class HibernatePropertyFilter implements PropertyFilter
      * The set of entity bean classes for matching properties that will be replicated, 
      * eagerly fetching if necessary.
      * Null means all whereas empty means none.
-
+     * 
      * @param collectionPropertyNameSet
      * The set of collection and map properties that will be replicated, 
      * eagerly fetching if necessary.
@@ -80,9 +89,30 @@ public class HibernatePropertyFilter implements PropertyFilter
         this.entityBeanClassSet = entityBeanClassSet;
         this.collectionPropertyNameSet = collectionPropertyNameSet;
         this.vetoer = vetoer;
-        this.applicationPackagePrefix = "#";
+        this.applicationPackagePrefix = "#";    // disable by matching no packages 
     }
 
+    /**
+     * Constructs with the specified options of controlling what to be replicated and what not.
+     * 
+     * @param applicationPackagePrefix
+     * An entity bean under a package with a name 
+     * that matches this prefix will be included for replication,
+     * eagerly fetched if necessary.  
+     * Otherwise, the semantics of {@link #entityBeanClassSet} applies.
+     *  
+     * @param entityBeanClassSet
+     * The set of entity bean classes for matching properties that will be replicated, 
+     * eagerly fetching if necessary.
+     * Null means all whereas empty means none.
+     * 
+     * @param collectionPropertyNameSet
+     * The set of collection and map properties that will be replicated, 
+     * eagerly fetching if necessary.
+     * Null means all whereas empty means none.
+     * 
+     * @param vetoer used to veto the propagation of a JavaBean property.
+     */
     public HibernatePropertyFilter(String applicationPackagePrefix, Set<Class<?>> entityBeanClassSet, 
         Set<? extends CollectionPropertyName> collectionPropertyNameSet, PropertyFilter vetoer)
     {
@@ -96,14 +126,21 @@ public class HibernatePropertyFilter implements PropertyFilter
      * Constructs with the default behavior of replicating all properties recursively.
      */
     public HibernatePropertyFilter() {
-        this.applicationPackagePrefix = "#";
+        this.applicationPackagePrefix = "#";    // disable by matching no packages 
     }
     
     /**
-     * Constructs with the default behavior of replicating all properties recursively.
+     * Constructs with an application package prefix.
+     * 
+     * @param applicationPackagePrefix
+     * An entity bean under a package with a name 
+     * that matches this prefix will be included for replication,
+     * eagerly fetched if necessary.  
+     * Otherwise, the semantics of {@link #entityBeanClassSet} applies.
      */
     public HibernatePropertyFilter(String applicationPackagePrefix) {
         this.applicationPackagePrefix = applicationPackagePrefix;
+        this.entityBeanClassSet = Collections.emptySet();
     }
     
     /**
@@ -183,29 +220,6 @@ public class HibernatePropertyFilter implements PropertyFilter
         return false;
     }
     
-    private boolean checkCollectionProperty(String propertyName, Method readerMethod)
-    {
-        // Only a specified set of Collection/Map properties needs to be populated
-        Class<?> returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
-        
-        if (Collection.class.isAssignableFrom(returnType) 
-        ||  Map.class.isAssignableFrom(returnType)) 
-        {
-            // A Collection/Map property
-            if (collectionPropertyNameSet.contains(
-                    new CollectionPropertyName(
-                            UnEnhancer.unenhanceClass(
-                                    readerMethod.getDeclaringClass()), propertyName))) 
-            {
-                return true; 
-            }
-            // Collection/Map property not included.
-            return false;
-        }
-        // Not a Collection/Map property.
-        return true;
-    }
-    
     public boolean propagateImpl(String propertyName, Method readerMethod) 
     {
         Class<?> returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
@@ -248,6 +262,29 @@ public class HibernatePropertyFilter implements PropertyFilter
             if (superClass == null || superClass == Object.class)
                 return false;        // not specified in entityBeanClassSet
         }
+    }
+    
+    private boolean checkCollectionProperty(String propertyName, Method readerMethod)
+    {
+        // Only a specified set of Collection/Map properties needs to be populated
+        Class<?> returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
+        
+        if (Collection.class.isAssignableFrom(returnType) 
+        ||  Map.class.isAssignableFrom(returnType)) 
+        {
+            // A Collection/Map property
+            if (collectionPropertyNameSet.contains(
+                    new CollectionPropertyName(
+                            UnEnhancer.unenhanceClass(
+                                    readerMethod.getDeclaringClass()), propertyName))) 
+            {
+                return true; 
+            }
+            // Collection/Map property not included.
+            return false;
+        }
+        // Not a Collection/Map property.
+        return true;
     }
     
     /** Returns true iff c is an application class. */
