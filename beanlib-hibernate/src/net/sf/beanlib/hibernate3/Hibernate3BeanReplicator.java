@@ -45,6 +45,9 @@ import net.sf.beanlib.spi.PropertyFilter;
  * <li>All the configurable options of {@link BeanPopulatorBaseSpi} are available, as
  * the replication of JavaBean properties inevitably involves bean population.</li>
  * <p>
+ * <li>An application package prefix used to determine if a property 
+ * with a type of an entity bean class will be included for replication;</li>
+ * <p>
  * <li>The set of entity bean classes for matching properties that will be replicated;</li>
  * <p>
  * <li>The set of collection and map properties that will be replicated;</li>
@@ -65,10 +68,22 @@ import net.sf.beanlib.spi.PropertyFilter;
 @NotThreadSafe
 public class Hibernate3BeanReplicator extends HibernateBeanReplicator
 {
-	public Hibernate3BeanReplicator() {
-		super(new Hibernate3BeanTransformer()
-		        .initPropertyFilter(new HibernatePropertyFilter()));
-	}
+    public Hibernate3BeanReplicator() {
+    	super(new Hibernate3BeanTransformer()
+    	        .initPropertyFilter(new HibernatePropertyFilter()));
+    }
+
+    /**
+     * Constructs with an application package prefix.
+     * 
+     * @param applicationPackagePrefix
+     * An application package prefix used to determine if a property 
+     * with a type of an entity bean class will be included for replication.
+     */
+    public Hibernate3BeanReplicator(String applicationPackagePrefix) {
+        super(new Hibernate3BeanTransformer()
+                .initPropertyFilter(new HibernatePropertyFilter(applicationPackagePrefix)));
+    }
 	
     /**
      * Convenient constructor to specify:
@@ -98,6 +113,42 @@ public class Hibernate3BeanReplicator extends HibernateBeanReplicator
         super(new Hibernate3BeanTransformer()
               .initPropertyFilter(
                     new HibernatePropertyFilter()
+                    .withEntityBeanClassSet(entityBeanClassSet)
+                    .withCollectionPropertyNameSet(collectionPropertyNameSet)
+                    .withVetoer(vetoer)));
+    }
+    
+    /**
+     * Convenient constructor to specify:
+     * <ol>
+     * <li>An application package prefix used to determine if a property 
+     * with a type of an entity bean class will be included for replication;</li>
+     * <li>The set of entity bean classes for matching properties that will be replicated;</li>
+     * <li>The set of collection and map properties that will be replicated;</li>
+     * <li>A {@link PropertyFilter vetoer} used to veto the propagation of specific properties</li>
+     * </ol>
+     * <p>
+     * Note this constructor is relevant only if the default property filter {@link HibernatePropertyFilter} is used.
+     * @param entityBeanClassSet
+     * The set of entity bean classes for matching properties that will be replicated, 
+     * eagerly fetching if necessary.
+     * Null means all whereas empty means none.
+     * 
+     * @param collectionPropertyNameSet
+     * The set of collection and map properties that will be replicated, 
+     * eagerly fetching if necessary.
+     * Null means all whereas empty means none.
+     * 
+     * @param vetoer used to veto the propagation of specific properties.
+     */
+    public Hibernate3BeanReplicator(
+            String applicationPackagePrefix,
+            Set<Class<?>> entityBeanClassSet, 
+            Set<? extends CollectionPropertyName> collectionPropertyNameSet, PropertyFilter vetoer) 
+    {
+        super(new Hibernate3BeanTransformer()
+              .initPropertyFilter(
+                    new HibernatePropertyFilter(applicationPackagePrefix)
                     .withEntityBeanClassSet(entityBeanClassSet)
                     .withCollectionPropertyNameSet(collectionPropertyNameSet)
                     .withVetoer(vetoer)));
