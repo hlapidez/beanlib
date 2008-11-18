@@ -36,24 +36,31 @@ import org.apache.commons.lang.ArrayUtils;
 /**
  * Hibernate 3 Data Transfer Object Copier.
  * <p>
- * This class provides a simplified API to conveniently replicate Hibernate objects 
- * that follow the JavaBean getter/setter convention, and
- * have the same application package prefix.
- *   
+ * This class provides a simplified (but limited) API for the common use cases
+ * to conveniently replicate Hibernate objects 
+ * that follow the JavaBean getter/setter convention.
+ * <p>
+ * Those application specific Hibernate objects would typically 
+ * have the same package prefix.
+ * <p>  
  * The replication is typically recursive in that 
  * the whole object graph of the input object is replicated into an equivalent output object graph, 
  * resolving circular references, and eager fetching proxied instances as necessary.
  * 
  * However, the exact behavior of the replication process can be controlled 
- * and/or supplemented by the client code via 2 options:
+ * and/or supplemented by the client code via 3 main options:
  * <p>
  * <ol>
- * <li>The set of entity bean classes for matching properties that will be replicated;</li>
- * <li>The set of collection and map properties that will be replicated;</li>
+ * <li>Specifying an application package prefix: 
+ * property with a type of an entity bean class with package name that matchs the prefix will be replicated;</li>
+ * <li>Specifying a set of entity bean classes: property with a type of an entity bean class 
+ * that is part of the set will be replicated;</li>
+ * <li>Specifying a set of collection and map properties that will be replicated;</li>
  * </ul>
  * </ol>
  * 
- * For more advanced options and control, consider using {@link Hibernate3BeanReplicator} instead of this class.
+ * For more advanced options and more control, 
+ * consider using {@link Hibernate3BeanReplicator} directly.
  * 
  * @see Hibernate3BeanReplicator
  * 
@@ -61,25 +68,45 @@ import org.apache.commons.lang.ArrayUtils;
  */
 public class Hibernate3DtoCopier
 {
+    /** 
+     * An entity bean under a package with a name 
+     * that matches this prefix will be included for replication,
+     * eagerly fetched if necessary.
+     */ 
     private final String applicationPackagePrefix; 
 
-    /** Must be constructed only via the factory. */
-	public Hibernate3DtoCopier() {
-	    this.applicationPackagePrefix = "#";    // By default no application package is specified.
-	}
+    /** Constructs with application package prefix disabled. */
+    public Hibernate3DtoCopier() {
+        this.applicationPackagePrefix = "#";    // By default no application package is specified.
+    }
 	
-	public Hibernate3DtoCopier(String applicationPackagePrefix) {
-	    this.applicationPackagePrefix = applicationPackagePrefix;
-	}
+    /** 
+     * Constructs with an application package prefix.
+     * @see #applicationPackagePrefix
+     */
+    public Hibernate3DtoCopier(String applicationPackagePrefix) {
+        this.applicationPackagePrefix = applicationPackagePrefix;
+    }
 	
-    public Hibernate3DtoCopier(String applicationPackagePrefix, Class<?> applicationSampleClass) {
+    /** 
+     * Constructs with an application package prefix, 
+     * and a sample application class in a package with such prefix 
+     * for sanity checking purposes.
+     * 
+     * @see #applicationPackagePrefix
+     * 
+     * @throws IllegalArgumentException if the given application package prefix 
+     * does not match the package of the given sample application class.
+     */
+    public Hibernate3DtoCopier(String applicationPackagePrefix, Class<?> applicationSampleClass) 
+    {
         this.applicationPackagePrefix = applicationPackagePrefix;
         
         if (applicationSampleClass != null) {
             String thisPackageName = org.apache.commons.lang.ClassUtils.getPackageName(applicationSampleClass);
                     
             if (!thisPackageName.startsWith(applicationPackagePrefix)) {
-                throw new IllegalStateException(
+                throw new IllegalArgumentException(
                     "The specified application package prefix " + applicationPackagePrefix 
                     + " is not consistent with the given sample application class " + applicationSampleClass);
             }
@@ -113,14 +140,30 @@ public class Hibernate3DtoCopier
     }
     
     /** 
-     * Returns a DTO by cloning portion of the object graph of the given Hibernate bean.
-     * @param entityBean given Hibernate Bean
+     * Returns a DTO by cloning portion of the object graph of the given Hibernate bean,
+     * excluding all collection and map properties, and including only those properties
+     * with package names that match the application package prefix.
+     *
+     * @param entityBean Hibernate entity bean to be cloned
+     * 
+     * @see #applicationPackagePrefix
      */
     public <T> T hibernate2dto(Object entityBean) 
     {
         return (T)hibernate2dto(UnEnhancer.getActualClass(entityBean), entityBean);
     }
     
+    /** 
+     * Returns a DTO of the specified target entity type
+     * by cloning portion of the object graph of the given Hibernate bean,
+     * excluding all collection and map properties, and including only those properties
+     * with package names that match the application package prefix.
+     *
+     * @param targetEntityType target entity type
+     * @param entityBean Hibernate entity bean to be cloned
+     * 
+     * @see #applicationPackagePrefix
+     */
     public <E,T> E hibernate2dto(Class<E> targetEntityType, T entityBean) 
     {
         if (entityBean == null)
@@ -129,9 +172,11 @@ public class Hibernate3DtoCopier
     }
     
     /** 
-     * Returns a DTO by cloning portion of the object graph of the given Hibernate bean.
-     * @param entityBean given Hibernate Bean
-     * @param collectionPropertyNames set properties to be included in the object graph
+     * Returns a DTO by cloning portion of the object graph of the given Hibernate entity bean.
+     * 
+     * @param entityBean given Hibernate entity bean to be cloned
+     * @param interestedEntityTypes properties of these types will be included for cloning
+     * @param collectionPropertyNames collection and map properties to be included in the cloning
      */
     public <T> T hibernate2dto(T entityBean, 
         Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames) 
@@ -141,6 +186,15 @@ public class Hibernate3DtoCopier
                     entityBean, interestedEntityTypes, collectionPropertyNames);
     }
     
+    /** 
+     * Returns a DTO of the specified target entity type
+     * by cloning portion of the object graph of the given Hibernate entity bean.
+     * 
+     * @param targetEntityType target entity type
+     * @param entityBean given Hibernate entity bean to be cloned
+     * @param interestedEntityTypes properties of these types will be included for cloning
+     * @param collectionPropertyNames collection and map properties to be included in the cloning
+     */
     public <E, T> E hibernate2dto(Class<E> targetEntityType, T entityBean,
         Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames) 
     {
@@ -150,7 +204,11 @@ public class Hibernate3DtoCopier
     }
     
     /** 
-     * Returns a list of DTO's by cloning portion of the object graph of the given collection of Hibernate beans. 
+     * Returns a list of DTO's by cloning portion of the object graph 
+     * of the given collection of Hibernate entity beans,
+     * excluding all collection and map properties, and including only those properties
+     * with package names that match the application package prefix.
+     * 
      * @param hibernateBeans given collection of Hibernate Beans.
      */
     public List<?> hibernate2dto(Collection<?> hibernateBeans) 
@@ -168,42 +226,68 @@ public class Hibernate3DtoCopier
     }
     
     /** 
-     * Returns a list of DTO's by cloning portion of the object graph of the given collection of Hibernate beans. 
-     * @param hibernateBeans given collection of Hibernate Beans.
+     * Returns a list of DTO's of the specified target entity type
+     * by cloning portion of the object graph of the given collection of Hibernate entity beans.
+     *  
+     * @param hibernateBeans given collection of Hibernate entity beans to be cloned
+     * @param interestedEntityTypes properties of these types will be included for cloning
+     * @param collectionPropertyNames collection and map properties to be included in the cloning
      */
     public <E> List<E> hibernate2dto(Class<E> targetEntityType, 
-        Collection<?> hibernateBeans, Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNameArray)
+        Collection<?> hibernateBeans, Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames)
     {
         if (hibernateBeans == null)
             return null;
         List<E> list = new ArrayList<E>(hibernateBeans.size());
         
         for (Object entityBean : hibernateBeans) {
-            E to = copy(targetEntityType, entityBean, interestedEntityTypes, collectionPropertyNameArray);
+            E to = copy(targetEntityType, entityBean, interestedEntityTypes, collectionPropertyNames);
             list.add(to);
         }
         return list;
     }
     
-    /** Returns a DTO by cloning the object graph excluding all collection and map properties. */
-    private Object copy(Object from, Class<?>[] entityBeanClassArray) 
+    /** 
+     * Returns a DTO by cloning the object graph excluding all collection and map properties.
+     *  
+     * @param from given entity bean to be cloned
+     * @param interestedEntityTypes properties of these types will be included for cloning
+     */
+    private Object copy(Object from, Class<?>[] interestedEntityTypes) 
     {
         if (from == null)
             return null;
         return copy(UnEnhancer.getActualClass(from), 
-                    from, entityBeanClassArray, CollectionPropertyName.EMPTY_ARRAY);
+                    from, interestedEntityTypes, CollectionPropertyName.EMPTY_ARRAY);
     }
     
-    private <E> E copy(Class<E> targetEntityType, Object from, Class<?>[] entityBeanClassArray) 
+    /** 
+     * Returns a DTO of the specified target entity type 
+     * by cloning the object graph excluding all collection and map properties.
+     *  
+     * @param targetEntityType target entity type
+     * @param from given entity bean to be cloned
+     * @param interestedEntityTypes properties of these types will be included for cloning
+     */
+    private <E> E copy(Class<E> targetEntityType, Object from, Class<?>[] interestedEntityTypes) 
     {
         if (from == null)
             return null;
-        return copy(targetEntityType, from, entityBeanClassArray, CollectionPropertyName.EMPTY_ARRAY);
+        return copy(targetEntityType, from, interestedEntityTypes, CollectionPropertyName.EMPTY_ARRAY);
     }
 
+    /** 
+     * Returns a DTO of the specified target entity type
+     * by cloning portion of the object graph of the given Hibernate entity bean.
+     *  
+     * @param targetEntityType target entity type
+     * @param from given Hibernate entity bean to be cloned
+     * @param interestedEntityTypes properties of these types will be included for cloning
+     * @param collectionPropertyNames collection and map properties to be included in the cloning
+     */
     @SuppressWarnings("unchecked")
     private <E> E copy(Class<E> targetEntityType, Object from, 
-        Class<?>[] entityBeanClassArray, CollectionPropertyName[] collectionPropertyNameArray)
+        Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames)
     {
         if (from == null)
             return null;
@@ -211,24 +295,24 @@ public class Hibernate3DtoCopier
         // Assumes all entity classes
         Set<Class<?>> entityBeanClassSet = null;
         
-        if (entityBeanClassArray != null) {
-            if (entityBeanClassArray.length == 0)
+        if (interestedEntityTypes != null) {
+            if (interestedEntityTypes.length == 0)
                 // no other entity classes
                 entityBeanClassSet = Collections.emptySet();
             else
-                // entity classes explicitely specified
-                entityBeanClassSet = new HashSet<Class<?>>(Arrays.asList(entityBeanClassArray));
+                // entity classes explicitly specified
+                entityBeanClassSet = new HashSet<Class<?>>(Arrays.asList(interestedEntityTypes));
         }
         // Assumes all Collection properties
         Set<CollectionPropertyName> collectionPropertyNameSet = null;
         
-        if (collectionPropertyNameArray != null) {
-            if (collectionPropertyNameArray.length == 0)
+        if (collectionPropertyNames != null) {
+            if (collectionPropertyNames.length == 0)
                 // No Collection properties.
                 collectionPropertyNameSet = Collections.emptySet();
             else 
                 // Collection properties explicitly specified. 
-                collectionPropertyNameSet = new HashSet<CollectionPropertyName>(Arrays.asList(collectionPropertyNameArray));
+                collectionPropertyNameSet = new HashSet<CollectionPropertyName>(Arrays.asList(collectionPropertyNames));
         }
         PropertyFilter propertyFilter = new HibernatePropertyFilter(
                                             applicationPackagePrefix, entityBeanClassSet, collectionPropertyNameSet, null);
