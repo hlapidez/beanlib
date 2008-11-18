@@ -56,6 +56,8 @@ import net.sf.beanlib.spi.PropertyFilter;
  * <p>
  * <li>If the default property filter {@link HibernatePropertyFilter} is used,
  * <ul>
+ *   <li>An application package prefix used to determine if a property 
+ *       with a type of an entity bean class will be included for replication;</li>
  *   <li>The set of entity bean classes for matching properties that will be replicated;</li>
  *   <li>The set of collection and map properties that will be replicated;</li>
  *   <li>A {@link PropertyFilter vetoer} used to veto the propagation of a property</li>
