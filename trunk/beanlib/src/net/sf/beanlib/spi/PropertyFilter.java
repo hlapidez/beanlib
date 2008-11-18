@@ -18,7 +18,7 @@ package net.sf.beanlib.spi;
 import java.lang.reflect.Method;
 
 /**
- * Used to control if a JavaBean property should be populated.
+ * Used to control if a JavaBean property should be propagated.
  * 
  * @author Joe D. Velopar
  */
