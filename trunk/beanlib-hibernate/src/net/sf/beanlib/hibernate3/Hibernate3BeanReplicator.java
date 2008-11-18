@@ -29,11 +29,11 @@ import net.sf.beanlib.spi.PropertyFilter;
  * Hibernate 3 Bean Replicator.
  * <p> 
  * This class can be used to conveniently replicate Hibernate (v3.x) objects 
- * that follow the JavaBean getter/setter convention.
+ * that follow the JavaBean getter/setter convention on a best attempt basis.
  *   
  * The replication is typically recursive in that 
  * the whole object graph of the input object is replicated into an equivalent output object graph, 
- * resolving circular references, and eager fetching proxied instances as necessary.
+ * resolving circular references, and eagerly fetching proxied instances as necessary.
  * 
  * However, the exact behavior of the replication process including<ul>
  * <li>to what extent the input object graph should be traversed and/or replicated; and </li>
