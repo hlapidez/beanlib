@@ -56,6 +56,8 @@ public class HibernatePropertyFilter implements PropertyFilter
     
     /** Used to veto the propagation of a property. */
     private PropertyFilter vetoer;
+
+    private final String applicationPackagePrefix; 
     
     /**
      * Constructs with the specified options of controlling what to be replicated and what not.
@@ -78,12 +80,31 @@ public class HibernatePropertyFilter implements PropertyFilter
         this.entityBeanClassSet = entityBeanClassSet;
         this.collectionPropertyNameSet = collectionPropertyNameSet;
         this.vetoer = vetoer;
+        this.applicationPackagePrefix = "#";
+    }
+
+    public HibernatePropertyFilter(String applicationPackagePrefix, Set<Class<?>> entityBeanClassSet, 
+        Set<? extends CollectionPropertyName> collectionPropertyNameSet, PropertyFilter vetoer)
+    {
+        this.entityBeanClassSet = entityBeanClassSet;
+        this.collectionPropertyNameSet = collectionPropertyNameSet;
+        this.vetoer = vetoer;
+        this.applicationPackagePrefix = applicationPackagePrefix;
     }
     
     /**
      * Constructs with the default behavior of replicating all properties recursively.
      */
-    public HibernatePropertyFilter() {}
+    public HibernatePropertyFilter() {
+        this.applicationPackagePrefix = "#";
+    }
+    
+    /**
+     * Constructs with the default behavior of replicating all properties recursively.
+     */
+    public HibernatePropertyFilter(String applicationPackagePrefix) {
+        this.applicationPackagePrefix = applicationPackagePrefix;
+    }
     
     /**
      * Returns the configured set of entity bean classes for matching properties that will be replicated, 
@@ -157,71 +178,84 @@ public class HibernatePropertyFilter implements PropertyFilter
     
     public boolean propagate(String propertyName, Method readerMethod) 
     {
-        boolean goAhead = false;
-                    
+        if (propagateImpl(propertyName, readerMethod))
+            return vetoer == null ? true : vetoer.propagate(propertyName, readerMethod);
+        return false;
+    }
+    
+    private boolean checkCollectionProperty(String propertyName, Method readerMethod)
+    {
+        // Only a specified set of Collection/Map properties needs to be populated
+        Class<?> returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
+        
+        if (Collection.class.isAssignableFrom(returnType) 
+        ||  Map.class.isAssignableFrom(returnType)) 
+        {
+            // A Collection/Map property
+            if (collectionPropertyNameSet.contains(
+                    new CollectionPropertyName(
+                            UnEnhancer.unenhanceClass(
+                                    readerMethod.getDeclaringClass()), propertyName))) 
+            {
+                return true; 
+            }
+            // Collection/Map property not included.
+            return false;
+        }
+        // Not a Collection/Map property.
+        return true;
+    }
+    
+    public boolean propagateImpl(String propertyName, Method readerMethod) 
+    {
+        Class<?> returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
+        
+        if (immutable(returnType))
+            return true;
+        
+        if (returnType.isArray()) {
+            if (immutable(returnType.getComponentType()))
+                return true;
+        }
+        
         if (entityBeanClassSet == null) {
             // All entity bean to be populated.
             if (collectionPropertyNameSet == null) {
                 // all fields to be populated
-                goAhead = true;
+                return true;
             }
-            else {
-                Class<?> unenhancedReturnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
-                // Only a subset of collection properties needs to be populated
-                goAhead =  Collection.class.isAssignableFrom(unenhancedReturnType) 
-                        || Map.class.isAssignableFrom(unenhancedReturnType)
-                        ? collectionPropertyNameSet.contains(
-                                new CollectionPropertyName(UnEnhancer.unenhanceClass(readerMethod.getDeclaringClass()), propertyName))
-                        : true    // not a Collection property, so go ahead
-                        ;
-            }
+            return checkCollectionProperty(propertyName, readerMethod);
         }
-        else {
-            // Only a subset of entity bean to be populated.
-            Class<?> returnType = UnEnhancer.unenhanceClass(readerMethod.getReturnType());
-            
-            if (immutable(returnType))
-            {
-                return vetoer == null ? true : vetoer.propagate(propertyName, readerMethod);
+        // Only a selected set of entity bean to be populated.
+        if (isJavaPackage(returnType)) {
+            // Not an entity bean.
+            if (collectionPropertyNameSet == null) {
+                // All Collection/Map properties to be populated.
+                return true;
             }
-            
-            if (isJavaPackage(returnType)) {
-                // Not an entity bean.
-                if (collectionPropertyNameSet == null) {
-                    // All Collection properties to be populated.
-                    goAhead = true;
-                }
-                else {
-                    // Only a subset of collection properties to be populated.
-                    goAhead =  Collection.class.isAssignableFrom(returnType)
-                            || Map.class.isAssignableFrom(returnType)
-                            ? collectionPropertyNameSet.contains(
-                                    new CollectionPropertyName(
-                                            UnEnhancer.unenhanceClass(
-                                                    readerMethod.getDeclaringClass()), propertyName))
-                            : true
-                            ;
-                }
-            }
-            else {
-                // An entity bean.
-                goAhead = entityBeanClassSet.contains(returnType);
-                Class<?> superClass = returnType;
-                
-                for (;;) {
-                    if (goAhead)
-                        return vetoer == null ? true : vetoer.propagate(propertyName, readerMethod);
-                    // check if it's ancestor is specified in entityBeanClassSet
-                    superClass = superClass.getSuperclass();
-                    
-                    if (superClass == null || superClass == Object.class)
-                        break;        // not specified in entityBeanClassSet
-                    goAhead = entityBeanClassSet.contains(superClass);
-                }
-            }
+            return checkCollectionProperty(propertyName, readerMethod);
         }
-        if (goAhead)
-            return vetoer == null ? true : vetoer.propagate(propertyName, readerMethod);
-        return false;
+        // An entity bean.
+        Class<?> superClass = returnType;
+        
+        for (;;) {
+            if (entityBeanClassSet.contains(superClass) 
+            || isApplicationClass(superClass))
+                return true;
+            // check if it's ancestor is specified in entityBeanClassSet
+            superClass = superClass.getSuperclass();
+            
+            if (superClass == null || superClass == Object.class)
+                return false;        // not specified in entityBeanClassSet
+        }
+    }
+    
+    /** Returns true iff c is an application class. */
+    public boolean isApplicationClass(Class<?> c) {
+        if (c == null)
+            return false;
+        String pn = org.apache.commons.lang.ClassUtils.getPackageName(c);
+        // TODO: can pn ever be null ?
+        return pn.startsWith(applicationPackagePrefix);
     }
 }

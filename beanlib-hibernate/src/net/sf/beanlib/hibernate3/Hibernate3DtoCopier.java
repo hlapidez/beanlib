@@ -25,6 +25,7 @@ import java.util.Set;
 
 import net.sf.beanlib.CollectionPropertyName;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
+import net.sf.beanlib.hibernate.HibernatePropertyFilter;
 import net.sf.beanlib.hibernate.UnEnhancer;
 import net.sf.beanlib.provider.collector.ProtectedSetterMethodCollector;
 import net.sf.beanlib.spi.DetailedPropertyFilter;
@@ -94,7 +95,7 @@ public class Hibernate3DtoCopier
         return (T)(entityBean == null 
                    ? null 
                    : createHibernateBeanReplicator()
-                            .initPropertyFilter(new Hibernate3DtoPropertyFilter(applicationPackagePrefix))
+                            .initPropertyFilter(new HibernatePropertyFilter(applicationPackagePrefix))
                             .copy(entityBean));
     }
     
@@ -104,7 +105,7 @@ public class Hibernate3DtoCopier
             return null;
         List<Object> list = new ArrayList<Object>(hibernateBeans.size());
         HibernateBeanReplicator replicator = createHibernateBeanReplicator()
-                                                .initPropertyFilter(new Hibernate3DtoPropertyFilter(applicationPackagePrefix));
+                                                .initPropertyFilter(new HibernatePropertyFilter(applicationPackagePrefix));
         
         for (Object obj : hibernateBeans)
             list.add(replicator.deepCopy(obj));
@@ -229,8 +230,8 @@ public class Hibernate3DtoCopier
                 // Collection properties explicitly specified. 
                 collectionPropertyNameSet = new HashSet<CollectionPropertyName>(Arrays.asList(collectionPropertyNameArray));
         }
-        PropertyFilter propertyFilter = new Hibernate3DtoPropertyFilter(
-                                            applicationPackagePrefix, entityBeanClassSet, collectionPropertyNameSet);
+        PropertyFilter propertyFilter = new HibernatePropertyFilter(
+                                            applicationPackagePrefix, entityBeanClassSet, collectionPropertyNameSet, null);
         replicator
           .initPropertyFilter(propertyFilter)
           .initDetailedPropertyFilter(DetailedPropertyFilter.ALWAYS_PROPAGATE)
