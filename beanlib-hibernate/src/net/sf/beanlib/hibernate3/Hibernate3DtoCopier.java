@@ -33,8 +33,28 @@ import net.sf.beanlib.spi.PropertyFilter;
 import org.apache.commons.lang.ArrayUtils;
 
 /**
- * Convenient class for converting application specific 
- * Hibernate 3 persistence object to DTO.
+ * Hibernate 3 Data Transfer Object Copier.
+ * <p>
+ * This class provides a simplified API to conveniently replicate Hibernate objects 
+ * that follow the JavaBean getter/setter convention, and
+ * have the same application package prefix.
+ *   
+ * The replication is typically recursive in that 
+ * the whole object graph of the input object is replicated into an equivalent output object graph, 
+ * resolving circular references, and eager fetching proxied instances as necessary.
+ * 
+ * However, the exact behavior of the replication process can be controlled 
+ * and/or supplemented by the client code via 2 options:
+ * <p>
+ * <ol>
+ * <li>The set of entity bean classes for matching properties that will be replicated;</li>
+ * <li>The set of collection and map properties that will be replicated;</li>
+ * </ul>
+ * </ol>
+ * 
+ * For more advanced options and control, consider using {@link Hibernate3BeanReplicator} instead of this class.
+ * 
+ * @see {@link Hibernate3BeanReplicator}
  * 
  * @author Joe D. Velopar
  */
@@ -74,8 +94,7 @@ public class Hibernate3DtoCopier
         return (T)(entityBean == null 
                    ? null 
                    : createHibernateBeanReplicator()
-                            .initPropertyFilter(new Hibernate3DtoPropertyFilter()
-                                                    .init(this))
+                            .initPropertyFilter(new Hibernate3DtoPropertyFilter(applicationPackagePrefix))
                             .copy(entityBean));
     }
     
@@ -85,8 +104,7 @@ public class Hibernate3DtoCopier
             return null;
         List<Object> list = new ArrayList<Object>(hibernateBeans.size());
         HibernateBeanReplicator replicator = createHibernateBeanReplicator()
-                                                .initPropertyFilter(new Hibernate3DtoPropertyFilter()
-                                                                         .init(this));
+                                                .initPropertyFilter(new Hibernate3DtoPropertyFilter(applicationPackagePrefix));
         
         for (Object obj : hibernateBeans)
             list.add(replicator.deepCopy(obj));
@@ -211,8 +229,8 @@ public class Hibernate3DtoCopier
                 // Collection properties explicitly specified. 
                 collectionPropertyNameSet = new HashSet<CollectionPropertyName>(Arrays.asList(collectionPropertyNameArray));
         }
-        PropertyFilter propertyFilter = new Hibernate3DtoPropertyFilter(entityBeanClassSet, collectionPropertyNameSet)
-                                            .init(this);
+        PropertyFilter propertyFilter = new Hibernate3DtoPropertyFilter(
+                                            applicationPackagePrefix, entityBeanClassSet, collectionPropertyNameSet);
         replicator
           .initPropertyFilter(propertyFilter)
           .initDetailedPropertyFilter(DetailedPropertyFilter.ALWAYS_PROPAGATE)
@@ -221,14 +239,5 @@ public class Hibernate3DtoCopier
         return (E)replicator.copy(from, 
                                   UnEnhancer.unenhanceClass(targetEntityType));
         
-    }
-    
-    /** Returns true iff c is an application class. */
-    public boolean isApplicationClass(Class<?> c) {
-        if (c == null)
-            return false;
-        String pn = org.apache.commons.lang.ClassUtils.getPackageName(c);
-        // TODO: can pn ever be null ?
-        return pn.startsWith(applicationPackagePrefix);
     }
 }
