@@ -54,7 +54,7 @@ import org.apache.commons.lang.ArrayUtils;
  * 
  * For more advanced options and control, consider using {@link Hibernate3BeanReplicator} instead of this class.
  * 
- * @see {@link Hibernate3BeanReplicator}
+ * @see Hibernate3BeanReplicator
  * 
  * @author Joe D. Velopar
  */
