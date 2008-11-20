@@ -69,6 +69,9 @@ import net.sf.beanlib.spi.PropertyFilter;
 @NotThreadSafe
 public class Hibernate3BeanReplicator extends HibernateBeanReplicator
 {
+    /**
+     * By default, all properties will be included for replication.
+     */
     public Hibernate3BeanReplicator() {
     	super(new Hibernate3BeanTransformer()
     	        .initPropertyFilter(new HibernatePropertyFilter()));

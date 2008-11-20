@@ -81,7 +81,7 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
         try {
             toCollection = this.createToCollection(from);
             putTargetCloned(from, toCollection);
-            Collection fromCollection = from;
+            Collection<?> fromCollection = from;
     //        hibernateInitialize(fromCollection);
             // recursively populate member objects.
             for (Object fromMember : fromCollection) {
