@@ -73,7 +73,7 @@ href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib-test/src/n
 </pre>
 <h2>BeanReplicator: Customizing Behavior</h2>
 The default behavior of BeanReplicator can be customized via various options.
-<h3>Getters and Setters</h3>
+<h3><a name="getters-and-setters">Getters and Setters</a></h3>
 By default, only the setter methods of the target bean are invoked for property propagation.  
 Say you want to expand that to include protected and private methods:
 <pre><blockquote>BeanTransformerSpi t = new BeanTransformer().initSetterMethodCollector(new PrivateSetterMethodCollector());
@@ -88,7 +88,7 @@ Object fromBean = ...
 Object toBean = new BeanReplicator(t).replicateBean(fromBean);
 </blockquote></pre>
 Now values will be retrieved from invoking all getter methods (including protected and private) on the fromBean.
-<h3>Property Filter</h3>
+<h3><a name="property-filter">Property Filter</a></h3>
 You can specify a property filter to filter out those properties that you don't want to be propagated.  
 Once filtered out, the getter method will not even be invoked on the property.
 <p>
@@ -103,7 +103,7 @@ BeanTransformerSpi t = new BeanTransformer().initPropertyFilter(propertyFilter);
 Object fromBean = ...
 Object toBean = new BeanReplicator(customTransformer).replicateBean(fromBean);
 </blockquote></pre>
-<h3>Detailed Property Filter</h3>
+<h3><a name="detailed-property-filter">Detailed Property Filter</a></h3>
 Just like a Property Filter, a Detailed Property Filter serves the same purpose but is provided with additional contextual informtion
 about the property that is under consideration.
 <p>
@@ -120,10 +120,80 @@ BeanTransformerSpi t = new BeanTransformer().initDetailedPropertyFilter(detailed
 Object fromBean = ...
 Object toBean = new BeanReplicator(t).replicateBean(fromBean);
 </blockquote></pre>
-<h3>Custom Bean Transformer</h3>
-
-(TODO: See CustomBeanTransformerSpi for how to write and configure your own custom transformer.)
+<h3><a name="custom-bean-transformer">Custom Bean Transformer</a></h3>
+One or multiple Custom Bean Transformer can be used to override the default behavior of how a property value, 
+after returned from the getter method of the from bean, 
+should be transformed before it is fed into the respective setter method invoked on the target bean.
 <p>
+For example, the default transformer used by BeanReplicator 
+tries to instantiate the target property class via the no-arg constructor.  
+If the no-arg constructor is not defined (such as in the Point class below), 
+it would cause a NoSuchMethodException to be thrown:
+<pre><blockquote>public class Point {
+    private final int x, y;
+    
+    // missing no-arg constructor 
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+    public int getX() { return x; }
+    public int getY() { return y; }
+}
+
+public class Bean {
+    private Point point;
+    public Point getPoint() { return point; }
+    public void setPoint(Point point) { this.point = point; }
+}
+
+...
+// Initialize a bean
+Bean from = new Bean();
+from.setPoint(new Point(1,2));
+
+// Tries to replicate the bean using the default implementation
+BeanReplicator replicator = new BeanReplicator();
+// Will cause NoSuchMethodException, as Point does not have a no-arg constructor
+Bean to = replicator.replicateBean(from);
+</blockquote></pre>To get around this problem, use a custom transformer and the respective factory 
+for the Point class:
+<pre><blockquote>public class MyBeanTransformer implements CustomBeanTransformerSpi {
+    public  boolean isTransformable(Object from, Class toClass, PropertyInfo propertyInfo) {
+        return toClass == Point.class;
+    }
+    
+    public <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo) {
+        Point from = (Point)in;
+        // Note the framework takes care of the issue of object identity,
+        // so we don't need to here.
+        return (T)new Point(from.getX(), from.getY());
+    }
+}
+
+public class MyBeanTransformerFactory implements CustomBeanTransformerSpi.Factory {
+    public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi beanTransformer) {
+        return new MyBeanTransformer();
+    }
+}
+
+...
+// Initialize a bean
+Bean from = new Bean();
+from.setPoint(new Point(1,2));
+
+// Partially overrides the default transformer behavior
+BeanTransformerSpi transformer = new BeanTransformer(new MyBeanTransformerFactory());
+BeanReplicator replicator = new BeanReplicator(transformer);
+
+// Replicates the bean
+Bean to = replicator.replicateBean(from); // now works!
+</blockquote></pre>
+<p>
+If you have multiple custom transformers, just pass their factories to the BeanReplicator constructor
+and they will be automatically chained together for execution.  Like so:
+<pre><blockquote>BeanReplicator replicator = new BeanReplicator(myTransformer1, myTransformer2, ...);
+</blockquote></pre>
 (TODO: See javadoc for more details.)
 <!--
 Various options exist in overriding the default behavior of BeanReplicator via the BeanTransformerSpi:
