@@ -71,7 +71,7 @@ See <a
 href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib-test/src/net/sf/beanlib/provider/replicator/BeanReplicatorTest.java?revision=283&view=markup"
 >BeanReplicatorTest.java</a> for more details.
 </pre>
-<h2>BeanReplicator: Customizing Behavior</h2>
+<h2><a name="customizing-behavior">BeanReplicator: Customizing Behavior</a></h2>
 The default behavior of BeanReplicator can be customized via various options.
 <h3><a name="getters-and-setters">Getters and Setters</a></h3>
 By default, only the setter methods of the target bean are invoked for property propagation.  
@@ -158,12 +158,12 @@ BeanReplicator replicator = new BeanReplicator();
 Bean to = replicator.replicateBean(from);
 </blockquote></pre>To get around this problem, use a custom transformer and the respective factory 
 for the Point class:
-<pre><blockquote>public class MyBeanTransformer implements CustomBeanTransformerSpi {
+<a name="MyBeanTransformer"><pre><blockquote>public class MyBeanTransformer implements CustomBeanTransformerSpi {
     public  boolean isTransformable(Object from, Class toClass, PropertyInfo propertyInfo) {
         return toClass == Point.class;
     }
     
-    public <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo) {
+    public &lt;T> T transform(Object in, Class&lt;T> toClass, PropertyInfo propertyInfo) {
         Point from = (Point)in;
         // Note the framework takes care of the issue of object identity,
         // so we don't need to here.
@@ -188,7 +188,7 @@ BeanReplicator replicator = new BeanReplicator(transformer);
 
 // Replicates the bean
 Bean to = replicator.replicateBean(from); // now works!
-</blockquote></pre>
+</blockquote></pre></a>
 <p>
 If you have multiple custom transformers, just pass their factories to the BeanReplicator constructor
 and they will be automatically chained together for execution.  Like so:
