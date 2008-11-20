@@ -36,7 +36,8 @@ import org.apache.commons.lang.ArrayUtils;
 /**
  * Hibernate 3 Data Transfer Object Copier.
  * <p>
- * This class provides a simplified (but limited) API for the common use cases
+ * A simple facade of {@link HibernateBeanReplicator}, 
+ * this class provides a simplified (but limited) API for the common use cases
  * to conveniently replicate Hibernate objects 
  * that follow the JavaBean getter/setter convention on a best attempt basis.
  * <p>
