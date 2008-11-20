@@ -11,8 +11,30 @@ body,td,th {
   </style>
 </head><body>
 <h1>Beanlib - Hibernate3DtoCopier</h1>
-From Hibernate persistent objects to POJO's.
-<h2>Hibernate3DtoCopier</h2>
-A common problem in building persistence layer using Hibernate is to provide a clean API such that the client of the API can become Hibernate agnostic.
-</pre>
+A simple facade of <a href="hibernate-bean-replicator.html">HibernateBeanReplicator</a>,
+this class provides a simplified (but limited) API for the common use cases
+to conveniently replicate Hibernate objects 
+that follow the JavaBean getter/setter convention on a best attempt basis.
+<p>
+Those application specific Hibernate objects would typically
+have the same package prefix.
+<p>  
+The replication is typically recursive in that 
+the whole object graph of the input object is replicated into an equivalent output object graph, 
+resolving circular references, and eagerly fetching proxied instances as necessary.
+
+However, the exact behavior of the replication process can be controlled 
+and/or supplemented by the client code via 3 main options:
+<p>
+<ol>
+<li>Specifying an application package prefix: 
+property with a type of an entity bean class with package name that matchs the prefix will be replicated;</li>
+<li>Specifying a set of entity bean classes: property with a type of an entity bean class 
+that is part of the set will be replicated;</li>
+<li>Specifying a set of collection and map properties that will be replicated;</li>
+</ul>
+</ol>
+
+For more advanced options and more control, 
+consider using {@link Hibernate3BeanReplicator} directly.
 </body></html>

@@ -45,11 +45,101 @@ one or multiple custom transformer factories via
 </li>
 </ol>
 <h2>Customizing HibernateBeanReplicator</h2>
-Customizing the behavior of HibernateBeanReplicator is basically parallel to that of <a href="bean-replicator.html#customizing-behavior">BeanReplicator</a>,
-except the custom transformer(s) needs to be provided via the initCustomTransformerFactory method instead of the constructor.
-For example, assuming a <a href="bean-replicator.html#MyBeanTransformer">MyBeanTransformerFactory</a> is defined,
-<pre><blockquote>// Partially overrides the default Hibernate bean transformer's behavior
-HibernateBeanReplicator replicator = new Hibernate3BeanReplicator();
-replicator.initCustomTransformerFactory(new MyBeanTransformerFactory());
-replicator.copy(...);
+Customizing the behavior of HibernateBeanReplicator is basically parallel to that of <a href="bean-replicator.html#customizing-behavior">BeanReplicator</a>.  
+<h3><a name="getters-and-setters">Getters and Setters</a></h3>
+By default, only the public setter methods of the target bean are invoked for property propagation.  
+Say you want to expand that to include protected and private methods:
+<pre><blockquote>HibernateBeanReplicator r = new Hibernate3BeanReplicator().initSetterMethodCollector(new PrivateSetterMethodCollector());
+Object fromBean = ...
+Object toBean = r.deepCopy(fromBean);
+</blockquote></pre>
+Now setter methods on the toBean will be invoked with values retrieved from invoking the respective public getter methods of the fromBean.
+<p>
+A similar example of expanding the default behavior of retrieving property values from the public getter methods:
+<pre><blockquote>HibernateBeanReplicator r = new Hibernate3BeanReplicator().initReaderMethodFinder(new PrivateReaderMethodFinder());
+Object fromBean = ...
+Object toBean = r.shallowCopy(fromBean);
+</blockquote></pre>
+Now values will be retrieved from invoking all getter methods (including protected and private) on the fromBean.
+<h3><a name="property-filter">Hibernate Property Filter</a></h3>
+<h4>Application Package Prefix</h4>
+(TODO)
+<h4>Entity Bean Class Set</h4>
+(TODO)
+<h4>Collection and Map Set</h4>
+(TODO)
+<h4>Vetoer</h4>
+(TODO)
+<h3><a name="custom-bean-transformer">Custom Bean Transformer</a></h3>
+One or multiple Custom Bean Transformer can be used to override the default behavior of how a property value, 
+after returned from the getter method of the from bean, 
+should be transformed before it is fed into the respective setter method invoked on the target bean.
+<p>
+For example, the default transformer used by BeanReplicator 
+tries to instantiate the target property class via the no-arg constructor.  
+If the no-arg constructor is not defined (such as in the Point class below), 
+it would cause a NoSuchMethodException to be thrown:
+<pre><blockquote>public class Point {
+    private final int x, y;
+    
+    // missing no-arg constructor 
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+    public int getX() { return x; }
+    public int getY() { return y; }
+}
+
+public class Bean {
+    private Point point;
+    public Point getPoint() { return point; }
+    public void setPoint(Point point) { this.point = point; }
+}
+
+...
+// Initialize a bean
+Bean from = new Bean();
+from.setPoint(new Point(1,2));
+
+// Tries to replicate the bean using the default implementation
+HibernateBeanReplicator r = new Hibernate3BeanReplicator();
+// Will cause NoSuchMethodException, as Point does not have a no-arg constructor
+Bean to = r.copy(from, ...);
+</blockquote></pre>To get around this problem, use a custom transformer and the respective factory 
+for the Point class:
+<a name="MyBeanTransformer"><pre><blockquote>public class MyBeanTransformer implements CustomBeanTransformerSpi {
+    public  boolean isTransformable(Object from, Class toClass, PropertyInfo propertyInfo) {
+        return toClass == Point.class;
+    }
+    
+    public &lt;T> T transform(Object in, Class&lt;T> toClass, PropertyInfo propertyInfo) {
+        Point from = (Point)in;
+        // Note the framework takes care of the issue of object identity,
+        // so we don't need to here.
+        return (T)new Point(from.getX(), from.getY());
+    }
+}
+
+public class MyBeanTransformerFactory implements CustomBeanTransformerSpi.Factory {
+    public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi beanTransformer) {
+        return new MyBeanTransformer();
+    }
+}
+
+...
+// Initialize a bean
+Bean from = new Bean();
+from.setPoint(new Point(1,2));
+
+// Partially overrides the default transformer behavior
+HibernateBeanReplicator r = new Hibernate3BeanReplicator().initCustomTransformerFactory(new MyBeanTransfromerFactory());
+// Replicates the bean
+Bean to = r.copy(from, ...); // now works!
+</blockquote></pre></a>
+<p>
+If you have multiple custom transformers, just pass their factories to the HibernateBeanReplicator
+and they will be automatically chained together for execution.  Like so:
+<pre><blockquote>HibernateBeanReplicator r = new Hibernate3BeanReplicator.initCustomTransformerFactory(myTransformer1, myTransformer2, ...);
+</blockquote></pre>
 </body></html>
