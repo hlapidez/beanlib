@@ -11,12 +11,8 @@ body,td,th {
   </style>
 </head><body>
 <h1>Beanlib - BeanReplicator </h1>
-BeanReplicator, as it's name suggests, can be used to replicate JavaBean's.  
-In cloning a JavaBean, we may want to specify how deep we want to go in the object graph. 
-Is it a 100% deep clone, a skin deep shallow clone, or some other combinations ? 
-How about beans that involve a one-to-many collection, and circular references ? 
-The answer to these questions has a significant impact on both the performance and memory footprint of the cloning process.
-<h2>BeanReplicator - Quick Start</h2>
+Replicate JavaBean's with ease.
+<h2>BeanReplicator: Quick Start</h2>
 To replicate a simple JavaBean with a class definition like:
 <pre><blockquote>public class SimpleBean {
     private String name;
@@ -68,12 +64,69 @@ from.setMap(map);
 It can be replicated in the same way:
 <pre><blockquote>ComplexBean to = new BeanReplicator().replicateBean(from);
 <blockquote></pre>
-Note the "to" and "from" beans are different object instances, but otherwise the content (ie the entire object graph) has been replicated.  
-All it requires is that the from bean follows the JavaBean convention.  
-See <a href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib-test/src/net/sf/beanlib/provider/replicator/BeanReplicatorTest.java?revision=277&view=markup">BeanReplicatorTest.java</a> for more details.
+Voila!  The "to" and "from" beans are different object instances, 
+but the content (ie the entire object graph) has been replicated.
+Note this works as long as these objects follow the JavaBean convention.
+See <a 
+href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib-test/src/net/sf/beanlib/provider/replicator/BeanReplicatorTest.java?revision=283&view=markup"
+>BeanReplicatorTest.java</a> for more details.
 </pre>
-<h2>BeanReplicator - Options via BeanTransformerSpi</h2>
-a BeanReplicator Various options exist in overriding the default behavior of BeanReplicator via the BeanTransformerSpi:
+<h2>BeanReplicator: Customizing Behavior</h2>
+The default behavior of BeanReplicator can be customized via various options.
+<h3>Getters and Setters</h3>
+By default, only the setter methods of the target bean are invoked for property propagation.  
+Say you want to expand that to include protected and private methods:
+<pre><blockquote>BeanTransformerSpi t = new BeanTransformer().initSetterMethodCollector(new PrivateSetterMethodCollector());
+Object fromBean = ...
+Object toBean = new BeanReplicator(t).replicateBean(fromBean);
+</blockquote></pre>
+Now setter methods on the toBean will be invoked with values retrieved from invoking the respective public getter methods of the fromBean.
+<p>
+A similar example of expanding the default behavior of retrieving property values from the public getter methods:
+<pre><blockquote>BeanTransformerSpi t = new BeanTransformer().initReaderMethodFinder(new PrivateReaderMethodFinder());
+Object fromBean = ...
+Object toBean = new BeanReplicator(t).replicateBean(fromBean);
+</blockquote></pre>
+Now values will be retrieved from invoking all getter methods (including protected and private) on the fromBean.
+<h3>Property Filter</h3>
+You can specify a property filter to filter out those properties that you don't want to be propagated.  
+Once filtered out, the getter method will not even be invoked on the property.
+<p>
+For example, if for some reason any property that is named "foo" should be filtered out (ie not propagated),
+it can be achieved like so:
+<pre><blockquote>PropertyFilter propertyFilter = new PropertyFilter() {
+    public boolean propagate(String propertyName, Method readerMethod) {
+        return !"foo".equals(propertyName);
+    }
+};
+BeanTransformerSpi t = new BeanTransformer().initPropertyFilter(propertyFilter);
+Object fromBean = ...
+Object toBean = new BeanReplicator(customTransformer).replicateBean(fromBean);
+</blockquote></pre>
+<h3>Detailed Property Filter</h3>
+Just like a Property Filter, a Detailed Property Filter serves the same purpose but is provided with additional contextual informtion
+about the property that is under consideration.
+<p>
+For a convoluted example, if for some reason any property that is named "foo" should be filtered out (ie not propagated)
+unless the "foo" property belongs to a class named "Bar", it can be achieved like so:
+<pre><blockquote>DetailedPropertyFilter detailedPopertyFilter = new DetailedPropertyFilter() {
+    public boolean propagate(String propertyName, Object fromBean, Method readerMethod, 
+                                                  Object toBean,   Method setterMethod) 
+    {
+        return !"foo".equals(propertyName) || Bar.class == fromBean.getClass();
+    }
+};
+BeanTransformerSpi t = new BeanTransformer().initDetailedPropertyFilter(detailedPropertyFilter);
+Object fromBean = ...
+Object toBean = new BeanReplicator(t).replicateBean(fromBean);
+</blockquote></pre>
+<h3>Custom Bean Transformer</h3>
+
+(TODO: See CustomBeanTransformerSpi for how to write and configure your own custom transformer.)
+<p>
+(TODO: See javadoc for more details.)
+<!--
+Various options exist in overriding the default behavior of BeanReplicator via the BeanTransformerSpi:
 <ol>
 <li>To decide on whether a JavaBean property should be populated or not via the BeanPopulatable SPI.
 For example,
@@ -92,4 +145,5 @@ ComplexBean to = new BeanReplicator(myTranformer).replicateBean(from);
 <p>
 <li>Provide your own customized BeanPopulatable and/or DetailedBeanPopulatable to completely override the population decision of each bean property.</li>
 </ol>
+-->
 </body></html>
