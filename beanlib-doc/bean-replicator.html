@@ -74,7 +74,7 @@ href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib-test/src/n
 <h2><a name="customizing-behavior">BeanReplicator: Customizing Behavior</a></h2>
 The default behavior of BeanReplicator can be customized via various options.
 <h3><a name="getters-and-setters">Getters and Setters</a></h3>
-By default, only the setter methods of the target bean are invoked for property propagation.  
+By default, only the public setter methods of the target bean are invoked for property propagation.  
 Say you want to expand that to include protected and private methods:
 <pre><blockquote>BeanTransformerSpi t = new BeanTransformer().initSetterMethodCollector(new PrivateSetterMethodCollector());
 Object fromBean = ...
