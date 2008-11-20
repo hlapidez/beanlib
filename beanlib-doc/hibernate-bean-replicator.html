@@ -24,28 +24,9 @@ However, the exact behavior of the replication process including<ul>
 <li>to what extent the input object graph should be traversed and/or replicated; and </li>
 <li>whether proxied instances should be eagerly fetched or not</li>
 </ul> 
-can be controlled and/or supplemented by the client code via various options:
-<p>
-<ol>
-<li>All the configurable options of {@link BeanPopulatorBaseSpi} are available, as
-the replication of JavaBean properties inevitably involves bean population.</li>
-<p>
-<li>If the default property filter {@link HibernatePropertyFilter} is used,
-<ul>
-  <li>An application package prefix used to determine if a property 
-      with a type of an entity bean class will be included for replication;</li>
-  <li>The set of entity bean classes for matching properties that will be replicated;</li>
-  <li>The set of collection and map properties that will be replicated;</li>
-  <li>A {@link PropertyFilter vetoer} used to veto the propagation of a property</li>
-</ul>
-<p>
-<li>For anything else that the existing implementation fails to transform, client can provide
-one or multiple custom transformer factories via  
-{@link #initCustomTransformerFactory(net.sf.beanlib.spi.CustomBeanTransformerSpi.Factory...)}.
-</li>
-</ol>
+can be customized by the client code via various options.
 <h2>Customizing HibernateBeanReplicator</h2>
-Customizing the behavior of HibernateBeanReplicator is basically parallel to that of <a href="bean-replicator.html#customizing-behavior">BeanReplicator</a>.  
+Customizing the behavior of HibernateBeanReplicator is similar to that of <a href="bean-replicator.html#customizing-behavior">BeanReplicator</a>.
 <h3><a name="getters-and-setters">Getters and Setters</a></h3>
 By default, only the public setter methods of the target bean are invoked for property propagation.  
 Say you want to expand that to include protected and private methods:
@@ -62,14 +43,72 @@ Object toBean = r.shallowCopy(fromBean);
 </blockquote></pre>
 Now values will be retrieved from invoking all getter methods (including protected and private) on the fromBean.
 <h3><a name="property-filter">Hibernate Property Filter</a></h3>
+The default implementation of PropertyFilter in HibernateBeanReplicator is HibernatePropertyFilter.
+As a property filter, it is used to determine if a Hibernate property 
+that follows the JavaBean getter/setter convention should be propagated.
+In addition, it has the following options:
+<ul>
+<li>An application package prefix can be specified to conveniently include properties with type under the package hierarchy 
+for replication;</li>
+<li>A set of entity bean classes can be specified for matching properties that will be replicated;</li>
+<li>A set of collection and map properties can be specified if such properties should be replicated;</li>
+<li>A vetoer can be specified to veto the replication of a property</li>
+</ul>
 <h4>Application Package Prefix</h4>
-(TODO)
+For example, 
+<pre><blockquote>HibernateBeanReplicator r = new Hibernate3BeanReplicator("com.foo");
+Object fromBean = ...
+Object toBean = r.copy(fromBean);
+</blockquote></pre>
+will result in replication that 
+<ul>
+<li>includes all collection and map properties</li>
+<li>excludes properties with application specific (ie non-jdk) types that are not under the package prefix "com.foo"</li>
+</ul>
 <h4>Entity Bean Class Set</h4>
-(TODO)
+For example, 
+<pre><blockquote>Class&lt;?>[] entityClasses =  { Foo.class, Bar.class };
+Set&lt;Class&lt;?>> entityClassSet = new HashSet&lt;Class&lt;?>>(Arrays.asList(entityClasses));
+HibernateBeanReplicator r = new Hibernate3BeanReplicator(entityClassSet, null, null);
+Object fromBean = ...
+Object toBean = r.copy(fromBean);
+</blockquote></pre>
+will result in replication that 
+<ul>
+<li>includes all collection and map properties</li>
+<li>excludes properties with application specific types except Foo or Bar</li>
+</ul>
 <h4>Collection and Map Set</h4>
-(TODO)
+For example, assuming Foo has a list property "barList", and Bar has a list property "fooList",
+<pre><blockquote>Class&lt;?>[] entityClasses =  { Foo.class, Bar.class };
+Set&lt;Class&lt;?>> entityClassSet = new HashSet&lt;Class&lt;?>>(Arrays.asList(entityClasses));
+CollectionPropertyName[] colProps = {
+    new CollectionPropertyName(Foo.class, "barList"),
+    new CollectionPropertyName(Bar.class, "fooList")
+};
+Set&lt;CollectionPropertyName> collectionPropertyNameSet = new HashSet&lt;CollectionPropertyName>(Arrays.asList(colProps));
+HibernateBeanReplicator r = new Hibernate3BeanReplicator(entityClassSet, collectionPropertyNameSet, null);
+Object fromBean = ...
+Object toBean = r.copy(fromBean);
+</blockquote></pre>
+will result in replication that 
+<ul>
+<li>excludes collection and map properties except Foo's barList and Bar's fooList</li>
+<li>excludes properties with application specific types except Foo or Bar</li>
+</ul>
 <h4>Vetoer</h4>
-(TODO)
+For example,
+<pre><blockquote>PropertyFilter vetoer = new PropertyFilter() {
+    public boolean propagate(String propertyName, Method readerMethod) {
+        return readerMethod.getReturnType() != Foo.class;
+    }
+};
+
+HibernateBeanReplicator r = new Hibernate3BeanReplicator(null, null, vetoer);
+Object fromBean = ...
+Object toBean = r.copy(fromBean);
+</blockquote></pre>
+will result in replication that includes all properties except Foo.
 <h3><a name="custom-bean-transformer">Custom Bean Transformer</a></h3>
 One or multiple Custom Bean Transformer can be used to override the default behavior of how a property value, 
 after returned from the getter method of the from bean, 
