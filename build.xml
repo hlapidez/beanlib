@@ -103,6 +103,15 @@
   <target name="release-bundle"
       depends="javadoc,jar,move-cobertura"
   >
+    <copy todir="beanlib-${version}">
+        <fileset dir=".">
+            <include name="LICENSE" />
+            <include name="NOTICE" />
+            <include name="README" />
+            <include name="RELEASE" />
+        </fileset>
+    </copy>
+
     <tar destfile="${release.doc.file}" basedir="." 
       includes="${version}/**" longfile="gnu" compression="gzip" />
     <tar destfile="${release.file}" basedir="." 
