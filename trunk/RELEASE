@@ -2,7 +2,7 @@ beanlib 5.0.0beta
 -----------------
 At the API level this is a backward incompatible release, 
 even though the migration from the 3.x version to 5.x should 
-be rather straigtforward.
+be rather straightforward.
 
 In most cases, it is a simple matter of directly using a 
 constructor instead of a static factory method.
