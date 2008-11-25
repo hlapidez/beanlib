@@ -15,7 +15,7 @@ and are now replaced by stateless object construction.
 * Replace BeanPopulatable with PropertyFilter
 * Make HibernateBeanReplictor fail fast
 * Simplify ProtectedSetterMethodCollector
-* Remove dependency on commons-logging
+* Remove direct dependency on commons-logging
 * Fix method misnormers
 * Delete ununsed classes
 
