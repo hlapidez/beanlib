@@ -1,3 +1,24 @@
+beanlib 5.0.0beta
+-----------------
+At the API level this is a backward incompatible release, 
+even though the migration from the 3.x version to 5.x should 
+be rather straigtforward.
+
+In most cases, it is a simple matter of directly using a 
+constructor instead of a static factory method.
+
+A lot of static singleton instances have been removed, 
+and are now replaced by stateless object construction.
+
+* Handle the replication of Arrays$ArrayList 
+* Favor constructor over factory method whenever possible
+* Replace BeanPopulatable with PropertyFilter
+* Make HibernateBeanReplictor fail fast
+* Simplify ProtectedSetterMethodCollector
+* Remove dependency on commons-logging
+* Fix method misnormers
+* Delete ununsed classes
+
 beanlib 3.3.0beta21
 -------------------
 * add support for joda-time classes with beanlib-joda jar
