@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="/beanlib-test/lib/junit/hamcrest-all-1.1.jar"/>
 	<classpathentry kind="lib" path="/beanlib-test/lib/junit/junit-4.4.jar"/>
 	<classpathentry kind="lib" path="/beanlib/lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="/beanlib-hibernate/lib/commons/commons-logging.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
