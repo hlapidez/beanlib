@@ -13,15 +13,15 @@ body,td,th {
 <h1>Beanlib - FAQ</h1>
 (This documentation is applicable to the Beanlib 5.x release.)
 <p>
-<ol><h2><li>Can I get around the NoSuchMethodException if one of the field doesn't have an empty (ie no-arg) constructor ?</h2>
+<ol><h2><li><a name="empty-constructor">Can I get around the NoSuchMethodException if one of the field doesn't have an empty (ie no-arg) constructor ?</a></h2>
 Yes, see the BeanReplicator's <a href="bean-replicator.html#custom-bean-transformer">Custom Bean Transformer</a> section, or the HibernateBeanReplicator's <a href="hibernate-bean-replicator.html#custom-bean-transformer">Custom Bean Transformer</a> section for details.
 </li>
-<h2><li>Can I combine the use of multiple CustomBeanTransformerSpi instances ?</h2>
+<h2><li><a name="multi-custom-transform">Can I combine the use of multiple CustomBeanTransformerSpi instances ?</a></h2>
 Yes, have a look at <a 
 href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib/src/net/sf/beanlib/spi/ChainedCustomBeanTransformer.java?revision=264&view=markup"
 >ChainedCustomBeanTransformer</a>, or simply specify multiple instances of your custom transformer to to either BeanReplicator or HibernateBeanReplicator, and they will be automatically chained for execution.  See the BeanReplicator's <a href="bean-replicator.html#custom-bean-transformer">Custom Bean Transformer</a> section, or the HibernateBeanReplicator's <a href="hibernate-bean-replicator.html#custom-bean-transformer">Custom Bean Transformer</a> section for an example.
 </li>
-<h2><li>I would like to replicate only the initialized properties/associations in my Hibernate object graph. Is there a simple way to do this?</h2>
+<h2><li><a name="replicate-only-init">I would like to replicate only the initialized properties/associations in my Hibernate object graph. Is there a simple way to do this ?</a></h2>
 Yes, you can make use of a custom transformer to do that.  For example,
 <pre><blockquote>public class MyBeanTransformer implements CustomBeanTransformerSpi {
     public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo)  
@@ -47,7 +47,7 @@ replicator.deepCopy(...);
 </blockquote>
 </pre>
 </li>
-<h2><li>Why doesn't HibernateBeanReplicator invoke the private setters even when I initialize it with a PrivateSetterMethodCollector ?</h2>
+<h2><li><a name="why-private-setter-not-work">Why doesn't HibernateBeanReplicator invoke the private setters even when I initialize it with a PrivateSetterMethodCollector ?</a></h2>
 That's probably because you invoked either the deepCopy or shallowCopy methods (of HibernateBeanReplicator),
 which would cause the initSetterMethodCollector method to be ignored.
 In other words, the copy method needs to be invoked instead when the initSetterMethodCollector is used.  
