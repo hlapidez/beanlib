@@ -47,5 +47,34 @@ replicator.deepCopy(...);
 </blockquote>
 </pre>
 </li>
+<h2><li>Why doesn't HibernateBeanReplicator invoke the private setters even when I initialize it with a PrivateSetterMethodCollector ?</h2>
+That's probably because you invoked either the deepCopy or shallowCopy methods (of HibernateBeanReplicator),
+which would cause the initSetterMethodCollector method to be ignored.
+In other words, the copy method needs to be invoked instead when the initSetterMethodCollector is used.  
+(See the HibernateBeanReplicator javadoc for more details.)
+<p>
+By default, the behavior of the copy method is very similar to deepCopy.
+This raises another question: how can a different (such as private) setter collector be specified but still result in a shallow copy ?  
+<p>
+Solution:
+<pre><blockquote>// Build a property filter that would result in shallow copy
+Set&lt;? extends CollectionPropertyName> emptyCollectionPropertyNameSet = Collections.emptySet();
+Set&lt;Class&lt;?>> emptyEntityBeanClassSet = Collections.emptySet();
+PropertyFilter propertyFilter = new HibernatePropertyFilter()
+                                // no collection nor map properties to be replicated
+                                .withCollectionPropertyNameSet(emptyCollectionPropertyNameSet)
+                                // no entitiy properties to be replicated
+                                .withEntityBeanClassSet(emptyEntityBeanClassSet))
+                                ;
+        
+Object to = new Hibernate3BeanReplicator()
+                // Specify a private setter collector 
+                .initSetterMethodCollector(new PrivateSetterMethodCollector())
+                .initPropertyFilter(propertyFilter)
+                .copy(from)
+                ;
+</blockquote>
+</pre>
+</li>
 </ol>
 </body></html>
