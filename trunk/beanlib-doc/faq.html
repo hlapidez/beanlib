@@ -14,12 +14,12 @@ body,td,th {
 (This documentation is applicable to the Beanlib 5.x release.)
 <p>
 <ol><h2><li>Can I get around the NoSuchMethodException if one of the field doesn't have an empty (ie no-arg) constructor ?</h2>
-Yes, see the BeanReplicator's <a href="bean-replicator.html#custom-bean-transformer">Custom Bean Transformer</a> section for details.
+Yes, see the BeanReplicator's <a href="bean-replicator.html#custom-bean-transformer">Custom Bean Transformer</a> section, or the HibernateBeanReplicator's <a href="hibernate-bean-replicator.html#custom-bean-transformer">Custom Bean Transformer</a> section for details.
 </li>
 <h2><li>Can I combine the use of multiple CustomBeanTransformerSpi instances ?</h2>
 Yes, have a look at <a 
 href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib/src/net/sf/beanlib/spi/ChainedCustomBeanTransformer.java?revision=264&view=markup"
->ChainedCustomBeanTransformer</a>, or simply specify multiple instances of your custom transformer to to either BeanReplicator or HibernateBeanReplicator, and they will be automatically chained for execution.  See the BeanReplicator's <a href="bean-replicator.html#custom-bean-transformer">Custom Bean Transformer</a> section for an example.
+>ChainedCustomBeanTransformer</a>, or simply specify multiple instances of your custom transformer to to either BeanReplicator or HibernateBeanReplicator, and they will be automatically chained for execution.  See the BeanReplicator's <a href="bean-replicator.html#custom-bean-transformer">Custom Bean Transformer</a> section, or the HibernateBeanReplicator's <a href="hibernate-bean-replicator.html#custom-bean-transformer">Custom Bean Transformer</a> section for an example.
 </li>
 <h2><li>I would like to replicate only the initialized properties/associations in my Hibernate object graph. Is there a simple way to do this?</h2>
 Yes, you can make use of a custom transformer to do that.  For example,
