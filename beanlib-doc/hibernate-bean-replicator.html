@@ -34,14 +34,14 @@ By default, only the public setter methods of the target bean are invoked for pr
 Say you want to expand that to include protected and private methods:
 <pre><blockquote>HibernateBeanReplicator r = new Hibernate3BeanReplicator().initSetterMethodCollector(new PrivateSetterMethodCollector());
 Object fromBean = ...
-Object toBean = r.deepCopy(fromBean);
+Object toBean = r.copy(fromBean);
 </blockquote></pre>
 Now setter methods on the toBean will be invoked with values retrieved from invoking the respective public getter methods of the fromBean.
 <p>
 A similar example of expanding the default behavior of retrieving property values from the public getter methods:
 <pre><blockquote>HibernateBeanReplicator r = new Hibernate3BeanReplicator().initReaderMethodFinder(new PrivateReaderMethodFinder());
 Object fromBean = ...
-Object toBean = r.shallowCopy(fromBean);
+Object toBean = r.copy(fromBean);
 </blockquote></pre>
 Now values will be retrieved from invoking all getter methods (including protected and private) on the fromBean.
 <h3><a name="property-filter">Hibernate Property Filter</a></h3>
