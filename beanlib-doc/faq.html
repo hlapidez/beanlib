@@ -48,7 +48,9 @@ replicator.deepCopy(...);
 </pre>
 </li>
 <h2><li><a name="why-private-setter-not-work">Why doesn't HibernateBeanReplicator invoke the private setters even when I initialize it with a PrivateSetterMethodCollector ?</a></h2>
-That's probably because you invoked either the deepCopy or shallowCopy methods (of HibernateBeanReplicator),
+This is no longer a problem since Beanlib 5.0.1+.
+<p>
+For older versions, that's probably because you invoked either the deepCopy or shallowCopy methods (of HibernateBeanReplicator),
 which would cause the initSetterMethodCollector method to be ignored.
 In other words, the copy method needs to be invoked instead when the initSetterMethodCollector is used.  
 (See the HibernateBeanReplicator javadoc for more details.)
