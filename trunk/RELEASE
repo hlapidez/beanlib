@@ -1,3 +1,8 @@
+beanlib 5.0.1beta
+-----------------
+* Support initSetterMethodCollector for HibernateBeanReplicator.{deep,shallow}Copy
+* Default HibernateBeanRelicator.{deep,shallow}Copy to use public instead of protected setters
+
 beanlib 5.0.0beta
 -----------------
 At the API level this is a backward incompatible release, 

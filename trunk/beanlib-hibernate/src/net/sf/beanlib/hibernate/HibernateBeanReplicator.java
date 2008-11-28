@@ -21,7 +21,6 @@ import java.util.Set;
 import net.jcip.annotations.NotThreadSafe;
 import net.sf.beanlib.CollectionPropertyName;
 import net.sf.beanlib.provider.BeanPopulator;
-import net.sf.beanlib.provider.collector.ProtectedSetterMethodCollector;
 import net.sf.beanlib.spi.BeanMethodCollector;
 import net.sf.beanlib.spi.BeanMethodFinder;
 import net.sf.beanlib.spi.BeanPopulationExceptionHandler;
@@ -103,10 +102,7 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * via the init* methods.
      * <p>
      * In the case when none of the init* methods is invoked, this method behaves
-     * very similar to {@link HibernateBeanReplicator#deepCopy(Object)}, except only public
-     * setter methods will be used for property propagation, 
-     * instead of both the public and protected setter
-     * methods as it would be the case in invoking the deep copy method.
+     * exactly like {@link HibernateBeanReplicator#deepCopy(Object)}.
      * 
      * @param <T> type of the given object.
      * @param from given object.
@@ -124,10 +120,7 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * via the init* methods.
      * <p>
      * In the case when none of the init* methods is invoked, this method behaves
-     * very similar to {@link HibernateBeanReplicator#deepCopy(Object, Class)}, except only public
-     * setter methods will be used for property propagation, 
-     * instead of both the public and protected setter
-     * methods as it would be the case in invoking the deep copy method.
+     * exactly like {@link HibernateBeanReplicator#deepCopy(Object, Class)}.
      * 
      * @param <T> type of the given  object.
      * @param from given object.
@@ -147,16 +140,12 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * Convenient method to deep copy the given object using the default behavior.
      * <p>
      * Notes:
-     * <ol>
+     * <ul>
      * <li>
      * Use {@link HibernateBeanReplicator#copy(Object, Class)} instead of this method 
-     * if you want to plug in a different (detailed) property filter or 
-     * setter method finder.
+     * if you want to plug in a different (detailed) property filter.
      * </li>
-     * <li>This method will cause both the public and protected setter methods 
-     * to be invoked for property propagation.
-     * </li>
-     * </ol>
+     * </ul>
      * 
      * @param <T> from object type.
      * @param from given object to be copied.
@@ -173,16 +162,12 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * to an instance of the given class using the default behavior.
      * <p>
      * Notes:
-     * <ol>
+     * <ul>
      * <li>
      * Use {@link HibernateBeanReplicator#copy(Object, Class)} instead of this method 
-     * if you want to plug in a different (detailed) property filter or 
-     * setter method finder.
+     * if you want to plug in a different (detailed) property filter.
      * </li>
-     * <li>This method will cause both the public and protected setter methods 
-     * to be invoked for property propagation.
-     * </li>
-     * </ol>
+     * </ul>
      * 
      * @param <T> to object type.
      * @param from given object to be copied.
@@ -191,7 +176,6 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      */
     public final <T> T deepCopy(Object from, Class<T> toClass) {
         hibernateBeanTransformer.initPropertyFilter(new HibernatePropertyFilter());
-        this.setDefaultBehavior();
         return this.copy(from, toClass);
     }
     
@@ -201,16 +185,12 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * or under a package that doesn't start with "java.".
      * <p>
      * Notes:
-     * <ol>
+     * <ul>
      * <li>
      * Use {@link HibernateBeanReplicator#copy(Object, Class)} instead of this method 
-     * if you want to plug in a different (detailed) property filter or 
-     * setter method finder.
+     * if you want to plug in a different (detailed) property filter.
      * </li>
-     * <li>This method will cause both the public and protected setter methods 
-     * to be invoked for property propagation.
-     * </li>
-     * </ol>
+     * </ul>
      * 
      * @see HibernatePropertyFilter
      * 
@@ -231,16 +211,12 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * or under a package that doesn't start with "java.".
      * <p>
      * Notes:
-     * <ol>
+     * <ul>
      * <li>
      * Use {@link HibernateBeanReplicator#copy(Object, Class)} instead of this method 
-     * if you want to plug in a different (detailed) property filter or 
-     * setter method finder.
+     * if you want to plug in a different (detailed) property filter.
      * </li>
-     * <li>This method will cause both the public and protected setter methods 
-     * to be invoked for property propagation.
-     * </li>
-     * </ol>
+     * </ul>
      * 
      * @param <T> to object type.
      * @param from given object to be copied.
@@ -254,16 +230,9 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
                 new HibernatePropertyFilter()
                     .withCollectionPropertyNameSet(emptyCollectionPropertyNameSet)
                     .withEntityBeanClassSet(emptyEntityBeanClassSet));
-        this.setDefaultBehavior();
         return this.copy(from, toClass);
     }
     
-    /** Configures the default behavior when either shallow or deep copy is invoked. */
-    private void setDefaultBehavior() {
-        this.hibernateBeanTransformer.initDetailedPropertyFilter(null);
-        this.hibernateBeanTransformer.initSetterMethodCollector(new ProtectedSetterMethodCollector());        
-    }
-
     /** 
      * Initializes with one or more custom bean transformer factories 
      * that will be chained together.
@@ -288,10 +257,8 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
     // ========================== Bean Population configuration ========================== 
 
     /**
-     * Returns the populator that is used to control 
+     * Returns the property filter that is used to control 
      * what properties get propagated across and what get skipped.
-     * Note if the returned value is null, the default behavior will make use
-     * of {@link HibernatePropertyFilter}.
      */
     public final PropertyFilter getPropertyFilter() {
         return hibernateBeanTransformer.getPropertyFilter();
@@ -371,10 +338,6 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
 
     /**
      * Used to configure a collector to collect the property setter methods of a target JavaBean.
-     * <p>
-     * Note this method is only applicable if either the {@link #copy(Object)} 
-     * or {@link #copy(Object, Class)} is directly invoked, 
-     * and is ignored otherwise (ie ignored if deep or shallow copy is invoked instead).
      * 
      * @param setterMethodCollector can be used to collect the property setter methods 
      * of a target JavaBean.
@@ -398,11 +361,6 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
     /**
      * Used to conveniently provide the bean population related configuration options as a single 
      * configuration object.
-     * <p>
-     * Note the detailedPropertyFilter and setterMethodCollector in the given config are 
-     * only applicable if either the {@link #copy(Object)} 
-     * or {@link #copy(Object, Class)} is directly invoked, 
-     * and is ignored otherwise (ie ignored if deep or shallow copy is invoked instead).
      * 
      * @param baseConfig is used to conveniently group all the other initializable options into a single unit.
      * 

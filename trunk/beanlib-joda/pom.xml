@@ -7,7 +7,7 @@
   <groupId>net.sf.beanlib</groupId>
   <artifactId>beanlib-joda</artifactId>
   <packaging>jar</packaging>
-  <version>5.0.0beta</version>
+  <version>5.0.1beta</version>
   <name>Java Bean Library for Hibernate</name>
   <url>http://beanlib.sourceforge.net/</url>
   <description>
@@ -29,7 +29,7 @@
     <dependency>
       <groupId>net.sf.beanlib</groupId>
       <artifactId>beanlib</artifactId>
-      <version>5.0.0beta</version>
+      <version>5.0.1beta</version>
     </dependency>
     <dependency>
       <groupId>org.joda</groupId>
