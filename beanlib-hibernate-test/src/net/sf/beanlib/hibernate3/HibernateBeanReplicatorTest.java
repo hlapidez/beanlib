@@ -27,6 +27,7 @@ import net.sf.beanlib.provider.BeanPopulator;
 import net.sf.beanlib.provider.Foo;
 import net.sf.beanlib.provider.Type1;
 import net.sf.beanlib.provider.Type2;
+import net.sf.beanlib.provider.collector.ProtectedSetterMethodCollector;
 import net.sf.beanlib.spi.DetailedPropertyFilter;
 
 import org.junit.Test;
@@ -42,7 +43,8 @@ public class HibernateBeanReplicatorTest
         foo.setBoo(true);
         foo.setString("from");
         
-        HibernateBeanReplicator replicator = new Hibernate3BeanReplicator();
+        HibernateBeanReplicator replicator = new Hibernate3BeanReplicator()
+                                                .initSetterMethodCollector(new ProtectedSetterMethodCollector());
         
         Object to = replicator.deepCopy(foo);
         assertFalse(foo == to);
@@ -122,7 +124,11 @@ public class HibernateBeanReplicatorTest
 //        assertFalse(foo.getProtectedSetString().equals(to.getProtectedSetString()));
 //        assertNull(to.getProtectedSetString());
         
-        Foo to = new Hibernate3BeanReplicator().initDebug(false).deepCopy(foo);
+        Foo to = new Hibernate3BeanReplicator()
+                .initDebug(false)
+                .initSetterMethodCollector(new ProtectedSetterMethodCollector())
+                .deepCopy(foo)
+                ;
         assertEquals(foo.getString(), to.getString());
         assertEquals(foo.getProtectedSetString(), to.getProtectedSetString());
         assertNotNull(to.getProtectedSetString());
@@ -145,7 +151,11 @@ public class HibernateBeanReplicatorTest
 //        assertFalse(bar.getProtectedSetString().equals(to.getProtectedSetString()));
 //        assertNull(to.getProtectedSetString());
         
-        Bar to = new Hibernate3BeanReplicator().initDebug(false).deepCopy(bar);
+        Bar to = new Hibernate3BeanReplicator()
+                    .initDebug(false)
+                    .initSetterMethodCollector(new ProtectedSetterMethodCollector())
+                    .deepCopy(bar)
+                    ;
         assertEquals(bar.getBarString(), to.getBarString());
         assertEquals(bar.getString(), to.getString());
         assertTrue(bar == bar.getBar());
@@ -165,7 +175,11 @@ public class HibernateBeanReplicatorTest
 //        assertEquals(foo.getString(), to.getString());
 //        assertNull(to.getProtectedSetString());
         
-        Foo to = new Hibernate3BeanReplicator().initDebug(false).shallowCopy(foo);
+        Foo to = new Hibernate3BeanReplicator()
+                .initDebug(false)
+                .initSetterMethodCollector(new ProtectedSetterMethodCollector())
+                .shallowCopy(foo)
+                ;
         assertEquals(foo.getString(), to.getString());
         assertNotNull(to.getProtectedSetString());
         assertEquals(foo.getProtectedSetString(), to.getProtectedSetString());
@@ -186,7 +200,11 @@ public class HibernateBeanReplicatorTest
 //        assertNull(to.getProtectedSetString());
 //        assertNull(to.getBar());
         
-        Bar to = new Hibernate3BeanReplicator().initDebug(false).shallowCopy(bar);
+        Bar to = new Hibernate3BeanReplicator()
+                    .initDebug(false)
+                    .initSetterMethodCollector(new ProtectedSetterMethodCollector())
+                    .shallowCopy(bar)
+                    ;
         assertEquals(bar.getBarString(), to.getBarString());
         assertEquals(bar.getString(), to.getString());
         assertTrue(bar == bar.getBar());
