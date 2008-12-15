@@ -23,6 +23,7 @@ import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.PropertyInfo;
 import net.sf.beanlib.provider.replicator.ArrayReplicator;
 import net.sf.beanlib.provider.replicator.BeanReplicator;
+import net.sf.beanlib.provider.replicator.CalendarReplicator;
 import net.sf.beanlib.provider.replicator.CollectionReplicator;
 import net.sf.beanlib.provider.replicator.DateReplicator;
 import net.sf.beanlib.provider.replicator.ImmutableReplicator;
@@ -31,7 +32,6 @@ import net.sf.beanlib.provider.replicator.ReplicatorTemplate;
 import net.sf.beanlib.provider.replicator.UnsupportedBlobReplicator;
 import net.sf.beanlib.spi.BeanMethodCollector;
 import net.sf.beanlib.spi.BeanMethodFinder;
-import net.sf.beanlib.spi.PropertyFilter;
 import net.sf.beanlib.spi.BeanPopulationExceptionHandler;
 import net.sf.beanlib.spi.BeanPopulatorBaseConfig;
 import net.sf.beanlib.spi.BeanPopulatorBaseSpi;
@@ -41,10 +41,12 @@ import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.ChainedCustomBeanTransformer;
 import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 import net.sf.beanlib.spi.DetailedPropertyFilter;
+import net.sf.beanlib.spi.PropertyFilter;
 import net.sf.beanlib.spi.TrivialCustomBeanTransformerFactories;
 import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BlobReplicatorSpi;
+import net.sf.beanlib.spi.replicator.CalendarReplicatorSpi;
 import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
 import net.sf.beanlib.spi.replicator.DateReplicatorSpi;
 import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
@@ -205,6 +207,11 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
      * Replicator for dates.
      */
     private DateReplicatorSpi dateReplicatable = DateReplicator.newDateReplicatable(this);
+
+    /**
+     * Replicator for calendars.
+     */
+    private CalendarReplicatorSpi calendarReplicatable = CalendarReplicator.newCalendarReplicatable(this);
     
     /**
      * Replicator for JavaBeans.
@@ -328,8 +335,17 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
         return this;
     }
 
+    public BeanTransformerSpi initCalendarReplicatableFactory(CalendarReplicatorSpi.Factory calendarReplicatableFactory) {
+        this.calendarReplicatable = calendarReplicatableFactory.newCalendarReplicatable(this);
+        return this;
+    }
+
     public DateReplicatorSpi getDateReplicatable() {
         return dateReplicatable;
+    }
+
+    public CalendarReplicatorSpi getCalendarReplicatable() {
+        return calendarReplicatable;
     }
 
     public BeanTransformer initBeanPopulationExceptionHandler(BeanPopulationExceptionHandler beanPopulationExceptionHandler) {

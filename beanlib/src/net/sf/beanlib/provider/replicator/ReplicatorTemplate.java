@@ -23,6 +23,7 @@ import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.sql.Blob;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
@@ -112,6 +113,10 @@ public abstract class ReplicatorTemplate
         if (from instanceof Date)
             return beanTransformer.getDateReplicatable()
                                   .replicateDate((Date)from, toClass);
+        // Calendar
+        if (from instanceof Calendar)
+            return beanTransformer.getCalendarReplicatable()
+                                  .replicateCalendar((Calendar)from, toClass);
         // Blob
         if (from instanceof Blob)
             return beanTransformer.getBlobReplicatable()
@@ -139,7 +144,6 @@ public abstract class ReplicatorTemplate
      * Creates a target instance from either the class of the given "from" object or the given toClass, 
      * giving priority to the one which is more specific whenever possible.
      */
-    @SuppressWarnings("unchecked")
     protected <T> T createToInstance(Object from, Class<T> toClass)
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
     {

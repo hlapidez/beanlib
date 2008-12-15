@@ -61,8 +61,8 @@ public class Hibernate3SequenceGenerator
                 target = dch.getTarget();
             }
             else {
-                Class invocationHandlerClass = invocationHandler.getClass();
-                Class invocationHandlerDeclaringClass = invocationHandlerClass.getDeclaringClass();
+                Class<?> invocationHandlerClass = invocationHandler.getClass();
+                Class<?> invocationHandlerDeclaringClass = invocationHandlerClass.getDeclaringClass();
                 
                 if (invocationHandlerDeclaringClass == HibernateTemplate.class) 
                 {
