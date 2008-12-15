@@ -33,7 +33,16 @@ import org.junit.Test;
 public class CalendarReplicatorTest {
     private static class CalendarBean {
         private Calendar calendar;
+        private Calendar calendar2;
     
+        public Calendar getCalendar2() {
+            return calendar2;
+        }
+
+        public void setCalendar2(Calendar calendar2) {
+            this.calendar2 = calendar2;
+        }
+
         public Calendar getCalendar() {
             return calendar;
         }
@@ -59,11 +68,14 @@ public class CalendarReplicatorTest {
     public void testBeanReplicator() {
         CalendarBean from = new CalendarBean();
         from.setCalendar(Calendar.getInstance());
+        from.setCalendar2(from.getCalendar());
         CalendarBean to = new BeanReplicator().replicateBean(from);
         
         assertThat(from, not(sameInstance(to)));
         assertThat(from.getCalendar(), not(sameInstance(to.getCalendar())));
         assertThat(from, is(to));
+        assertThat(from.getCalendar(), sameInstance(from.getCalendar2()));
+        assertThat(to.getCalendar(), sameInstance(to.getCalendar2()));
     }
     
     @Test
