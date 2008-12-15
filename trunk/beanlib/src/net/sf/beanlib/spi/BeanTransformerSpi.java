@@ -20,6 +20,7 @@ import java.util.Map;
 import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 import net.sf.beanlib.spi.replicator.BlobReplicatorSpi;
+import net.sf.beanlib.spi.replicator.CalendarReplicatorSpi;
 import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
 import net.sf.beanlib.spi.replicator.DateReplicatorSpi;
 import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
@@ -75,6 +76,8 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
     public BeanTransformerSpi initBlobReplicatableFactory(BlobReplicatorSpi.Factory blobReplicatableFactory);
     /** Used to initialize the replicator factory for dates. */
     public BeanTransformerSpi initDateReplicatableFactory(DateReplicatorSpi.Factory dateReplicatableFactory);
+    /** Used to initialize the replicator factory for calendars. */
+    public BeanTransformerSpi initCalendarReplicatableFactory(CalendarReplicatorSpi.Factory calendarReplicatableFactory);
     /** Used to initialize the replicator factory for JavaBean's. */
     public BeanTransformerSpi initBeanReplicatableFactory(BeanReplicatorSpi.Factory beanReplicatableFactory);
     
@@ -90,6 +93,8 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
     public BlobReplicatorSpi getBlobReplicatable();
     /** Returns the current replicator for dates. */
     public DateReplicatorSpi getDateReplicatable();
+    /** Returns the current replicator for calendars. */
+    public CalendarReplicatorSpi getCalendarReplicatable();
     /** Returns the current replicator for JavaBeans. */
     public BeanReplicatorSpi getBeanReplicatable();
     
