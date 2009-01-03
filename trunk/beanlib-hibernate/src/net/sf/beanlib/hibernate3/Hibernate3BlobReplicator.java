@@ -58,6 +58,7 @@ public class Hibernate3BlobReplicator implements BlobReplicatorSpi {
     
     public <T> T replicateBlob(Blob fromBlob, Class<T> toClass) {
         byte[] byteArray = blobUtils.toByteArray(fromBlob);
-        return (T)Hibernate.createBlob(byteArray);
+        @SuppressWarnings("unchecked") T ret = (T)Hibernate.createBlob(byteArray);
+        return ret;
     }
 }

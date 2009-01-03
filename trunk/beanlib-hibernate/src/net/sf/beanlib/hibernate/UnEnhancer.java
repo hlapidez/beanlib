@@ -36,7 +36,7 @@ public class UnEnhancer
      * Returns true if the given class is found to be a javassist enhanced class; 
      * false otherwise. 
      */ 
-    private static boolean isJavassistEnhanced(Class c) {
+    private static boolean isJavassistEnhanced(Class<?> c) {
         String className = c.getName();
         // pattern found in javassist 3.4 and 3.6's ProxyFactory 
         return className.startsWith(JAVASSIST_STARTWITH)
@@ -47,8 +47,7 @@ public class UnEnhancer
     /**
      * Digs out the pre CGLIB/Javassist enhanced class, if any.
      */
-    @SuppressWarnings("unchecked")
-    public static <T> Class<T> unenhanceClass(Class c) 
+    public static <T> Class<T> unenhanceClass(Class<?> c) 
     {
         boolean enhanced = true;
         
@@ -60,13 +59,14 @@ public class UnEnhancer
             if (enhanced)
                 c = c.getSuperclass();
         }
-        return (Class<T>)c;
+        
+        @SuppressWarnings("unchecked") Class<T> ret = (Class<T>)c;
+        return ret;
     }
     
-    @SuppressWarnings("unchecked")
     public static <T> Class<T> getActualClass(Object object) 
     {
-        Class c = object.getClass();
+        Class<?> c = object.getClass();
         boolean enhanced = true;
         
         while (c != null && enhanced)
@@ -84,24 +84,27 @@ public class UnEnhancer
                         // suggested by Chris (harris3@sourceforge.net)
                         Object impl = lazyInitializer.getImplementation();
                         
-                        if (impl != null)
-                            return (Class<T>)impl.getClass();
+                        if (impl != null) {
+                            @SuppressWarnings("unchecked") Class<T> ret = (Class<T>)impl.getClass();
+                            return ret;
+                        }
                     } catch(HibernateException ex) {
                         Logger.getLogger(UnEnhancer.class).warn("Unable to retrieve the underlying persistent object", ex);
                     }
-                    return lazyInitializer.getPersistentClass();
+                    @SuppressWarnings("unchecked") Class<T> ret = lazyInitializer.getPersistentClass();
+                    return ret;
                 }
                 c = c.getSuperclass();
             }
         }
-        return (Class<T>)c;
+        @SuppressWarnings("unchecked") Class<T> ret = (Class<T>)c;
+        return ret;
     }
     
-    @SuppressWarnings("unchecked")
     public static <T> T unenhanceObject(T object) {
         if (object == null)
             return null;
-        Class c = object.getClass();
+        Class<?> c = object.getClass();
         boolean enhanced = true;
         
         while (c != null && enhanced)
@@ -115,7 +118,10 @@ public class UnEnhancer
                 {
                     HibernateProxy hibernateProxy = (HibernateProxy)object; 
                     LazyInitializer lazyInitializer = hibernateProxy.getHibernateLazyInitializer();
-                    return (T)lazyInitializer.getImplementation();
+                    
+                    @SuppressWarnings("unchecked") 
+                    T ret = (T)lazyInitializer.getImplementation();
+                    return ret;
                 }
                 c = c.getSuperclass();
             }

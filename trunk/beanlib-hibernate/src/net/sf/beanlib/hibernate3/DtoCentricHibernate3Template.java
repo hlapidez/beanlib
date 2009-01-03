@@ -41,7 +41,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 public class DtoCentricHibernate3Template extends HibernateTemplate 
 {
     private String applicationPackagePrefix;
-    private Class applicationSampleClass;
+    private Class<?> applicationSampleClass;
 
     public DtoCentricHibernate3Template() {
 	}
@@ -55,7 +55,7 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
 	}
     
     // TODO: verify this method must be invoked 
-    public DtoCentricHibernate3Template init(String applicationPackagePrefix, Class applicationSampleClass) {
+    public DtoCentricHibernate3Template init(String applicationPackagePrefix, Class<?> applicationSampleClass) {
         this.applicationPackagePrefix = applicationPackagePrefix;
         this.applicationSampleClass = applicationSampleClass;
         return this;
@@ -73,7 +73,8 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
     //-------------------------------------------------------------------------
 
     @Override
-    public Object get(final Class entityClass, final Serializable id, final LockMode lockMode)
+    public Object get(@SuppressWarnings("unchecked") final Class entityClass, 
+                        final Serializable id, final LockMode lockMode)
             throws DataAccessException 
     {
         return execute(new HibernateCallback() {
@@ -100,7 +101,8 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
     }
 
     @Override
-    public Object load(final Class entityClass, final Serializable id, final LockMode lockMode)
+    public Object load(@SuppressWarnings("unchecked") final Class entityClass, 
+                        final Serializable id, final LockMode lockMode)
             throws DataAccessException 
     {
         return execute(new HibernateCallback() {
@@ -129,22 +131,26 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
 
 
     @Override
-    public List loadAll(final Class entityClass) throws DataAccessException {
+    public @SuppressWarnings("unchecked") List loadAll(final Class entityClass) 
+        throws DataAccessException 
+    {
         return (List) execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 Criteria criteria = session.createCriteria(entityClass);
                 prepareCriteria(criteria);
-                return getHibernateDtoCopier().hibernate2dto(criteria.list() /*, getSessionFactory() */);
+                return getHibernateDtoCopier().hibernate2dto(criteria.list());
             }
         }, true);
     }
 
-    public List loadByCriteria(final CriteriaSpecifiable specifier) throws DataAccessException {
-        return (List) execute(new HibernateCallback() {
+    public List<?> loadByCriteria(final CriteriaSpecifiable specifier) 
+        throws DataAccessException 
+    {
+        return (List<?>)execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 Criteria criteria = specifier.specify(session);
                 prepareCriteria(criteria);
-                return getHibernateDtoCopier().hibernate2dto(criteria.list() /*, getSessionFactory() */);
+                return getHibernateDtoCopier().hibernate2dto(criteria.list());
             }
         }, true);
     }
@@ -154,7 +160,9 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
     //-------------------------------------------------------------------------
     
     @Override
-    public List find(final String queryString, final Object[] values) throws DataAccessException {
+    public @SuppressWarnings("unchecked") List find(final String queryString, final Object[] values) 
+        throws DataAccessException 
+    {
         return (List) execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 Query queryObject = session.createQuery(queryString);
@@ -170,7 +178,8 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
     }
 
     @Override
-    public List findByNamedParam(final String queryString, final String[] paramNames, final Object[] values)
+    public @SuppressWarnings("unchecked") List findByNamedParam(
+                final String queryString, final String[] paramNames, final Object[] values)
             throws DataAccessException 
     {
         if (paramNames.length != values.length) {
@@ -191,7 +200,7 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
     }
 
     @Override
-    public List findByValueBean(final String queryString, final Object valueBean)
+    public @SuppressWarnings("unchecked") List findByValueBean(final String queryString, final Object valueBean)
             throws DataAccessException 
     {
         return (List) execute(new HibernateCallback() {
@@ -210,7 +219,9 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
     //-------------------------------------------------------------------------
 
     @Override
-    public List findByNamedQuery(final String queryName, final Object[] values) throws DataAccessException {
+    public @SuppressWarnings("unchecked") List findByNamedQuery(final String queryName, final Object[] values) 
+        throws DataAccessException 
+    {
         return (List) execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 Query queryObject = session.getNamedQuery(queryName);
@@ -226,7 +237,7 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
     }
 
     @Override
-    public List findByNamedQueryAndNamedParam(
+    public @SuppressWarnings("unchecked") List findByNamedQueryAndNamedParam(
             final String queryName, final String[] paramNames, final Object[] values)
             throws DataAccessException 
     {
@@ -248,7 +259,7 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
     }
 
     @Override
-    public List findByNamedQueryAndValueBean(final String queryName, final Object valueBean)
+    public @SuppressWarnings("unchecked") List findByNamedQueryAndValueBean(final String queryName, final Object valueBean)
             throws DataAccessException 
     {
         return (List) execute(new HibernateCallback() {
@@ -263,7 +274,7 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
 
     @Override
     protected Session createSessionProxy(Session session) {
-        Class[] sessionIfcs = null;
+        Class<?>[] sessionIfcs = null;
         if (session instanceof SessionImplementor) {
             sessionIfcs = new Class[] {Session.class, SessionImplementor.class};
         }
