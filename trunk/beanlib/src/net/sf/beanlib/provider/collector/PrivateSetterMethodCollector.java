@@ -28,33 +28,33 @@ import net.sf.beanlib.spi.BeanMethodCollector;
  * @author Joe D. Velopar
  */
 public class PrivateSetterMethodCollector implements BeanMethodCollector {
-	public Method[] collect(Object bean) {
-		Class beanClass = bean.getClass();
-		// Get all methods declared by the class or interface.
-		// This includes public, protected, default (package) access, 
-		// and private methods, but excludes inherited methods.
-		Set<Method> set = new HashSet<Method>();
-		
-		while (beanClass != Object.class) 
+    public Method[] collect(Object bean) {
+        Class<?> beanClass = bean.getClass();
+        // Get all methods declared by the class or interface.
+        // This includes public, protected, default (package) access, 
+        // and private methods, but excludes inherited methods.
+        Set<Method> set = new HashSet<Method>();
+        
+        while (beanClass != Object.class) 
         {
             for (Method m : beanClass.getDeclaredMethods()) 
             {
-				if (!m.getName().startsWith(getMethodPrefix()))
-					continue;
-				if (m.getParameterTypes().length != 1)
-					continue;
-				final int mod = m.getModifiers();
-				
-				if (Modifier.isStatic(mod))
-					continue;
-				// Adds the specified element to the set if it is not already present
-				set.add(m);
-			}
-			// climb to the super class and repeat
-			beanClass = beanClass.getSuperclass();
-		}
-		return set.toArray(new Method[set.size()]);
-	}
+                if (!m.getName().startsWith(getMethodPrefix()))
+                    continue;
+                if (m.getParameterTypes().length != 1)
+                    continue;
+                final int mod = m.getModifiers();
+                
+                if (Modifier.isStatic(mod))
+                    continue;
+                // Adds the specified element to the set if it is not already present
+                set.add(m);
+            }
+            // climb to the super class and repeat
+            beanClass = beanClass.getSuperclass();
+        }
+        return set.toArray(new Method[set.size()]);
+    }
 
     public String getMethodPrefix() {
         return "set";

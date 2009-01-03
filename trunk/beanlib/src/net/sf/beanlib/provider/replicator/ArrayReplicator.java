@@ -58,8 +58,8 @@ public class ArrayReplicator extends ReplicatorTemplate implements ArrayReplicat
     {
         if (!toClass.isAssignableFrom(arrayToCopy.getClass()))
             return null;
-        Class fromClass = arrayToCopy.getClass();
-        Class fromComponentType = fromClass.getComponentType();
+        Class<?> fromClass = arrayToCopy.getClass();
+        Class<?> fromComponentType = fromClass.getComponentType();
         // primitive array
         if (immutable(fromComponentType))
         {

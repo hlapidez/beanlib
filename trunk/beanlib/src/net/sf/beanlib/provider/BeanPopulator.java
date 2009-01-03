@@ -260,7 +260,6 @@ public class BeanPopulator implements BeanPopulatorSpi
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public <T> T populate() 
     {
         if (getBeanTransformerSpi() != null)
@@ -268,7 +267,8 @@ public class BeanPopulator implements BeanPopulatorSpi
         // invoking all declaring setter methods of toBean from all matching getter methods of fromBean
         for (Method m : baseConfig.getSetterMethodCollector().collect(toBean))
             processSetterMethod(m);
-        return (T)toBean;
+        @SuppressWarnings("unchecked") T ret = (T)toBean;
+        return ret;
     }
     
     // -------------------------- BeanPopulatorBaseSpi -------------------------- 

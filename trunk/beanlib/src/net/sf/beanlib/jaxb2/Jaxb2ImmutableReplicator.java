@@ -32,7 +32,6 @@ import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
  */
 public class Jaxb2ImmutableReplicator extends ImmutableReplicator
 {
-    @SuppressWarnings("hiding")
     public static final Factory factory = new Factory();
     
     /**

@@ -48,24 +48,27 @@ public class ImmutableReplicator implements ImmutableReplicatorSpi
     
     protected ImmutableReplicator() {}
 
-    @SuppressWarnings("unchecked")
     public <V, T> T replicateImmutable(V immutableFrom, Class<T> toClass) 
     {
         if (toClass.isPrimitive()) 
         {
-            if (sameType(toClass, immutableFrom.getClass()))
-                return (T)immutableFrom;
+            if (sameType(toClass, immutableFrom.getClass())) {
+                @SuppressWarnings("unchecked") T ret = (T)immutableFrom;
+                return ret;
+            }
             // from & to are of totally different types
             return getDefaultPrimitiveValue(toClass);
         }
         // toClass is not primitive.
         // immutableFrom is not null, but could be a primitive.
-        Class fromClass = immutableFrom.getClass();
+        Class<?> fromClass = immutableFrom.getClass();
         
         if (fromClass.isPrimitive()) 
         {
-            if (sameType(fromClass, toClass))
-                return (T)immutableFrom;
+            if (sameType(fromClass, toClass)) {
+                @SuppressWarnings("unchecked") T ret = (T)immutableFrom;
+                return ret;
+            }
             return getDefaultPrimitiveValue(toClass);
         }
         // from and to are both not primitives.
@@ -80,7 +83,7 @@ public class ImmutableReplicator implements ImmutableReplicatorSpi
         return (T)(primitiveClass == boolean.class ? Boolean.FALSE : new Byte((byte)0));
     }
     
-    private static boolean sameType(Class lhs, Class rhs) {
+    private static boolean sameType(Class<?> lhs, Class<?> rhs) {
         return lhs == boolean.class && rhs == Boolean.class
             || lhs == byte.class && rhs == Byte.class
             || lhs == char.class && rhs == Character.class

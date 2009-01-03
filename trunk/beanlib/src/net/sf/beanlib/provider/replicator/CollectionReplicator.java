@@ -20,7 +20,6 @@ import static net.sf.beanlib.utils.ClassUtils.isJavaPackage;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -105,17 +104,16 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
     // Use the same comparator or otherwise ClassCastException.
     // http://sourceforge.net/forum/forum.php?thread_id=1462253&forum_id=470286
     // Thanks to Jam Flava for finding this bug.
-    @SuppressWarnings("unchecked")
     protected Collection<Object> createToCollection(Collection<?> from)
         throws InstantiationException, IllegalAccessException, SecurityException, 
                 NoSuchMethodException, InvocationTargetException
     {
-        Class fromClass = from.getClass();
+        Class<?> fromClass = from.getClass();
         
         if (isJavaPackage(fromClass)) {
             if (from instanceof SortedSet) {
-                SortedSet fromSortedSet = (SortedSet)from;
-                Comparator toComparator = createToComparator(fromSortedSet);
+                SortedSet<?> fromSortedSet = (SortedSet<?>)from;
+                Comparator<?> toComparator = createToComparator(fromSortedSet);
                 
                 if (toComparator != null)
                     return this.createToSortedSetWithComparator(fromSortedSet, toComparator);
@@ -123,53 +121,54 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
             return createToInstanceAsCollection(from);
         }
         if (from instanceof SortedSet) {
-            SortedSet fromSortedSet = (SortedSet)from;
-            Comparator toComparator = createToComparator(fromSortedSet);
+            SortedSet<?> fromSortedSet = (SortedSet<?>)from;
+            Comparator<?> toComparator = createToComparator(fromSortedSet);
             
-//            if (isHibernatePackage(fromClass))
-//                return new TreeSet<Object>(toComparator);
-            Constructor constructor = fromClass.getConstructor(Comparator.class);
+            Constructor<?> constructor = fromClass.getConstructor(Comparator.class);
             Object[] initargs = {toComparator};
-            return (Collection<Object>) constructor.newInstance(initargs);
+            
+            @SuppressWarnings("unchecked")
+            Collection<Object> ret = (Collection<Object>) constructor.newInstance(initargs);
+            return ret;
         }
-        if (from instanceof Set) {
-//            if (isHibernatePackage(fromClass))
-//                return new HashSet<Object>();
-            return (Collection<Object>)fromClass.newInstance();
-        }
-        if (from instanceof List) {
-//            if (isHibernatePackage(fromClass))
-//                return new ArrayList<Object>(from.size());
-            return (Collection<Object>)fromClass.newInstance();
+        if (from instanceof Set
+        ||  from instanceof List) 
+        {
+            @SuppressWarnings("unchecked")
+            Collection<Object> ret = (Collection<Object>)fromClass.newInstance();
+            return ret;
         }
         // don't know what collection, so use list
         log.warn("Don't know what collection object:" + fromClass + ", so assume List.");
         return new ArrayList<Object>(from.size());
     }
     
-    @SuppressWarnings("unchecked")
     protected final Collection<Object> createToInstanceAsCollection(Collection<?> from) 
         throws InstantiationException, IllegalAccessException, NoSuchMethodException
     {
         
         if (from.getClass() == CLASS_ARRAY_ARRAYLIST) {
             List<?> list = (List<?>)from;
-            return new ArrayList(list.size());
+            return new ArrayList<Object>(list.size());
         }
-        return (Collection<Object>)createToInstance(from);
+        
+        @SuppressWarnings("unchecked")
+        Collection<Object> ret = (Collection<Object>)createToInstance(from);
+        return ret;
     }
+    
     @SuppressWarnings("unchecked")
-    protected final SortedSet<Object> createToSortedSetWithComparator(SortedSet from, Comparator comparator) 
+    protected final SortedSet<Object> createToSortedSetWithComparator(SortedSet<?> from, Comparator<?> comparator) 
         throws NoSuchMethodException, SecurityException
     {
         return (SortedSet<Object>)createToInstanceWithComparator(from, comparator);
     }
     
     /** Returns a replicated comparator of the given sorted set, or null if there is no comparator. */
-    protected Comparator createToComparator(SortedSet fromSortedSet)
+    protected Comparator<?> createToComparator(SortedSet<?> fromSortedSet)
     {
-        Comparator fromComparator = fromSortedSet.comparator();
-        Comparator toComparator = fromComparator == null 
+        Comparator<?> fromComparator = fromSortedSet.comparator();
+        Comparator<?> toComparator = fromComparator == null 
                                 ? null 
                                 : replicateByBeanReplicatable(fromComparator, Comparator.class)
                                 ;

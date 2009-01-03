@@ -16,7 +16,7 @@ import java.util.List;
 public abstract class TypeReference<T> {
 
     private final Type type;
-    private volatile Constructor<?> constructor;
+    private volatile Constructor<T> constructor;
 
     protected TypeReference() {
         Type superclass = getClass().getGenericSuperclass();
@@ -30,17 +30,17 @@ public abstract class TypeReference<T> {
      * Instantiates a new instance of {@code T} using the default, no-arg
      * constructor.
      */
-    @SuppressWarnings("unchecked")
     public T newInstance()
             throws NoSuchMethodException, IllegalAccessException,
                    InvocationTargetException, InstantiationException {
         if (constructor == null) {
-            Class<?> rawType = type instanceof Class<?>
-                ? (Class<?>) type
-                : (Class<?>) ((ParameterizedType) type).getRawType();
+            @SuppressWarnings("unchecked")
+            Class<T> rawType = type instanceof Class<?>
+                ? (Class<T>) type
+                : (Class<T>) ((ParameterizedType) type).getRawType();
             constructor = rawType.getConstructor();
         }
-        return (T) constructor.newInstance();
+        return constructor.newInstance();
     }
 
     /**
@@ -52,6 +52,9 @@ public abstract class TypeReference<T> {
 
     public static void main(String[] args) throws Exception {
         List<String> l1 = new TypeReference<ArrayList<String>>() {}.newInstance();
-        List l2 = new TypeReference<ArrayList>() {}.newInstance();
+        System.out.println(l1);
+        
+        List<?> l2 = new TypeReference<ArrayList<?>>() {}.newInstance();
+        System.out.println(l2);
     }
 }

@@ -79,7 +79,6 @@ public abstract class ReplicatorTemplate
      * of Collection, Map, Timestamp, Date, Blob, Hibernate entity, 
      * JavaBean, or an array.
      */
-    @SuppressWarnings("unchecked")
     protected <T> T replicate(Object from, Class<T> toClass) 
         throws SecurityException 
     {
@@ -89,6 +88,8 @@ public abstract class ReplicatorTemplate
                  ? ImmutableReplicator.getDefaultPrimitiveValue(toClass)
                  : null;
         }
+        
+        @SuppressWarnings("unchecked")
         T to = (T)beanTransformer.getClonedMap().get(from);
         
         if (to != null)
@@ -106,9 +107,12 @@ public abstract class ReplicatorTemplate
             return beanTransformer.getArrayReplicatable()
                                   .replicateArray(from, toClass);
         // Map
-        if (from instanceof Map)
-            return (T)beanTransformer.getMapReplicatable()
-                                     .replicateMap((Map)from, toClass);
+        if (from instanceof Map) {
+            @SuppressWarnings("unchecked")
+            T ret = (T)beanTransformer.getMapReplicatable()
+                                      .replicateMap((Map)from, toClass);
+            return ret;
+        }
         // Date or Timestamp
         if (from instanceof Date)
             return beanTransformer.getDateReplicatable()
@@ -161,13 +165,14 @@ public abstract class ReplicatorTemplate
      * @return the target class if either the "from" class is not assignable to the "to" class,
      * or if the from class is abstract; otherwise, returns the from class.
      */
-    @SuppressWarnings("unchecked")
     protected final <T> Class<T> chooseClass(Class<?> fromClass, Class<T> toClass) 
     {
         if (!toClass.isAssignableFrom(fromClass) 
         ||  Modifier.isAbstract(fromClass.getModifiers()))
             return toClass;
-        return (Class<T>)fromClass;
+        
+        @SuppressWarnings("unchecked") Class<T> ret = (Class<T>)fromClass;
+        return ret;
     }
     
     protected <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo) {

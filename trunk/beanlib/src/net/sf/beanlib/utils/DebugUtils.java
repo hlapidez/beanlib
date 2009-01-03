@@ -29,7 +29,7 @@ public class DebugUtils {
 	 * Returns the value of a declared field regardless of the privacy modifier.
 	 * This breaks encapsulation, so please use it only for debugging purposes. 
 	 */
-	public Object getFieldValue(Class c, String declaredFieldName, Object target) 
+	public Object getFieldValue(Class<?> c, String declaredFieldName, Object target) 
 	{
 		try {
 			Field f = c.getDeclaredField(declaredFieldName);

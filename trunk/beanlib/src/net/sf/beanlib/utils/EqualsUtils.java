@@ -36,14 +36,14 @@ public class EqualsUtils {
 			return true;
 		if (lhs == null || rhs == null)
 			return false;
-		Class lClass = lhs.getClass();
-		Class rClass = rhs.getClass();
+		Class<?> lClass = lhs.getClass();
+		Class<?> rClass = rhs.getClass();
         
 		if (lClass.isArray()
 		&&  rClass.isArray())
 		{
-			Class lCompType = lClass.getComponentType();
-			Class rCompType = rClass.getComponentType();
+			Class<?> lCompType = lClass.getComponentType();
+			Class<?> rCompType = rClass.getComponentType();
             
 			if (lCompType.isPrimitive()) {
 				if (rCompType.isPrimitive()) {

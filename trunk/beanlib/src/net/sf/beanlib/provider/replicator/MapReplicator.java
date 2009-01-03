@@ -78,10 +78,10 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
             throw new BeanlibException(e);
         }
         putTargetCloned(from, toMap);
-        Map fromMap = from;
+        Map<?,?> fromMap = from;
         // recursively populate member objects.
-        for (Iterator itr=fromMap.entrySet().iterator(); itr.hasNext(); ) {
-            Map.Entry fromEntry = (Map.Entry)itr.next();
+        for (Iterator<?> itr=fromMap.entrySet().iterator(); itr.hasNext(); ) {
+            Map.Entry<?,?> fromEntry = (Map.Entry<?,?>)itr.next();
             Object fromKey = fromEntry.getKey();
             Object fromValue = fromEntry.getValue();
             Object toKey = replicate(fromKey);
@@ -94,11 +94,11 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
     private Map<Object,Object> createToMap(Map<?,?> from) 
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
     {
-        Class fromClass = from.getClass();
+        Class<?> fromClass = from.getClass();
         
         if (isJavaPackage(fromClass)) {
             if (from instanceof SortedMap) {
-                SortedMap fromSortedMap = (SortedMap<?,?>)from;
+                SortedMap<?,?> fromSortedMap = (SortedMap<?,?>)from;
                 Comparator<Object> toComparator = createToComparator(fromSortedMap);
                 
                 if (toComparator != null)
@@ -107,7 +107,7 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
             return createToInstanceAsMap(from);
         }
         if (from instanceof SortedMap) {
-            SortedMap fromSortedMap = (SortedMap<?,?>)from;
+            SortedMap<?,?> fromSortedMap = (SortedMap<?,?>)from;
             Comparator<Object> toComparator = createToComparator(fromSortedMap);
             return new TreeMap<Object,Object>(toComparator);
         }
@@ -122,11 +122,12 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
     }
     
     /** Returns a replicated comparator of the given sorted map, or null if there is no comparator. */
-    @SuppressWarnings("unchecked")
-    private Comparator<Object> createToComparator(SortedMap fromSortedMap)
+    private Comparator<Object> createToComparator(SortedMap<?,?> fromSortedMap)
     {
-        Comparator fromComparator = fromSortedMap.comparator();
-        Comparator toComparator = fromComparator == null 
+        Comparator<?> fromComparator = fromSortedMap.comparator();
+        
+        @SuppressWarnings("unchecked")
+        Comparator<Object> toComparator = fromComparator == null
                                 ? null 
                                 : replicateByBeanReplicatable(fromComparator, Comparator.class)
                                 ;

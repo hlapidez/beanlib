@@ -26,48 +26,48 @@ import org.apache.commons.lang.builder.EqualsBuilder;
  * @author Joe D. Velopar
  */
 public class CollectionPropertyName {
-	public static final CollectionPropertyName[] EMPTY_ARRAY = {};
-	private final Class declaringClass;
-	private final String collectionProperty;
-	private final int hashCode;
-	private final BeanGetter beanGetter = new BeanGetter();
-	/** Convenient factory method. */
-	public static CollectionPropertyName[] createCollectionPropertyNames(Class declaringClass, String[] collectionProperties)
-	{
-		Set<CollectionPropertyName> set = new HashSet<CollectionPropertyName>();
-		
+    public static final CollectionPropertyName[] EMPTY_ARRAY = {};
+    private final Class<?> declaringClass;
+    private final String collectionProperty;
+    private final int hashCode;
+    private final BeanGetter beanGetter = new BeanGetter();
+    /** Convenient factory method. */
+    public static CollectionPropertyName[] createCollectionPropertyNames(Class<?> declaringClass, String[] collectionProperties)
+    {
+        Set<CollectionPropertyName> set = new HashSet<CollectionPropertyName>();
+        
         for (String s : collectionProperties)
             set.add(new CollectionPropertyName(declaringClass, s));
-		return set.toArray(EMPTY_ARRAY);
-	}
-	/**
-	 * @param declaringClass declaring class of the Collection or Map property.
-	 * @param collectionProperty Collection or Map property name.
-	 */
-	public CollectionPropertyName(Class declaringClass, String collectionProperty) {
-		this.declaringClass = declaringClass;
-		this.collectionProperty = collectionProperty;
-		this.hashCode = beanGetter.getBeanHashCode(this);
-	}
-	public Class getDeclaringClass() {
-		return declaringClass;
-	}
-	public String getCollectionProperty() {
-		return collectionProperty;
-	}
-	@Override
+        return set.toArray(EMPTY_ARRAY);
+    }
+    /**
+     * @param declaringClass declaring class of the Collection or Map property.
+     * @param collectionProperty Collection or Map property name.
+     */
+    public CollectionPropertyName(Class<?> declaringClass, String collectionProperty) {
+        this.declaringClass = declaringClass;
+        this.collectionProperty = collectionProperty;
+        this.hashCode = beanGetter.getBeanHashCode(this);
+    }
+    public Class<?> getDeclaringClass() {
+        return declaringClass;
+    }
+    public String getCollectionProperty() {
+        return collectionProperty;
+    }
+    @Override
     public boolean equals(Object obj) {
-		if (!(obj instanceof CollectionPropertyName))
-			return false;
-		CollectionPropertyName that = (CollectionPropertyName)obj;
-		return new EqualsBuilder()
-				.append(this.declaringClass, that.declaringClass)
-				.append(this.collectionProperty, that.collectionProperty)
-				.isEquals()
-				;
-	}
-	@Override
+        if (!(obj instanceof CollectionPropertyName))
+            return false;
+        CollectionPropertyName that = (CollectionPropertyName)obj;
+        return new EqualsBuilder()
+                .append(this.declaringClass, that.declaringClass)
+                .append(this.collectionProperty, that.collectionProperty)
+                .isEquals()
+                ;
+    }
+    @Override
     public int hashCode() {
-		return this.hashCode;
-	}
+        return this.hashCode;
+    }
 }
