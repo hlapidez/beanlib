@@ -27,7 +27,7 @@ public enum ClassUtils {
     /** copied from the private static Class.ENUM constant. */
     private static final int ENUM      = 0x00004000;
     /** Returns the unqalified class name. */
-    public static String unqualify(Class c) {
+    public static String unqualify(Class<?> c) {
         if (c == null)
             return null;
         String fqcn = c.getName();
@@ -38,7 +38,7 @@ public enum ClassUtils {
     /** 
      * Returns true if the given class is known to be immutable; false otherwise. 
      */
-    public static boolean immutable(Class c) {
+    public static boolean immutable(Class<?> c) {
         if (c == null)
             return false;
         return c == String.class
@@ -55,7 +55,7 @@ public enum ClassUtils {
     /**
      * Returns true if the given class is under a package that starts with "java.". 
      */
-    public static boolean isJavaPackage(Class c) {
+    public static boolean isJavaPackage(Class<?> c) {
         if (c == null)
             return false;
         Package p = c.getPackage();

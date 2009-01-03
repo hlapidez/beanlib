@@ -33,8 +33,8 @@ public class EnumUtils
      * @author Joe D. Velopar
      */
     private static class LazyExternal {
-        private static final ConcurrentMap<Class,Map> enumExternalDirectory = 
-            new ConcurrentHashMap<Class,Map>();
+        private static final ConcurrentMap<Class<?>,Map<?,?>> enumExternalDirectory = 
+            new ConcurrentHashMap<Class<?>,Map<?,?>>();
     }
 
     /** 
@@ -43,8 +43,8 @@ public class EnumUtils
      * @author Joe D. Velopar
      */
     private static class LazyToString {
-        private static final ConcurrentMap<Class,Map> enumToStringDirectory = 
-            new ConcurrentHashMap<Class,Map>();
+        private static final ConcurrentMap<Class<?>,Map<?,?>> enumToStringDirectory = 
+            new ConcurrentHashMap<Class<?>,Map<?,?>>();
     }
 
     /** 
@@ -53,8 +53,8 @@ public class EnumUtils
      * @author Joe D. Velopar
      */
     private static class LazyOrdinal {
-        private static final ConcurrentMap<Class,Map> enumOrdinalDirectory = 
-            new ConcurrentHashMap<Class,Map>();
+        private static final ConcurrentMap<Class<?>,Map<?,?>> enumOrdinalDirectory = 
+            new ConcurrentHashMap<Class<?>,Map<?,?>>();
     }
 
     /**
@@ -101,11 +101,11 @@ public class EnumUtils
      * Note that the map returned by this method is
      * created lazily on first use.  Typically it won't ever get created.
      */
-    @SuppressWarnings("unchecked")
     private static <T extends Enum<T> & External<E>, E> 
         Map<E,T> enumConstantDirectory(Class<T> enumType) 
     {
-        Map<E,T> constantMap = LazyExternal.enumExternalDirectory.get(enumType);
+        @SuppressWarnings("unchecked")
+        Map<E,T> constantMap = (Map<E,T>)LazyExternal.enumExternalDirectory.get(enumType);
         
         if (constantMap == null) {
             T[] constants = enumType.getEnumConstants();  // Does unnecessary clone
@@ -113,8 +113,9 @@ public class EnumUtils
             
             for (T constant : constants)
                 constantMap.put(constant.externalize(), constant);
+            @SuppressWarnings("unchecked")
             Map<E,T> prev = 
-                LazyExternal.enumExternalDirectory
+                (Map<E,T>)LazyExternal.enumExternalDirectory
                     .putIfAbsent(enumType, Collections.unmodifiableMap(constantMap));
             
             if (prev != null)
@@ -134,11 +135,11 @@ public class EnumUtils
      * Note that the map returned by this method is
      * created lazily on first use.  Typically it won't ever get created.
      */
-    @SuppressWarnings("unchecked")
     private static <T extends Enum<T>>
         Map<String,T> enumStringConstantDirectory(Class<T> enumType) 
     {
-        Map<String,T> constantMap = LazyToString.enumToStringDirectory.get(enumType);
+        @SuppressWarnings("unchecked")
+        Map<String,T> constantMap = (Map<String,T>)LazyToString.enumToStringDirectory.get(enumType);
         
         if (constantMap == null) {
             T[] constants = enumType.getEnumConstants();  // Does unnecessary clone
@@ -146,8 +147,9 @@ public class EnumUtils
             
             for (T constant : constants)
                 constantMap.put(constant.toString(), constant);
+            @SuppressWarnings("unchecked")
             Map<String,T> prev = 
-                LazyToString.enumToStringDirectory
+                (Map<String,T>)LazyToString.enumToStringDirectory
                     .putIfAbsent(enumType, Collections.unmodifiableMap(constantMap));
             
             if (prev != null)
@@ -167,11 +169,11 @@ public class EnumUtils
      * Note that the map returned by this method is
      * created lazily on first use.  Typically it won't ever get created.
      */
-    @SuppressWarnings("unchecked")
     private static <T extends Enum<T>>
         Map<Integer,T> enumOrdinalConstantDirectory(Class<T> enumType) 
     {
-        Map<Integer,T> constantMap = LazyOrdinal.enumOrdinalDirectory.get(enumType);
+        @SuppressWarnings("unchecked")
+        Map<Integer,T> constantMap = (Map<Integer,T>)LazyOrdinal.enumOrdinalDirectory.get(enumType);
         
         if (constantMap == null) {
             T[] constants = enumType.getEnumConstants();  // Does unnecessary clone
@@ -179,8 +181,9 @@ public class EnumUtils
             
             for (T constant : constants)
                 constantMap.put(constant.ordinal(), constant);
+            @SuppressWarnings("unchecked")
             Map<Integer,T> prev = 
-                LazyOrdinal.enumOrdinalDirectory
+                (Map<Integer,T>)LazyOrdinal.enumOrdinalDirectory
                     .putIfAbsent(enumType, Collections.unmodifiableMap(constantMap));
             
             if (prev != null)

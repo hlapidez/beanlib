@@ -30,7 +30,6 @@ import net.sf.beanlib.spi.replicator.ImmutableReplicatorSpi;
  */
 public class HeteroImmutableReplicator extends ImmutableReplicator
 {
-    @SuppressWarnings("hiding")
     public static final Factory factory = new Factory();
     
     /**
@@ -64,7 +63,7 @@ public class HeteroImmutableReplicator extends ImmutableReplicator
         if (toClass.isEnum() 
         &&  immutableFrom instanceof Enum)
         {   // to and from are of different enums.
-            Enum enumFrom = (Enum)immutableFrom;
+            Enum<?> enumFrom = (Enum<?>)immutableFrom;
             Method values;
             // Try to return the respective enum constant via ordinal
             try {

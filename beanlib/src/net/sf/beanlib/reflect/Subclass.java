@@ -29,13 +29,14 @@ public class Subclass
      * Returns a subclass instance of the given super class, with every method intercepted by the
      * given interceptor.
      */
-    @SuppressWarnings("unchecked")
     public static<T> T newInstance(Class<T> superClass, MethodInterceptor interceptor) 
     {
         Enhancer e = new Enhancer();
         e.setSuperclass(superClass);
         e.setCallback(interceptor);
-        return (T)e.create();
+        
+        @SuppressWarnings("unchecked") T ret = (T)e.create();
+        return ret;
     }
     
     private Subclass() {}

@@ -49,7 +49,7 @@ public class BeanChecker {
 	 * @param fromBean java bean to check if empty or not.
 	 * @param k specified class name from which the getter methods are derived. 
 	 */
-	public boolean empty(Object fromBean, Class k) {
+	public boolean empty(Object fromBean, Class<?> k) {
 		Class<?> fromClass = fromBean.getClass();
 		Method[] ma = k.getDeclaredMethods();
 		try {
@@ -110,7 +110,7 @@ public class BeanChecker {
 			BeanInfo bi_f = Introspector.getBeanInfo(fBean.getClass());
 			PropertyDescriptor[] pda_f = bi_f.getPropertyDescriptors();
 
-			Map tMap = beanGetter.getPropertyName2DescriptorMap(tBean.getClass());
+			Map<?,?> tMap = beanGetter.getPropertyName2DescriptorMap(tBean.getClass());
 
 			if (pda_f.length != tMap.size())
 				return false;

@@ -28,7 +28,7 @@ public enum BeanUtils {
      * Returns a bean name by unqalifying and decapitalizing 
      * the name of the given class. 
      */
-    public static String toBeanName(Class c) {
+    public static String toBeanName(Class<?> c) {
         return Introspector.decapitalize(ClassUtils.unqualify(c));
     }
 }

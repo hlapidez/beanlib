@@ -27,7 +27,7 @@ public class SpringUtils {
 	 * Returns a bean name by unqalifying and decapitalizing 
 	 * the name of the given class. 
 	 */
-	public String toBeanName(Class c) {
+	public String toBeanName(Class<?> c) {
 		return Introspector.decapitalize(ClassUtils.unqualify(c));
 	}
 }

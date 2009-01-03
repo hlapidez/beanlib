@@ -49,11 +49,11 @@ public class XStreamFactory
 //        this.xstream = xstream;
 //    }
 //    
-    public void registerAliases(Class[] classes) {
+    public void registerAliases(Class<?>[] classes) {
         XStream xstream = new XStream();
         xstream.setMode(XStream.ID_REFERENCES);
         
-        for (Class c : classes)
+        for (Class<?> c : classes)
             xstream.alias(ClassUtils.unqualify(c), c);
         this.xstream = xstream;
     }

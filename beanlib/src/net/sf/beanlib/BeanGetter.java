@@ -56,7 +56,7 @@ public class BeanGetter {
 		return ret == null ? (String) ret : ret.toString();
 	}
 	/** Returns the property name to descriptor map for the given bean class. */
-	public final Map getPropertyName2DescriptorMap(Class beanClass) {
+	public final Map<?,?> getPropertyName2DescriptorMap(Class<?> beanClass) {
 		Map<String,PropertyDescriptor> map = new HashMap<String,PropertyDescriptor>();
 		BeanInfo bi;
 		try {
@@ -88,7 +88,7 @@ public class BeanGetter {
 		Object v = m.invoke(bean);
 		if (v == null)
 			return result;
-		Class c = m.getReturnType();
+		Class<?> c = m.getReturnType();
 
 		return hashReturnValue(result, c, v);
 	}
@@ -99,7 +99,7 @@ public class BeanGetter {
 	 * @return the hash code by taking into account
 	 * the give value returned from a JavaBean reader method
 	 */
-	private int hashReturnValue(int hashCode, Class c, Object v) {
+	private int hashReturnValue(int hashCode, Class<?> c, Object v) {
 		if (v == null)
 			return hashCode;
 		if (c == Boolean.class) {
@@ -166,7 +166,7 @@ public class BeanGetter {
 	 * @return the hash code for the given java bean.
 	 */
 	public int getBeanHashCode(Object bean) {
-		Class beanClass = bean.getClass();
+		Class<?> beanClass = bean.getClass();
 		BeanInfo bi;
 		try {
 			bi = Introspector.getBeanInfo(beanClass);
