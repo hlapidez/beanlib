@@ -107,6 +107,7 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * @param <T> type of the given object.
      * @param from given object.
      */
+    @SuppressWarnings("unchecked")
     public final <T> T copy(T from) {
         return (T)(from == null 
                          ? null 
@@ -151,6 +152,7 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * @param from given object to be copied.
      * @return a deep clone of the from object.
      */
+    @SuppressWarnings("unchecked")
     public final <T> T deepCopy(T from) {
         return (T)(from == null 
                          ? null 
@@ -198,6 +200,7 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * @param from given object to be copied.
      * @return a shallow clone of the from object.
      */
+    @SuppressWarnings("unchecked")
     public final <T> T shallowCopy(T from) {
         return (T)(from == null 
                          ? null 

@@ -120,6 +120,7 @@ public class Hibernate3DtoCopier
     }
     
     /** Returns a DTO by deep cloning the given Hibernate "from" instance. */
+    @SuppressWarnings("unchecked")
     public <T> T hibernate2dtoFully(Object from) {
         return (T)(from == null 
                    ? null 
@@ -155,6 +156,7 @@ public class Hibernate3DtoCopier
      * 
      * @see #applicationPackagePrefix
      */
+    @SuppressWarnings("unchecked")
     public <T> T hibernate2dto(Object entityBean) 
     {
         return (T)hibernate2dto(UnEnhancer.getActualClass(entityBean), entityBean);
@@ -194,6 +196,7 @@ public class Hibernate3DtoCopier
      * 
      * @see #applicationPackagePrefix
      */
+    @SuppressWarnings("unchecked")
     public <T> T hibernate2dto(T from, 
         Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames) 
     {
@@ -341,7 +344,6 @@ public class Hibernate3DtoCopier
      * 
      * @see #applicationPackagePrefix
      */
-    @SuppressWarnings("unchecked")
     private <E> E copy(Class<E> targetEntityType, Object from, 
         Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames)
     {
@@ -377,8 +379,11 @@ public class Hibernate3DtoCopier
           .initDetailedPropertyFilter(DetailedPropertyFilter.ALWAYS_PROPAGATE)
           .initSetterMethodCollector(new ProtectedSetterMethodCollector())
           ;
-        return (E)replicator.copy(from, 
+        
+        @SuppressWarnings("unchecked") 
+        E ret = (E)replicator.copy(from, 
                                   UnEnhancer.unenhanceClass(targetEntityType));
+        return ret;
         
     }
 }
