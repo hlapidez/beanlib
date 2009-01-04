@@ -79,7 +79,7 @@ public class HibernateBeanReplicatorTestList {
         }
         // Explicitly specify not to copy any collection properties.
         {
-            Set<CollectionPropertyName> collectionPropertyNameSet = Collections.emptySet();
+            Set<CollectionPropertyName<?>> collectionPropertyNameSet = Collections.emptySet();
             Hibernate3BeanReplicator r = new Hibernate3BeanReplicator();
             r.getHibernatePropertyFilter().withCollectionPropertyNameSet(collectionPropertyNameSet);
             FooWithList toList = r.copy(fooList);
@@ -87,7 +87,7 @@ public class HibernateBeanReplicatorTestList {
         }
         // Deep copy, however, alwlays copy all collection properties regardless.
         {
-            Set<CollectionPropertyName> collectionPropertyNameSet = Collections.emptySet();
+            Set<CollectionPropertyName<?>> collectionPropertyNameSet = Collections.emptySet();
             Hibernate3BeanReplicator r = new Hibernate3BeanReplicator();
             r.getHibernatePropertyFilter().withCollectionPropertyNameSet(collectionPropertyNameSet);
             FooWithList toList = r.deepCopy(fooList);

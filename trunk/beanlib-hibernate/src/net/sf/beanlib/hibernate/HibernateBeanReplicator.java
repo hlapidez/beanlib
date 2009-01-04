@@ -226,7 +226,7 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * @return an instance of the given class with values shallow copied from the given object.
      */
     public final <T> T shallowCopy(Object from, Class<T> toClass) {
-        Set<? extends CollectionPropertyName> emptyCollectionPropertyNameSet = Collections.emptySet();
+        Set<? extends CollectionPropertyName<?>> emptyCollectionPropertyNameSet = Collections.emptySet();
         Set<Class<?>> emptyEntityBeanClassSet = Collections.emptySet();
         
         hibernateBeanTransformer.initPropertyFilter(

@@ -223,7 +223,7 @@ public class Hibernate3DtoCopier
      * @see Hibernate3DtoCopier#applicationPackagePrefix
      */
     public <E, T> E hibernate2dto(Class<E> targetEntityType, T from,
-        Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames) 
+        Class<?>[] interestedEntityTypes, CollectionPropertyName<?>[] collectionPropertyNames) 
     {
         if (from == null)
             return null;
@@ -271,7 +271,7 @@ public class Hibernate3DtoCopier
      * @see #applicationPackagePrefix
      */
     public <E> List<E> hibernate2dto(Class<E> targetEntityType, 
-        Collection<?> hibernateBeans, Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames)
+        Collection<?> hibernateBeans, Class<?>[] interestedEntityTypes, CollectionPropertyName<?>[] collectionPropertyNames)
     {
         if (hibernateBeans == null)
             return null;
@@ -345,7 +345,7 @@ public class Hibernate3DtoCopier
      * @see #applicationPackagePrefix
      */
     private <E> E copy(Class<E> targetEntityType, Object from, 
-        Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames)
+        Class<?>[] interestedEntityTypes, CollectionPropertyName<?>[] collectionPropertyNames)
     {
         if (from == null)
             return null;
@@ -362,7 +362,7 @@ public class Hibernate3DtoCopier
                 entityBeanClassSet = new HashSet<Class<?>>(Arrays.asList(interestedEntityTypes));
         }
         // Assumes all Collection properties
-        Set<CollectionPropertyName> collectionPropertyNameSet = null;
+        Set<CollectionPropertyName<?>> collectionPropertyNameSet = null;
         
         if (collectionPropertyNames != null) {
             if (collectionPropertyNames.length == 0)
@@ -370,7 +370,7 @@ public class Hibernate3DtoCopier
                 collectionPropertyNameSet = Collections.emptySet();
             else 
                 // Collection properties explicitly specified. 
-                collectionPropertyNameSet = new HashSet<CollectionPropertyName>(Arrays.asList(collectionPropertyNames));
+                collectionPropertyNameSet = new HashSet<CollectionPropertyName<?>>(Arrays.asList(collectionPropertyNames));
         }
         PropertyFilter propertyFilter = new HibernatePropertyFilter(
                                             applicationPackagePrefix, entityBeanClassSet, collectionPropertyNameSet, null);

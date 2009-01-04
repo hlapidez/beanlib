@@ -112,7 +112,7 @@ public class Hibernate3BeanReplicator extends HibernateBeanReplicator
 	 */
     public Hibernate3BeanReplicator(
             Set<Class<?>> entityBeanClassSet, 
-            Set<? extends CollectionPropertyName> collectionPropertyNameSet, PropertyFilter vetoer) 
+            Set<? extends CollectionPropertyName<?>> collectionPropertyNameSet, PropertyFilter vetoer) 
     {
         super(new Hibernate3BeanTransformer()
               .initPropertyFilter(
@@ -148,7 +148,7 @@ public class Hibernate3BeanReplicator extends HibernateBeanReplicator
     public Hibernate3BeanReplicator(
             String applicationPackagePrefix,
             Set<Class<?>> entityBeanClassSet, 
-            Set<? extends CollectionPropertyName> collectionPropertyNameSet, PropertyFilter vetoer) 
+            Set<? extends CollectionPropertyName<?>> collectionPropertyNameSet, PropertyFilter vetoer) 
     {
         super(new Hibernate3BeanTransformer()
               .initPropertyFilter(
