@@ -55,7 +55,7 @@ public class HibernatePropertyFilter implements PropertyFilter
      * eagerly fetching if necessary.
      * Null means all whereas empty means none.
      */
-    private Set<? extends CollectionPropertyName> collectionPropertyNameSet;
+    private Set<? extends CollectionPropertyName<?>> collectionPropertyNameSet;
     
     /** Used to veto the propagation of a property. */
     private PropertyFilter vetoer;
@@ -84,7 +84,7 @@ public class HibernatePropertyFilter implements PropertyFilter
      * @param vetoer used to veto the propagation of a JavaBean property.
      */
     public HibernatePropertyFilter(Set<Class<?>> entityBeanClassSet, 
-        Set<? extends CollectionPropertyName> collectionPropertyNameSet, PropertyFilter vetoer)
+        Set<? extends CollectionPropertyName<?>> collectionPropertyNameSet, PropertyFilter vetoer)
     {
         this.entityBeanClassSet = entityBeanClassSet;
         this.collectionPropertyNameSet = collectionPropertyNameSet;
@@ -114,7 +114,7 @@ public class HibernatePropertyFilter implements PropertyFilter
      * @param vetoer used to veto the propagation of a JavaBean property.
      */
     public HibernatePropertyFilter(String applicationPackagePrefix, Set<Class<?>> entityBeanClassSet, 
-        Set<? extends CollectionPropertyName> collectionPropertyNameSet, PropertyFilter vetoer)
+        Set<? extends CollectionPropertyName<?>> collectionPropertyNameSet, PropertyFilter vetoer)
     {
         this.entityBeanClassSet = entityBeanClassSet;
         this.collectionPropertyNameSet = collectionPropertyNameSet;
@@ -175,8 +175,9 @@ public class HibernatePropertyFilter implements PropertyFilter
      * null if all collection and map properties are to be replicated; 
      * or empty if no collection nor map properties are to be replicated.
      */
-    public Set<? extends CollectionPropertyName> getCollectionPropertyNameSet() {
-        return collectionPropertyNameSet;
+    @SuppressWarnings("unchecked")
+    public Set<CollectionPropertyName<?>> getCollectionPropertyNameSet() {
+        return (Set<CollectionPropertyName<?>>)collectionPropertyNameSet;
     }
 
     /**
@@ -190,7 +191,7 @@ public class HibernatePropertyFilter implements PropertyFilter
      * @return the current instance for method chaining purposes.
      */
     public HibernatePropertyFilter withCollectionPropertyNameSet(
-            Set<? extends CollectionPropertyName> collectionPropertyNameSet) 
+            Set<? extends CollectionPropertyName<?>> collectionPropertyNameSet) 
     {
         this.collectionPropertyNameSet = collectionPropertyNameSet;
         return this;
@@ -272,16 +273,13 @@ public class HibernatePropertyFilter implements PropertyFilter
         if (Collection.class.isAssignableFrom(returnType) 
         ||  Map.class.isAssignableFrom(returnType)) 
         {
+            @SuppressWarnings("unchecked")
+            CollectionPropertyName<?> colPropName = 
+                new CollectionPropertyName(
+                        UnEnhancer.unenhanceClass(readerMethod.getDeclaringClass()), propertyName); 
+
             // A Collection/Map property
-            if (collectionPropertyNameSet.contains(
-                    new CollectionPropertyName(
-                            UnEnhancer.unenhanceClass(
-                                    readerMethod.getDeclaringClass()), propertyName))) 
-            {
-                return true; 
-            }
-            // Collection/Map property not included.
-            return false;
+            return collectionPropertyNameSet.contains(colPropName);
         }
         // Not a Collection/Map property.
         return true;

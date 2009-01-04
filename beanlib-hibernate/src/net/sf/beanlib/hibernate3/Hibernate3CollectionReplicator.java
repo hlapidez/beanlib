@@ -80,7 +80,7 @@ public class Hibernate3CollectionReplicator extends CollectionReplicator {
     }
     
     @Override
-    protected Collection<Object> createToCollection(Collection<?> from) 
+    protected <T> Collection<T> createToCollection(Collection<T> from) 
         throws InstantiationException, IllegalAccessException, SecurityException, 
                 NoSuchMethodException, InvocationTargetException
     {
@@ -88,8 +88,8 @@ public class Hibernate3CollectionReplicator extends CollectionReplicator {
         
         if (isJavaPackage(fromClass)) {
             if (from instanceof SortedSet) {
-                SortedSet<?> fromSortedSet = (SortedSet<?>)from;
-                Comparator<?> toComparator = createToComparator(fromSortedSet);
+                SortedSet<T> fromSortedSet = (SortedSet<T>)from;
+                Comparator<T> toComparator = createToComparator(fromSortedSet);
                 
                 if (toComparator != null)
                     return this.createToSortedSetWithComparator(fromSortedSet, toComparator);
@@ -97,39 +97,37 @@ public class Hibernate3CollectionReplicator extends CollectionReplicator {
             return createToInstanceAsCollection(from);
         }
         if (from instanceof SortedSet) {
-            SortedSet<?> fromSortedSet = (SortedSet<?>)from;
-            
-            @SuppressWarnings("unchecked") 
-            Comparator<Object> toComparator = (Comparator<Object>)createToComparator(fromSortedSet);
+            SortedSet<T> fromSortedSet = (SortedSet<T>)from;
+            Comparator<T> toComparator = (Comparator<T>)createToComparator(fromSortedSet);
             
             if (isHibernatePackage(fromClass))
-                return new TreeSet<Object>(toComparator);
+                return new TreeSet<T>(toComparator);
             Constructor<?> constructor = fromClass.getConstructor(Comparator.class);
             Object[] initargs = {toComparator};
 
             @SuppressWarnings("unchecked") 
-            Collection<Object> ret = (Collection<Object>) constructor.newInstance(initargs);
+            Collection<T> ret = (Collection<T>) constructor.newInstance(initargs);
             return ret;
         }
         if (from instanceof Set) {
             if (isHibernatePackage(fromClass))
-                return new HashSet<Object>();
+                return new HashSet<T>();
 
             @SuppressWarnings("unchecked") 
-            Collection<Object> ret = (Collection<Object>)fromClass.newInstance();
+            Collection<T> ret = (Collection<T>)fromClass.newInstance();
             return ret;
         }
         if (from instanceof List) {
             if (isHibernatePackage(fromClass))
-                return new ArrayList<Object>(from.size());
+                return new ArrayList<T>(from.size());
 
             @SuppressWarnings("unchecked") 
-            Collection<Object> ret = (Collection<Object>)fromClass.newInstance();
+            Collection<T> ret = (Collection<T>)fromClass.newInstance();
             return ret;
         }
         // don't know what collection, so use list
         log.warn("Don't know what collection object:" + fromClass + ", so assume List.");
-        return new ArrayList<Object>(from.size());
+        return new ArrayList<T>(from.size());
     }
     
     /** Returns true if the given class has a package name that starts with "org.hibernate."; false otherwise. */
@@ -149,7 +147,7 @@ public class Hibernate3CollectionReplicator extends CollectionReplicator {
     }
 
     @Override
-    protected Object replicate(Object from)
+    protected <T> T replicate(T from)
     {
         return super.replicate(
                     UnEnhancer.unenhanceObject(from));

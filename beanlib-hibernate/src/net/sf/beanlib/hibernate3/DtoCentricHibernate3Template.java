@@ -143,10 +143,11 @@ public class DtoCentricHibernate3Template extends HibernateTemplate
         }, true);
     }
 
-    public List<?> loadByCriteria(final CriteriaSpecifiable specifier) 
+    @SuppressWarnings("unchecked")
+    public <T> List<T> loadByCriteria(final CriteriaSpecifiable specifier) 
         throws DataAccessException 
     {
-        return (List<?>)execute(new HibernateCallback() {
+        return (List<T>)execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 Criteria criteria = specifier.specify(session);
                 prepareCriteria(criteria);

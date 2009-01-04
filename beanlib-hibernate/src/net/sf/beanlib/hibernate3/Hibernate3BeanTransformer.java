@@ -75,7 +75,7 @@ public class Hibernate3BeanTransformer extends BeanTransformer
      * JavaBean, or an array.
      */
     @Override
-    protected Object replicate(Object from)
+    protected <T> T replicate(T from)
     {
         return super.replicate(
                     UnEnhancer.unenhanceObject(from));
