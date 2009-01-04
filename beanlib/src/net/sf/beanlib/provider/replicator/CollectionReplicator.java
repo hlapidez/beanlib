@@ -72,19 +72,17 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
         super(beanTransformer);
     }
     
-    public <V,T> T replicateCollection(Collection<V> from, Class<T> toClass)
+    public <V,T> T replicateCollection(Collection<V> fromCollection, Class<T> toClass)
     {
-        if (!toClass.isAssignableFrom(from.getClass()))
+        if (!toClass.isAssignableFrom(fromCollection.getClass()))
             return null;
-        Collection<Object> toCollection;
+        Collection<V> toCollection;
         try {
-            toCollection = this.createToCollection(from);
-            putTargetCloned(from, toCollection);
-            Collection<?> fromCollection = from;
-    //        hibernateInitialize(fromCollection);
+            toCollection = this.createToCollection(fromCollection);
+            putTargetCloned(fromCollection, toCollection);
             // recursively populate member objects.
-            for (Object fromMember : fromCollection) {
-                Object toMember = replicate(fromMember);
+            for (V fromMember : fromCollection) {
+                V toMember = replicate(fromMember);
                 toCollection.add(toMember);
             }
         } catch (SecurityException e) {
@@ -104,7 +102,7 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
     // Use the same comparator or otherwise ClassCastException.
     // http://sourceforge.net/forum/forum.php?thread_id=1462253&forum_id=470286
     // Thanks to Jam Flava for finding this bug.
-    protected Collection<Object> createToCollection(Collection<?> from)
+    protected <T> Collection<T> createToCollection(Collection<T> from)
         throws InstantiationException, IllegalAccessException, SecurityException, 
                 NoSuchMethodException, InvocationTargetException
     {
@@ -112,8 +110,8 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
         
         if (isJavaPackage(fromClass)) {
             if (from instanceof SortedSet) {
-                SortedSet<?> fromSortedSet = (SortedSet<?>)from;
-                Comparator<?> toComparator = createToComparator(fromSortedSet);
+                SortedSet<T> fromSortedSet = (SortedSet<T>)from;
+                Comparator<T> toComparator = createToComparator(fromSortedSet);
                 
                 if (toComparator != null)
                     return this.createToSortedSetWithComparator(fromSortedSet, toComparator);
@@ -121,57 +119,57 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
             return createToInstanceAsCollection(from);
         }
         if (from instanceof SortedSet) {
-            SortedSet<?> fromSortedSet = (SortedSet<?>)from;
-            Comparator<?> toComparator = createToComparator(fromSortedSet);
+            SortedSet<T> fromSortedSet = (SortedSet<T>)from;
+            Comparator<T> toComparator = createToComparator(fromSortedSet);
             
             Constructor<?> constructor = fromClass.getConstructor(Comparator.class);
             Object[] initargs = {toComparator};
             
             @SuppressWarnings("unchecked")
-            Collection<Object> ret = (Collection<Object>) constructor.newInstance(initargs);
+            Collection<T> ret = (Collection<T>) constructor.newInstance(initargs);
             return ret;
         }
         if (from instanceof Set
         ||  from instanceof List) 
         {
             @SuppressWarnings("unchecked")
-            Collection<Object> ret = (Collection<Object>)fromClass.newInstance();
+            Collection<T> ret = (Collection<T>)fromClass.newInstance();
             return ret;
         }
         // don't know what collection, so use list
         log.warn("Don't know what collection object:" + fromClass + ", so assume List.");
-        return new ArrayList<Object>(from.size());
+        return new ArrayList<T>(from.size());
     }
     
-    protected final Collection<Object> createToInstanceAsCollection(Collection<?> from) 
+    protected final <T> Collection<T> createToInstanceAsCollection(Collection<T> from) 
         throws InstantiationException, IllegalAccessException, NoSuchMethodException
     {
         
         if (from.getClass() == CLASS_ARRAY_ARRAYLIST) {
-            List<?> list = (List<?>)from;
-            return new ArrayList<Object>(list.size());
+            List<T> list = (List<T>)from;
+            return new ArrayList<T>(list.size());
         }
         
-        @SuppressWarnings("unchecked")
-        Collection<Object> ret = (Collection<Object>)createToInstance(from);
+        @SuppressWarnings("unchecked") Collection<T> ret = (Collection<T>)createToInstance(from);
         return ret;
     }
     
-    @SuppressWarnings("unchecked")
-    protected final SortedSet<Object> createToSortedSetWithComparator(SortedSet<?> from, Comparator<?> comparator) 
+    protected final <T> SortedSet<T> createToSortedSetWithComparator(SortedSet<T> from, Comparator<?> comparator) 
         throws NoSuchMethodException, SecurityException
     {
-        return (SortedSet<Object>)createToInstanceWithComparator(from, comparator);
+        return (SortedSet<T>)createToInstanceWithComparator(from, comparator);
     }
     
     /** Returns a replicated comparator of the given sorted set, or null if there is no comparator. */
-    protected Comparator<?> createToComparator(SortedSet<?> fromSortedSet)
+    protected <T> Comparator<T> createToComparator(SortedSet<T> fromSortedSet)
     {
-        Comparator<?> fromComparator = fromSortedSet.comparator();
-        Comparator<?> toComparator = fromComparator == null 
-                                ? null 
-                                : replicateByBeanReplicatable(fromComparator, Comparator.class)
-                                ;
-        return toComparator;
+        Comparator<? super T> fromComparator = fromSortedSet.comparator();
+        
+        if (fromComparator == null)
+            return null;
+        
+        @SuppressWarnings("unchecked")
+        Comparator<T> ret = replicateByBeanReplicatable(fromComparator, Comparator.class);
+        return ret;
     }
 }

@@ -36,115 +36,115 @@ import org.apache.log4j.Logger;
  * @author Joe D. Velopar
  */
 public class BeanChecker {
-	/** Singleton instance. */
-//	private static final boolean debug = false;
-	private final Logger log = Logger.getLogger(this.getClass());
-	private final BeanGetter beanGetter = new BeanGetter();
+    /** Singleton instance. */
+//    private static final boolean debug = false;
+    private final Logger log = Logger.getLogger(this.getClass());
+    private final BeanGetter beanGetter = new BeanGetter();
 
-	/** 
-	 * Returns true if the fromBean is empty; or false otherwise.
-	 * It is considered empty if every publicly declared getter methods of the specified class 
-	 * either return null or blank string.
-	 * 
-	 * @param fromBean java bean to check if empty or not.
-	 * @param k specified class name from which the getter methods are derived. 
-	 */
-	public boolean empty(Object fromBean, Class<?> k) {
-		Class<?> fromClass = fromBean.getClass();
-		Method[] ma = k.getDeclaredMethods();
-		try {
-			// invoking all declaring getter methods of fromBean
-			for (int i = 0; i < ma.length; i++) {
-				Method m = ma[i];
-				String name = m.getName();
-				try {
-					if (name.startsWith("get")
-						&& Modifier.isPublic(m.getModifiers())) {
-						Method getter = fromClass.getMethod(name);
-						Object attrValue = getter.invoke(fromBean);
+    /** 
+     * Returns true if the fromBean is empty; or false otherwise.
+     * It is considered empty if every publicly declared getter methods of the specified class 
+     * either return null or blank string.
+     * 
+     * @param fromBean java bean to check if empty or not.
+     * @param k specified class name from which the getter methods are derived. 
+     */
+    public boolean empty(Object fromBean, Class<?> k) {
+        Class<?> fromClass = fromBean.getClass();
+        Method[] ma = k.getDeclaredMethods();
+        try {
+            // invoking all declaring getter methods of fromBean
+            for (int i = 0; i < ma.length; i++) {
+                Method m = ma[i];
+                String name = m.getName();
+                try {
+                    if (name.startsWith("get")
+                        && Modifier.isPublic(m.getModifiers())) {
+                        Method getter = fromClass.getMethod(name);
+                        Object attrValue = getter.invoke(fromBean);
 
-						if (attrValue == null) {
+                        if (attrValue == null) {
                             continue;
-						}
-						if (attrValue instanceof String) {
-							String s = (String) attrValue;
-							s = s.trim();
+                        }
+                        if (attrValue instanceof String) {
+                            String s = (String) attrValue;
+                            s = s.trim();
 
-							if (s.length() == 0) {
-								continue;
-							}
-						}
-						return false;
-					}
-				} catch (NoSuchMethodException ignore) {
-					// ignore and proceed to the next method.
-				}
-			}
-			return true;
-		} catch (IllegalAccessException e) {
-			log.error("", e);
-			throw new BeanlibException(e);
-		} catch (SecurityException e) {
-			log.error("", e);
-			throw new BeanlibException(e);
-		} catch (InvocationTargetException e) {
-			log.error("", e.getTargetException());
-			throw new BeanlibException(e.getTargetException());
-		}
-	}
-	/** 
-	 * @param fBean from bean
-	 * @param tBean to bean
-	 * @return true if the two beans are equal in a JavaBean sense.
-	 * ie. if they have the same number of properties, 
-	 * and the properties that can be read contain the same values.
-	 * 
-	 * TODO: unit test me
-	 */
-	public boolean beanEquals(Object fBean, Object tBean) {
-		if (fBean == tBean)
-			return true;
-		if (fBean == null || tBean == null)
-			return false;
-		try {
-			BeanInfo bi_f = Introspector.getBeanInfo(fBean.getClass());
-			PropertyDescriptor[] pda_f = bi_f.getPropertyDescriptors();
+                            if (s.length() == 0) {
+                                continue;
+                            }
+                        }
+                        return false;
+                    }
+                } catch (NoSuchMethodException ignore) {
+                    // ignore and proceed to the next method.
+                }
+            }
+            return true;
+        } catch (IllegalAccessException e) {
+            log.error("", e);
+            throw new BeanlibException(e);
+        } catch (SecurityException e) {
+            log.error("", e);
+            throw new BeanlibException(e);
+        } catch (InvocationTargetException e) {
+            log.error("", e.getTargetException());
+            throw new BeanlibException(e.getTargetException());
+        }
+    }
+    /** 
+     * @param fBean from bean
+     * @param tBean to bean
+     * @return true if the two beans are equal in a JavaBean sense.
+     * ie. if they have the same number of properties, 
+     * and the properties that can be read contain the same values.
+     * 
+     * TODO: unit test me
+     */
+    public boolean beanEquals(Object fBean, Object tBean) {
+        if (fBean == tBean)
+            return true;
+        if (fBean == null || tBean == null)
+            return false;
+        try {
+            BeanInfo bi_f = Introspector.getBeanInfo(fBean.getClass());
+            PropertyDescriptor[] pda_f = bi_f.getPropertyDescriptors();
 
-			Map<?,?> tMap = beanGetter.getPropertyName2DescriptorMap(tBean.getClass());
+            Map<?,?> tMap = beanGetter.getPropertyName2DescriptorMap(tBean.getClass());
 
-			if (pda_f.length != tMap.size())
-				return false;
+            if (pda_f.length != tMap.size())
+                return false;
 
-			for (int i = pda_f.length - 1; i > -1; i--) {
-				PropertyDescriptor pd_f = pda_f[i];
-				PropertyDescriptor pd_t =
-					(PropertyDescriptor) tMap.get(pd_f.getName());
-				Method m_f = pd_f.getReadMethod();
-				Method m_t = pd_t.getReadMethod();
+            for (int i = pda_f.length - 1; i > -1; i--) {
+                PropertyDescriptor pd_f = pda_f[i];
+                PropertyDescriptor pd_t =
+                    (PropertyDescriptor) tMap.get(pd_f.getName());
+                Method m_f = pd_f.getReadMethod();
+                Method m_t = pd_t.getReadMethod();
 
-				if (m_f == null) {
-					if (m_t == null)
-						continue;
-					return false;
-				}
-				if (m_t == null)
-					return false;
-				Object v_f = m_f.invoke(fBean);
-				Object v_t = m_t.invoke(tBean);
+                if (m_f == null) {
+                    if (m_t == null)
+                        continue;
+                    return false;
+                }
+                if (m_t == null)
+                    return false;
+                Object v_f = m_f.invoke(fBean);
+                Object v_t = m_t.invoke(tBean);
 
-				if (!new EqualsBuilder().append(v_f, v_t).isEquals())
-					return false;
-			}
-			return true;
-		} catch (IntrospectionException e) {
-			log.error("", e);
-			throw new BeanlibException(e);
-		} catch (IllegalAccessException e) {
-			log.error("", e);
-			throw new BeanlibException(e);
-		} catch (InvocationTargetException e) {
-			log.error("", e.getTargetException());
-			throw new BeanlibException(e.getTargetException());
-		}
-	}
+                if (!new EqualsBuilder().append(v_f, v_t).isEquals())
+                    return false;
+            }
+            return true;
+        } catch (IntrospectionException e) {
+            log.error("", e);
+            throw new BeanlibException(e);
+        } catch (IllegalAccessException e) {
+            log.error("", e);
+            throw new BeanlibException(e);
+        } catch (InvocationTargetException e) {
+            log.error("", e.getTargetException());
+            throw new BeanlibException(e.getTargetException());
+        }
+    }
 }

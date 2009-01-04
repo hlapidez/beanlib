@@ -56,7 +56,7 @@ public class BeanGetter {
 		return ret == null ? (String) ret : ret.toString();
 	}
 	/** Returns the property name to descriptor map for the given bean class. */
-	public final Map<?,?> getPropertyName2DescriptorMap(Class<?> beanClass) {
+	public final Map<String,PropertyDescriptor> getPropertyName2DescriptorMap(Class<?> beanClass) {
 		Map<String,PropertyDescriptor> map = new HashMap<String,PropertyDescriptor>();
 		BeanInfo bi;
 		try {

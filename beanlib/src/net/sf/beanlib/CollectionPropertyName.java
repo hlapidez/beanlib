@@ -25,47 +25,51 @@ import org.apache.commons.lang.builder.EqualsBuilder;
  * 
  * @author Joe D. Velopar
  */
-public class CollectionPropertyName {
-    public static final CollectionPropertyName[] EMPTY_ARRAY = {};
-    private final Class<?> declaringClass;
+public class CollectionPropertyName<T> {
+    public static final CollectionPropertyName<?>[] EMPTY_ARRAY = {};
+    private final Class<T> declaringClass;
     private final String collectionProperty;
     private final int hashCode;
     private final BeanGetter beanGetter = new BeanGetter();
+    
     /** Convenient factory method. */
-    public static CollectionPropertyName[] createCollectionPropertyNames(Class<?> declaringClass, String[] collectionProperties)
+    public static <T> CollectionPropertyName<T>[] createCollectionPropertyNames(Class<T> declaringClass, String[] collectionProperties)
     {
-        Set<CollectionPropertyName> set = new HashSet<CollectionPropertyName>();
+        Set<CollectionPropertyName<T>> set = new HashSet<CollectionPropertyName<T>>();
         
         for (String s : collectionProperties)
-            set.add(new CollectionPropertyName(declaringClass, s));
-        return set.toArray(EMPTY_ARRAY);
+            set.add(new CollectionPropertyName<T>(declaringClass, s));
+        
+        @SuppressWarnings("unchecked")
+        CollectionPropertyName<T>[] ret = (CollectionPropertyName<T>[])set.toArray(EMPTY_ARRAY);
+        return ret;
     }
+    
     /**
      * @param declaringClass declaring class of the Collection or Map property.
      * @param collectionProperty Collection or Map property name.
      */
-    public CollectionPropertyName(Class<?> declaringClass, String collectionProperty) {
+    public CollectionPropertyName(Class<T> declaringClass, String collectionProperty) {
         this.declaringClass = declaringClass;
         this.collectionProperty = collectionProperty;
         this.hashCode = beanGetter.getBeanHashCode(this);
     }
-    public Class<?> getDeclaringClass() {
-        return declaringClass;
-    }
-    public String getCollectionProperty() {
-        return collectionProperty;
-    }
+    public Class<T> getDeclaringClass() { return declaringClass; }
+    
+    public String getCollectionProperty() {  return collectionProperty; }
+    
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof CollectionPropertyName))
             return false;
-        CollectionPropertyName that = (CollectionPropertyName)obj;
+        CollectionPropertyName<?> that = (CollectionPropertyName<?>)obj;
         return new EqualsBuilder()
                 .append(this.declaringClass, that.declaringClass)
                 .append(this.collectionProperty, that.collectionProperty)
                 .isEquals()
                 ;
     }
+    
     @Override
     public int hashCode() {
         return this.hashCode;
