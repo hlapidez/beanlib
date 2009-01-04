@@ -60,12 +60,13 @@ public abstract class ReplicatorTemplate
      * of Collection, Map, Timestamp, Date, Blob, Hibernate entity, 
      * JavaBean, or an array.
      */
-    protected Object replicate(Object from)
+    protected <T >T replicate(T from)
     {
         if (from == null)
             return null;
         try {
-            return replicate(from, from.getClass());
+            @SuppressWarnings("unchecked") T ret = (T)replicate(from, from.getClass());
+            return ret;
         } catch (SecurityException e) {
             throw new BeanlibException(e);
         }
@@ -138,10 +139,11 @@ public abstract class ReplicatorTemplate
     /**
      * Creates a target instance using the class of the given object.
      */
-    protected final Object createToInstance(Object from) 
+    @SuppressWarnings("unchecked")
+    protected final <T> T createToInstance(T from) 
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
     {
-        return createToInstance(from, from.getClass());
+        return (T)createToInstance(from, from.getClass());
     }
     
     /**
@@ -188,10 +190,11 @@ public abstract class ReplicatorTemplate
                        .populate();
     }
     
-    protected Object createToInstanceWithComparator(Object from, Comparator<?> comparator)
+    @SuppressWarnings("unchecked")
+    protected <T> T createToInstanceWithComparator(T from, Comparator<?> comparator)
         throws SecurityException, NoSuchMethodException
     {
-        return createToInstanceWithComparator(from.getClass(), comparator);
+        return (T)createToInstanceWithComparator(from.getClass(), comparator);
     }
 
     private <T> T createToInstanceWithComparator(Class<T> toClass, Comparator<?> comparator) 

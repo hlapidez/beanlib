@@ -19,7 +19,6 @@ import static net.sf.beanlib.utils.ClassUtils.isJavaPackage;
 
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -65,7 +64,7 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
     {
         if (!toClass.isAssignableFrom(from.getClass()))
             return null;
-        Map<Object, Object> toMap;
+        Map<K,V> toMap;
         try {
             toMap = createToMap(from);
         } catch (SecurityException e) {
@@ -78,28 +77,23 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
             throw new BeanlibException(e);
         }
         putTargetCloned(from, toMap);
-        Map<?,?> fromMap = from;
+        Map<K,V> fromMap = from;
         // recursively populate member objects.
-        for (Iterator<?> itr=fromMap.entrySet().iterator(); itr.hasNext(); ) {
-            Map.Entry<?,?> fromEntry = (Map.Entry<?,?>)itr.next();
-            Object fromKey = fromEntry.getKey();
-            Object fromValue = fromEntry.getValue();
-            Object toKey = replicate(fromKey);
-            Object toValue = replicate(fromValue);
-            toMap.put(toKey, toValue);
-        }
+        for (Map.Entry<K,V> fromEntry: fromMap.entrySet())
+            toMap.put(replicate(fromEntry.getKey()), 
+                      replicate(fromEntry.getValue()));
         return toClass.cast(toMap);
     }
     
-    private Map<Object,Object> createToMap(Map<?,?> from) 
+    private <K,V> Map<K,V> createToMap(Map<K,V> from) 
         throws InstantiationException, IllegalAccessException, SecurityException, NoSuchMethodException 
     {
         Class<?> fromClass = from.getClass();
         
         if (isJavaPackage(fromClass)) {
             if (from instanceof SortedMap) {
-                SortedMap<?,?> fromSortedMap = (SortedMap<?,?>)from;
-                Comparator<Object> toComparator = createToComparator(fromSortedMap);
+                SortedMap<K,V> fromSortedMap = (SortedMap<K,V>)from;
+                Comparator<K> toComparator = createToComparator(fromSortedMap);
                 
                 if (toComparator != null)
                     return this.createToSortedMapWithComparator(fromSortedMap, toComparator);
@@ -107,37 +101,35 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
             return createToInstanceAsMap(from);
         }
         if (from instanceof SortedMap) {
-            SortedMap<?,?> fromSortedMap = (SortedMap<?,?>)from;
-            Comparator<Object> toComparator = createToComparator(fromSortedMap);
-            return new TreeMap<Object,Object>(toComparator);
+            SortedMap<K,V> fromSortedMap = (SortedMap<K,V>)from;
+            Comparator<K> toComparator = createToComparator(fromSortedMap);
+            return new TreeMap<K,V>(toComparator);
         }
-        return new HashMap<Object,Object>();
+        return new HashMap<K,V>();
     }
     
-    @SuppressWarnings("unchecked")
-    private Map<Object, Object> createToInstanceAsMap(Map<?, ?> from) 
+    private <K,V> Map<K,V> createToInstanceAsMap(Map<K,V> from) 
         throws InstantiationException, IllegalAccessException, NoSuchMethodException
     {
-        return (Map<Object,Object>)createToInstance(from);
+        return createToInstance(from);
     }
     
     /** Returns a replicated comparator of the given sorted map, or null if there is no comparator. */
-    private Comparator<Object> createToComparator(SortedMap<?,?> fromSortedMap)
+    private <K,V> Comparator<K> createToComparator(SortedMap<K,V> fromSortedMap)
     {
-        Comparator<?> fromComparator = fromSortedMap.comparator();
+        Comparator<? super K> fromComparator = fromSortedMap.comparator();
+
+        if (fromComparator == null)
+            return null;
         
         @SuppressWarnings("unchecked")
-        Comparator<Object> toComparator = fromComparator == null
-                                ? null 
-                                : replicateByBeanReplicatable(fromComparator, Comparator.class)
-                                ;
+        Comparator<K> toComparator = replicateByBeanReplicatable(fromComparator, Comparator.class);
         return toComparator;
     }
 
-    @SuppressWarnings("unchecked")
-    private SortedMap<Object,Object> createToSortedMapWithComparator(SortedMap from, Comparator comparator) 
+    private <K,V> SortedMap<K,V> createToSortedMapWithComparator(SortedMap<K,V> from, Comparator<? super K> comparator) 
         throws NoSuchMethodException, SecurityException
     {
-        return (SortedMap<Object,Object>)createToInstanceWithComparator(from, comparator);
+        return createToInstanceWithComparator(from, comparator);
     }
 }
