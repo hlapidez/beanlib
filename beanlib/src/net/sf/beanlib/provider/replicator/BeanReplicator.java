@@ -18,6 +18,8 @@ package net.sf.beanlib.provider.replicator;
 import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.provider.BeanTransformer;
 import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.ChainedCustomBeanTransformer;
+import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.BeanReplicatorSpi;
 
 /**
@@ -96,6 +98,18 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
     public BeanReplicator(BeanTransformerSpi beanTransformer) 
     {
         super(beanTransformer);
+    }
+
+    /** 
+     * Convenient constructor that both defaults to use {@link BeanTransformer},
+     * and allows plugging in one or more custom bean transformer factories 
+     * that will be chained together.
+     * 
+     * @see ChainedCustomBeanTransformer
+     */
+    public BeanReplicator(CustomBeanTransformerSpi.Factory ... customTransformerFactory) 
+    {
+        super(new BeanTransformer(customTransformerFactory));
     }
     
     /**

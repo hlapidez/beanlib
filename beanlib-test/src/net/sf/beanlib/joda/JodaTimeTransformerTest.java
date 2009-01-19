@@ -21,7 +21,6 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import junit.framework.JUnit4TestAdapter;
-import net.sf.beanlib.provider.BeanTransformer;
 import net.sf.beanlib.provider.replicator.BeanReplicator;
 import net.sf.beanlib.spi.ChainedCustomBeanTransformer;
 import net.sf.beanlib.spi.TrivialCustomBeanTransformerFactories;
@@ -36,37 +35,32 @@ import org.junit.Test;
 /**
  * @author Hanson Char
  */
+
 public class JodaTimeTransformerTest {
-    
     @Test
     public void testIdentityTransformer() {
         BeanReplicator[] beanReplicators = {
-                new BeanReplicator(
-                        new BeanTransformer(
-                                new JodaTimeTransformer.Factory())),
-                new BeanReplicator(
-                        new BeanTransformer(
-                                new ChainedCustomBeanTransformer.Factory(
-                                        new JodaTimeTransformer.Factory()))),
-        };
-        
-        for (BeanReplicator beanReplicator: beanReplicators) {
+                new BeanReplicator(new JodaTimeTransformer.Factory()),
+                new BeanReplicator(new ChainedCustomBeanTransformer.Factory(new JodaTimeTransformer.Factory())), 
+            };
+
+        for (BeanReplicator beanReplicator : beanReplicators) {
             JodaTestBean from = new JodaTestBean();
             from.setDateTime(new DateTime());
             from.setDateMidnight(new DateMidnight());
             from.setLocalDate(new LocalDate());
             from.setLocalDateTime(new LocalDateTime());
             from.setLocalTime(new LocalTime());
-            
+
             JodaTestBean to = beanReplicator.replicateBean(from);
-            
+
             assertThat(from.getDateTime(), is(sameInstance(to.getDateTime())));
             assertThat(from.getDateMidnight(), is(sameInstance(to.getDateMidnight())));
             assertThat(from.getLocalDate(), is(sameInstance(to.getLocalDate())));
             assertThat(from.getLocalTime(), is(sameInstance(to.getLocalTime())));
         }
     }
-    
+
     @Test
     public void testDefaultTransformer() {
         JodaTestBean from = new JodaTestBean();
@@ -75,23 +69,23 @@ public class JodaTimeTransformerTest {
         from.setLocalDate(new LocalDate());
         from.setLocalDateTime(new LocalDateTime());
         from.setLocalTime(new LocalTime());
-        
+
         BeanReplicator beanReplicator = new BeanReplicator();
         JodaTestBean to = beanReplicator.replicateBean(from);
-        
+
         assertThat(from.getDateTime(), not(sameInstance(to.getDateTime())));
         assertThat(to.getDateTime(), not(nullValue()));
-        
+
         assertThat(from.getDateMidnight(), not(sameInstance(to.getDateMidnight())));
         assertThat(to.getDateMidnight(), not(nullValue()));
-        
+
         assertThat(from.getLocalDate(), not(sameInstance(to.getLocalDate())));
         assertThat(to.getLocalDate(), not(nullValue()));
-        
+
         assertThat(from.getLocalTime(), not(sameInstance(to.getLocalTime())));
         assertThat(to.getLocalTime(), not(nullValue()));
     }
-    
+
     @Test
     public void testNoopTransformer() {
         JodaTestBean from = new JodaTestBean();
@@ -100,50 +94,47 @@ public class JodaTimeTransformerTest {
         from.setLocalDate(new LocalDate());
         from.setLocalDateTime(new LocalDateTime());
         from.setLocalTime(new LocalTime());
-        
+
         BeanReplicator beanReplicator = new BeanReplicator(
-                                            new BeanTransformer(
-                                                    TrivialCustomBeanTransformerFactories.getNoopCustomTransformerFactory()));
+                TrivialCustomBeanTransformerFactories.getNoopCustomTransformerFactory());
         JodaTestBean to = beanReplicator.replicateBean(from);
-        
+
         assertThat(from.getDateTime(), not(sameInstance(to.getDateTime())));
         assertThat(to.getDateTime(), not(nullValue()));
-        
+
         assertThat(from.getDateMidnight(), not(sameInstance(to.getDateMidnight())));
         assertThat(to.getDateMidnight(), not(nullValue()));
-        
+
         assertThat(from.getLocalDate(), not(sameInstance(to.getLocalDate())));
         assertThat(to.getLocalDate(), not(nullValue()));
-        
+
         assertThat(from.getLocalTime(), not(sameInstance(to.getLocalTime())));
         assertThat(to.getLocalTime(), not(nullValue()));
     }
-    
+
     @Test
     public void testChainedNullTransformer() {
         BeanReplicator[] beanReplicators = {
                 new BeanReplicator(
-                        new BeanTransformer(
-                                new ChainedCustomBeanTransformer.Factory(
-                                        new JodaTimeTransformer.Factory(), 
-                                        TrivialCustomBeanTransformerFactories.getNullCustomTransformerFactory()))),
+                        new ChainedCustomBeanTransformer.Factory(
+                                new JodaTimeTransformer.Factory(),
+                                    TrivialCustomBeanTransformerFactories.getNullCustomTransformerFactory())),
                 new BeanReplicator(
-                        new BeanTransformer(
-                                new ChainedCustomBeanTransformer.Factory(
-                                        TrivialCustomBeanTransformerFactories.getNoopCustomTransformerFactory(),
-                                        TrivialCustomBeanTransformerFactories.getNullCustomTransformerFactory()))),
+                        new ChainedCustomBeanTransformer.Factory(
+                                TrivialCustomBeanTransformerFactories.getNoopCustomTransformerFactory(),
+                                TrivialCustomBeanTransformerFactories.getNullCustomTransformerFactory())), 
         };
-        
-        for (BeanReplicator beanReplicator: beanReplicators) {
+
+        for (BeanReplicator beanReplicator : beanReplicators) {
             JodaTestBean from = new JodaTestBean();
             from.setDateTime(new DateTime());
             from.setDateMidnight(new DateMidnight());
             from.setLocalDate(new LocalDate());
             from.setLocalDateTime(new LocalDateTime());
             from.setLocalTime(new LocalTime());
-            
+
             JodaTestBean to = beanReplicator.replicateBean(from);
-            
+
             assertThat(to.getDateTime(), is(nullValue()));
             assertThat(to.getDateMidnight(), is(nullValue()));
             assertThat(to.getLocalDate(), is(nullValue()));
