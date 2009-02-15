@@ -150,7 +150,7 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
             return new ArrayList<T>(list.size());
         }
         
-        @SuppressWarnings("unchecked") Collection<T> ret = (Collection<T>)createToInstance(from);
+        Collection<T> ret = createToInstance(from);
         return ret;
     }
     
