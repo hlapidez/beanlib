@@ -119,25 +119,34 @@ public class Hibernate3DtoCopier
         return new Hibernate3BeanReplicator();
     }
     
-    /** Returns a DTO by deep cloning the given Hibernate "from" instance. */
+    /** 
+     * Returns a DTO by deep cloning the application specific entities 
+     * of the given Hibernate "from" instance.
+     * <p>
+     * If you need to "blindly" deep clone the entire object graph,
+     * consider using {@link #hibernate2dto(Class, Object, Class[], CollectionPropertyName[])}
+     * specifying null for the interstedPropertyTypes and collectionPropertyNames.
+     */
     @SuppressWarnings("unchecked")
     public <T> T hibernate2dtoFully(Object from) {
         return (T)(from == null 
                    ? null 
-                   : createHibernateBeanReplicator()
-                            .initPropertyFilter(new HibernatePropertyFilter(applicationPackagePrefix))
-                            .copy(from));
+                   : createHibernateBeanReplicator().deepCopy(from));
     }
     
     /** 
-     * Returns a list of DTO's by deep cloning the given collection of Hibernate beans. 
+     * Returns a list of DTO's by deep cloning the application specific entities 
+     * of the given collection of Hibernate beans. 
+     * <p>
+     * If you need to "blindly" deep clone the entire object graph,
+     * consider using {@link #hibernate2dto(Class, Collection, Class[], CollectionPropertyName[])}
+     * specifying null for the interstedPropertyTypes and collectionPropertyNames.
      */
     public List<?> hibernate2dtoFully(Collection<?> hibernateBeans) {
         if (hibernateBeans == null)
             return null;
         List<Object> list = new ArrayList<Object>(hibernateBeans.size());
-        HibernateBeanReplicator replicator = createHibernateBeanReplicator()
-                                                .initPropertyFilter(new HibernatePropertyFilter(applicationPackagePrefix));
+        HibernateBeanReplicator replicator = createHibernateBeanReplicator();
         
         for (Object obj : hibernateBeans)
             list.add(replicator.deepCopy(obj));
