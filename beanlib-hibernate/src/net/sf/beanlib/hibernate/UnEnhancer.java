@@ -102,29 +102,14 @@ public class UnEnhancer
     }
     
     public static <T> T unenhanceObject(T object) {
-        if (object == null)
-            return null;
-        Class<?> c = object.getClass();
-        boolean enhanced = true;
-        
-        while (c != null && enhanced)
+        if (object instanceof HibernateProxy) 
         {
-            enhanced =  Enhancer.isEnhanced(c)
-                     || isJavassistEnhanced(c)
-                     ;
-            if (enhanced) 
-            {
-                if (object instanceof HibernateProxy) 
-                {
-                    HibernateProxy hibernateProxy = (HibernateProxy)object; 
-                    LazyInitializer lazyInitializer = hibernateProxy.getHibernateLazyInitializer();
-                    
-                    @SuppressWarnings("unchecked") 
-                    T ret = (T)lazyInitializer.getImplementation();
-                    return ret;
-                }
-                c = c.getSuperclass();
-            }
+            HibernateProxy hibernateProxy = (HibernateProxy)object; 
+            LazyInitializer lazyInitializer = hibernateProxy.getHibernateLazyInitializer();
+            
+            @SuppressWarnings("unchecked") 
+            T ret = (T)lazyInitializer.getImplementation();
+            return ret;
         }
         return object;
     }
