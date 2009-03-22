@@ -102,7 +102,7 @@ public abstract class HibernateBeanReplicator implements BeanPopulatorBaseSpi
      * via the init* methods.
      * <p>
      * In the case when none of the init* methods is invoked, this method behaves
-     * exactly like {@link HibernateBeanReplicator#deepCopy(Object)}.
+     * like {@link HibernateBeanReplicator#deepCopy(Object)}, but without using the {@link HibernatePropertyFilter}.
      * 
      * @param <T> type of the given object.
      * @param from given object.

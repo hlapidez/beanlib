@@ -21,7 +21,8 @@ import java.lang.reflect.Modifier;
 import net.sf.beanlib.spi.BeanMethodFinder;
 
 /**
- * Supports finding JavaBean reader method, either public or protected.
+ * Supports finding JavaBean reader method, 
+ * which is public, protected or package private.
  *   
  * @author Joe D. Velopar
  */
