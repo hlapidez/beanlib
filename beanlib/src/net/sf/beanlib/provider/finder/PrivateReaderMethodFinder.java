@@ -24,9 +24,5 @@ import java.lang.reflect.Modifier;
  * @author Joe D. Velopar
  */
 public class PrivateReaderMethodFinder extends ProtectedReaderMethodFinder {
-	@Override
-    boolean found(Method m) {
-		final int modifier = m.getModifiers();
-		return !Modifier.isStatic(modifier);
-	}
+    @Override boolean qualified(Method m, int mod) { return !Modifier.isStatic(mod); }
 }
