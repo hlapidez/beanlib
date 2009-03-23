@@ -15,6 +15,8 @@
  */
 package net.sf.beanlib.hibernate3;
 
+import static net.sf.beanlib.utils.ClassUtils.fqcn;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -103,14 +105,13 @@ public class Hibernate3DtoCopier
     {
         this.applicationPackagePrefix = applicationPackagePrefix;
         
-        if (applicationSampleClass != null) {
-            String thisPackageName = org.apache.commons.lang.ClassUtils.getPackageName(applicationSampleClass);
-                    
-            if (!thisPackageName.startsWith(applicationPackagePrefix)) {
-                throw new IllegalArgumentException(
-                    "The specified application package prefix " + applicationPackagePrefix 
-                    + " is not consistent with the given sample application class " + applicationSampleClass);
-            }
+        
+        if (applicationSampleClass != null
+        && !fqcn(applicationSampleClass).startsWith(applicationPackagePrefix))
+        {
+            throw new IllegalArgumentException(
+                "The specified application package prefix " + applicationPackagePrefix 
+                + " is not consistent with the given sample application class " + applicationSampleClass);
         }
     }
     
@@ -390,8 +391,7 @@ public class Hibernate3DtoCopier
           ;
         
         @SuppressWarnings("unchecked") 
-        E ret = (E)replicator.copy(from, 
-                                  UnEnhancer.unenhanceClass(targetEntityType));
+        E ret = (E)replicator.copy(from, UnEnhancer.unenhanceClass(targetEntityType));
         return ret;
         
     }
