@@ -15,6 +15,7 @@
  */
 package net.sf.beanlib.hibernate;
 
+import static net.sf.beanlib.utils.ClassUtils.fqcn;
 import static net.sf.beanlib.utils.ClassUtils.immutable;
 import static net.sf.beanlib.utils.ClassUtils.isJavaPackage;
 
@@ -287,10 +288,6 @@ public class HibernatePropertyFilter implements PropertyFilter
     
     /** Returns true iff c is an application class. */
     public boolean isApplicationClass(Class<?> c) {
-        if (c == null)
-            return false;
-        String pn = org.apache.commons.lang.ClassUtils.getPackageName(c);
-        // TODO: can pn ever be null ?
-        return pn.startsWith(applicationPackagePrefix);
+        return c != null && fqcn(c).startsWith(applicationPackagePrefix);
     }
 }

@@ -56,9 +56,35 @@ public enum ClassUtils {
      * Returns true if the given class is under a package that starts with "java.". 
      */
     public static boolean isJavaPackage(Class<?> c) {
+        return c != null && fqcn(c).startsWith("java.");
+    }
+
+    /**
+     * Returns true if the given class is under a package that starts with "org.hibernate.". 
+     */
+    public static boolean isHibernatePackage(Class<?> c) {
+        return c != null && fqcn(c).startsWith("org.hibernate.");
+    }
+    
+    /** 
+     * Returns the fully qualified class name of the given class
+     * but without any array prefix such as "[L";
+     * or null if the given class is null;
+     * or an empty string if the given class is a primitive array 
+     * which may be single or multiple dimensional.
+     */
+    public static String fqcn(Class<?> c) {
         if (c == null)
-            return false;
-        Package p = c.getPackage();
-        return p != null && p.getName().startsWith("java.");
+            return null;
+        String cn = c.getName();
+        
+        if (c.isArray()) {
+            int idx = cn.lastIndexOf("[");
+            return idx + 2 < cn.length()
+                 ? cn.substring(idx + 2)
+                 : ""
+                 ;
+        }
+        return cn;
     }
 }

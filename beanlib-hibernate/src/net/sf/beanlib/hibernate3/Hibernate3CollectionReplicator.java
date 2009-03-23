@@ -15,6 +15,7 @@
  */
 package net.sf.beanlib.hibernate3;
 
+import static net.sf.beanlib.utils.ClassUtils.isHibernatePackage;
 import static net.sf.beanlib.utils.ClassUtils.isJavaPackage;
 
 import java.lang.reflect.Constructor;
@@ -35,7 +36,6 @@ import net.sf.beanlib.spi.BeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
 
 import org.hibernate.Hibernate;
-
 /**
  * Hibernate 3 specific Collection Replicator.
  * 
@@ -128,12 +128,6 @@ public class Hibernate3CollectionReplicator extends CollectionReplicator {
         // don't know what collection, so use list
         log.warn("Don't know what collection object:" + fromClass + ", so assume List.");
         return new ArrayList<T>(from.size());
-    }
-    
-    /** Returns true if the given class has a package name that starts with "org.hibernate."; false otherwise. */
-    private boolean isHibernatePackage(Class<?> c) {
-        Package p = c.getPackage();
-        return p != null && p.getName().startsWith("org.hibernate.");
     }
     
     @Override
