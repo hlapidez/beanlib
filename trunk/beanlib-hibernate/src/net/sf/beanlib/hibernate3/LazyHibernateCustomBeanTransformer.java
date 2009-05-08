@@ -29,7 +29,7 @@ import org.hibernate.Hibernate;
  * Sample Usage:
  * <pre>
  * HibernateBeanReplicator replicator = new Hibernate3BeanReplicator();
- * replicator.initCustomTransformerFactory(new LazyHibernateBeanTransformer.Factory());
+ * replicator.initCustomTransformerFactory(new LazyHibernateCustomBeanTransformer.Factory());
  * replicator.deepCopy(...);
  * </pre>
  */
