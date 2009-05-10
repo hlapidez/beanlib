@@ -27,6 +27,9 @@ import org.hibernate.proxy.LazyInitializer;
  */
 public class UnEnhancer
 {
+    private static final ThreadLocal<Boolean> perThreadCheckCGLib = new ThreadLocal<Boolean>();
+    private static volatile boolean defaultCheckCGLib = true;
+
     private UnEnhancer() {}
     
     private static final String JAVASSIST_STARTWITH = "org.javassist.tmp."; 
@@ -53,7 +56,7 @@ public class UnEnhancer
         
         while (c != null && enhanced)
         {
-            enhanced =  Enhancer.isEnhanced(c)
+            enhanced =  isCheckCGLib() && Enhancer.isEnhanced(c)
                      || isJavassistEnhanced(c)
                      ;
             if (enhanced)
@@ -71,7 +74,7 @@ public class UnEnhancer
         
         while (c != null && enhanced)
         {
-            enhanced =  Enhancer.isEnhanced(c)
+            enhanced =  isCheckCGLib() && Enhancer.isEnhanced(c)
                      || isJavassistEnhanced(c)
                      ;
             if (enhanced) 
@@ -112,5 +115,43 @@ public class UnEnhancer
             return ret;
         }
         return object;
+    }
+    
+    /**
+     * Returns true if CGLib enhanced classes are to be checked by default; false otherwise.
+     */
+    public static boolean isDefaultCheckCGLib() { return defaultCheckCGLib; }
+    
+    /**
+     * Returns true if CGLib enhanced classes are to be checked; false otherwise.
+     * Note the per thread setting via {@link UnEnhancer#setCheckCGLibForThisThread(boolean)}
+     * overrides the default setting, which can be changed via {@link #setDefaultCheckCGLib(boolean)}.
+     */
+    public static boolean isCheckCGLib() {
+        final Boolean isCheckCGLib = perThreadCheckCGLib.get();
+        return isCheckCGLib == null ? defaultCheckCGLib : isCheckCGLib.booleanValue();
+    }
+
+    /** Changes the default for whether CGLib enhanced classes are to be checked or not. */
+    public static void setDefaultCheckCGLib(boolean defaultCheckCGLib) {
+        UnEnhancer.defaultCheckCGLib = defaultCheckCGLib;
+    }
+
+    /** 
+     * Changes whether CGLib enhanced classes are to be checked or not for the current thread.
+     * Don't forget to invoke {@link #clearThreadLocal()} subsequently in a finally clause.
+     * Otherwise, it is a memory leak.
+     */
+    public static void setCheckCGLibForThisThread(boolean isCheckCGLib) {
+        perThreadCheckCGLib.set(isCheckCGLib);
+    }
+    
+    /**
+     * Clears the thread local; necessary only if {@link UnEnhancer#setCheckCGLibForThisThread(boolean)}
+     * was invoked.
+     * @see #setCheckCGLibForThisThread(boolean)
+     */
+    public static void clearThreadLocal() {
+        perThreadCheckCGLib.set(null);
     }
 }
