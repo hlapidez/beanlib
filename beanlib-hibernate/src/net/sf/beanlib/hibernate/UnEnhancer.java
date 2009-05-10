@@ -24,10 +24,16 @@ import org.hibernate.proxy.LazyInitializer;
 
 /**
  * @author Joe D. Velopar
+ * @author Hanson Char
  */
 public class UnEnhancer
 {
-    private static final ThreadLocal<Boolean> perThreadCheckCGLib = new ThreadLocal<Boolean>();
+    private static ThreadLocal<Boolean> perThreadCheckCGLib;
+    
+    private static class LazyHolder {
+        private static final ThreadLocal<Boolean> perThreadCheckCGLib = new ThreadLocal<Boolean>();
+    }
+    
     private static volatile boolean defaultCheckCGLib = true;
 
     private UnEnhancer() {}
@@ -128,6 +134,8 @@ public class UnEnhancer
      * overrides the default setting, which can be changed via {@link #setDefaultCheckCGLib(boolean)}.
      */
     public static boolean isCheckCGLib() {
+        if (perThreadCheckCGLib == null)
+            return defaultCheckCGLib;
         final Boolean isCheckCGLib = perThreadCheckCGLib.get();
         return isCheckCGLib == null ? defaultCheckCGLib : isCheckCGLib.booleanValue();
     }
@@ -143,6 +151,7 @@ public class UnEnhancer
      * Otherwise, it is a memory leak.
      */
     public static void setCheckCGLibForThisThread(boolean isCheckCGLib) {
+        perThreadCheckCGLib = LazyHolder.perThreadCheckCGLib;
         perThreadCheckCGLib.set(isCheckCGLib);
     }
     
@@ -152,6 +161,7 @@ public class UnEnhancer
      * @see #setCheckCGLibForThisThread(boolean)
      */
     public static void clearThreadLocal() {
-        perThreadCheckCGLib.set(null);
+        if (perThreadCheckCGLib != null)
+            perThreadCheckCGLib.remove();
     }
 }
