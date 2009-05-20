@@ -21,6 +21,7 @@ import java.lang.reflect.Array;
 
 import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.ArrayReplicatorSpi;
 
 /**
@@ -70,14 +71,25 @@ public class ArrayReplicator extends ReplicatorTemplate implements ArrayReplicat
             return toClass.cast(to);
         }
         // non-primitive array
-        int len = Array.getLength(arrayToCopy);
-        Object to = Array.newInstance(fromComponentType, len);
+        final int len = Array.getLength(arrayToCopy);
+        final Object to = Array.newInstance(fromComponentType, len);
         putTargetCloned(arrayToCopy, to);
-        Object[] fromArray = (Object[])arrayToCopy;
-        Object[] toArray = (Object[])to;
+        final Object[] fromArray = (Object[])arrayToCopy;
+        final Object[] toArray = (Object[])to;
+        final CustomBeanTransformerSpi customTransformer = getCustomerBeanTransformer();
         // recursively populate member objects.
         for (int i=fromArray.length-1; i >= 0; i--) {
-            Object fromElement = fromArray[i];
+            final Object fromElement = fromArray[i];
+            
+            if (customTransformer != null) {
+                final Class<?> fromElementClass = fromElement.getClass();
+                
+                if (customTransformer.isTransformable(fromElement, fromElementClass, null)) {
+                    Object toElement = customTransformer.transform(fromElement, fromElementClass, null);
+                    toArray[i] = toElement;
+                    continue;
+                }
+            }
             Object toElement = replicate(fromElement);
             toArray[i] = toElement;
         }

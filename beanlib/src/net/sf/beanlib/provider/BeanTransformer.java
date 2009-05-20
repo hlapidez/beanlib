@@ -390,4 +390,6 @@ public class BeanTransformer extends ReplicatorTemplate implements BeanTransform
     public BeanMethodCollector getSetterMethodCollector() {
         return baseConfig.getSetterMethodCollector();
     }
+
+    public CustomBeanTransformerSpi getCustomBeanTransformer() { return this.customTransformer; }
 }

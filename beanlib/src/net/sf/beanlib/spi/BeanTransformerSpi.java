@@ -51,6 +51,13 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
     public BeanTransformerSpi initCustomTransformerFactory(CustomBeanTransformerSpi.Factory customTransformerFactory);
 
     /**
+     * Returns the customer bean transformer, if any.
+     * 
+     * @See {@link #initCustomTransformerFactory(net.sf.beanlib.spi.CustomBeanTransformerSpi.Factory)}
+     */
+    public CustomBeanTransformerSpi getCustomBeanTransformer();
+    
+    /**
      * Reset the internal identity maps used to contain objects that have been replicated.
      * (Warning: Don't invoke this method unless you really know what you are doing.)
      */
