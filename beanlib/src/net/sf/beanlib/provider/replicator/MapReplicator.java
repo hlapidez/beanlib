@@ -86,28 +86,43 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
         // recursively populate member objects.
         for (Map.Entry<K,V> fromEntry: fromMap.entrySet()) 
         {
-            final Object key;
             final K fromKey = fromEntry.getKey();
+            final Object key;
             
             setKey: {
+                final Object targetCloned = super.getTargetCloned(fromKey);
+                
+                if (targetCloned != null) {
+                    key = targetCloned;
+                    break setKey;
+                }
+                
                 if (customTransformer != null)
                 {
                     final Class<?> fromKeyClass = fromKey.getClass();
                     
                     if (customTransformer.isTransformable(fromKey, fromKeyClass, null)) {
                         key = customTransformer.transform(fromKey, fromKeyClass, null);
+                        super.putTargetCloned(fromKey, key);
                         break setKey;
                     }
                 }
                 key = replicate(fromKey);
+                // cloned target is already placed in the target cloned map in replicate
             }
-            final Object value;
             final V fromValue = fromEntry.getValue();
+            final Object value;
             
             setValue: {
+                final Object targetCloned = super.getTargetCloned(fromValue);
+                
+                if (targetCloned != null) {
+                    value = targetCloned;
+                    break setValue;
+                }
+
                 if (customTransformer != null)
                 {
-                    
                     if (fromValue == null) {
                         value = null;
                         break setValue;
@@ -116,10 +131,12 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
                     
                     if (customTransformer.isTransformable(fromValue, fromValueClass, null)) {
                         value = customTransformer.transform(fromValue, fromValueClass, null);
+                        super.putTargetCloned(fromValue, value);
                         break setValue;
                     }
                 }
                 value = replicate(fromValue);
+                // cloned target is already placed in the target cloned map in replicate
             }
             toMap.put(key, value);
         }

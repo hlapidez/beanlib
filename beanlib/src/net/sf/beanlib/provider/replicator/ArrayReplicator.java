@@ -80,17 +80,25 @@ public class ArrayReplicator extends ReplicatorTemplate implements ArrayReplicat
         // recursively populate member objects.
         for (int i=fromArray.length-1; i >= 0; i--) {
             final Object fromElement = fromArray[i];
+            final Object targetCloned = super.getTargetCloned(fromElement);
+            
+            if (targetCloned != null) {
+                toArray[i] = targetCloned;
+                continue;
+            }
             
             if (customTransformer != null) {
                 final Class<?> fromElementClass = fromElement.getClass();
                 
                 if (customTransformer.isTransformable(fromElement, fromElementClass, null)) {
-                    Object toElement = customTransformer.transform(fromElement, fromElementClass, null);
+                    final Object toElement = customTransformer.transform(fromElement, fromElementClass, null);
+                    super.putTargetCloned(fromElement, toElement);
                     toArray[i] = toElement;
                     continue;
                 }
             }
-            Object toElement = replicate(fromElement);
+            final Object toElement = replicate(fromElement);
+            // cloned target is already placed in the target cloned map in replicate
             toArray[i] = toElement;
         }
         return toClass.cast(toArray);
