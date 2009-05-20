@@ -29,6 +29,7 @@ import java.util.SortedSet;
 import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.CollectionReplicatorSpi;
 
 /**
@@ -76,12 +77,25 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
     {
         if (!toClass.isAssignableFrom(fromCollection.getClass()))
             return null;
-        Collection<V> toCollection;
+        final Collection<Object> toCollection;
         try {
-            toCollection = this.createToCollection(fromCollection);
+            @SuppressWarnings("unchecked")
+            final Collection<Object> col = (Collection<Object>)this.createToCollection(fromCollection);
+            
+            toCollection = col;
             putTargetCloned(fromCollection, toCollection);
+            final CustomBeanTransformerSpi customTransformer = getCustomerBeanTransformer();
             // recursively populate member objects.
             for (V fromMember : fromCollection) {
+                if (customTransformer != null) {
+                    final Class<?> fromMemberClass = fromMember.getClass();
+                    
+                    if (customTransformer.isTransformable(fromMember, fromMemberClass, null)) {
+                        Object toMember = customTransformer.transform(fromMember, fromMemberClass, null);
+                        toCollection.add(toMember);
+                        continue;
+                    }
+                }
                 V toMember = replicate(fromMember);
                 toCollection.add(toMember);
             }

@@ -26,6 +26,7 @@ import java.util.TreeMap;
 import net.jcip.annotations.ThreadSafe;
 import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 import net.sf.beanlib.spi.replicator.MapReplicatorSpi;
 
 /**
@@ -64,9 +65,12 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
     {
         if (!toClass.isAssignableFrom(from.getClass()))
             return null;
-        Map<K,V> toMap;
+        final Map<Object,Object> toMap;
         try {
-            toMap = createToMap(from);
+            @SuppressWarnings("unchecked")
+            final Map<Object,Object> m = (Map<Object,Object>)createToMap(from);
+            
+            toMap = m;
         } catch (SecurityException e) {
             throw new BeanlibException(e);
         } catch (InstantiationException e) {
@@ -77,11 +81,48 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
             throw new BeanlibException(e);
         }
         putTargetCloned(from, toMap);
-        Map<K,V> fromMap = from;
+        final Map<K,V> fromMap = from;
+        final CustomBeanTransformerSpi customTransformer = getCustomerBeanTransformer();
         // recursively populate member objects.
-        for (Map.Entry<K,V> fromEntry: fromMap.entrySet())
-            toMap.put(replicate(fromEntry.getKey()), 
-                      replicate(fromEntry.getValue()));
+        for (Map.Entry<K,V> fromEntry: fromMap.entrySet()) 
+        {
+            final Object key;
+            final K fromKey = fromEntry.getKey();
+            
+            setKey: {
+                if (customTransformer != null)
+                {
+                    final Class<?> fromKeyClass = fromKey.getClass();
+                    
+                    if (customTransformer.isTransformable(fromKey, fromKeyClass, null)) {
+                        key = customTransformer.transform(fromKey, fromKeyClass, null);
+                        break setKey;
+                    }
+                }
+                key = replicate(fromKey);
+            }
+            final Object value;
+            final V fromValue = fromEntry.getValue();
+            
+            setValue: {
+                if (customTransformer != null)
+                {
+                    
+                    if (fromValue == null) {
+                        value = null;
+                        break setValue;
+                    }
+                    final Class<?> fromValueClass = fromValue.getClass();
+                    
+                    if (customTransformer.isTransformable(fromValue, fromValueClass, null)) {
+                        value = customTransformer.transform(fromValue, fromValueClass, null);
+                        break setValue;
+                    }
+                }
+                value = replicate(fromValue);
+            }
+            toMap.put(key, value);
+        }
         return toClass.cast(toMap);
     }
     

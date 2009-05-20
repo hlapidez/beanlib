@@ -32,6 +32,7 @@ import java.util.Map;
 import net.sf.beanlib.BeanlibException;
 import net.sf.beanlib.PropertyInfo;
 import net.sf.beanlib.spi.BeanTransformerSpi;
+import net.sf.beanlib.spi.CustomBeanTransformerSpi;
 
 import org.apache.log4j.Logger;
 
@@ -52,6 +53,8 @@ public abstract class ReplicatorTemplate
     protected ReplicatorTemplate() {
         this.beanTransformer = (BeanTransformerSpi)this;
     }
+    
+    protected final CustomBeanTransformerSpi getCustomerBeanTransformer() { return beanTransformer.getCustomBeanTransformer(); }
     
     /**
      * Replicate the given from object, recursively if necessary.
