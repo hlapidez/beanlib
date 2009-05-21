@@ -79,7 +79,7 @@ Object to = new Hibernate3BeanReplicator()
 </pre>
 </li>
 <h2><li><a name="improve-performance-javassist">How can I improve performance when using Hibernate with Javassist ?</a></h2>
-<i>(This feature is currently only available if you checkout the latest from SVN.)</i>  As recommended by Eric Raymond &lt;ericraymond@gmail.com>, if Hibernate has been configured to use Javassist in stead of CGLIB, 
+<i>(This feature is currently only available if you checkout the latest from SVN.)</i>  As recommended by Eric Raymond, if Hibernate has been configured to use Javassist in stead of CGLIB, 
 you can call UnEnhancer.setDefaultCheckCGLib(false) at startup time to avoid the overhead of checking CGLIB enhanced classes. 
 This can result in substantial performance improvement.
 Note CGLIB is only used by older versions of Hibernate or in non-standard configurations of Hibernate. 
