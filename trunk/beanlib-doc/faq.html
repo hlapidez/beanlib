@@ -87,9 +87,9 @@ Modern versions of Hibernate use JavaAssist by default.
 <p>
 To maintain backward compatibility, however, Beanlib has CGLIB checking enabled by default.
 <p>
-This optimization can be configured either globally or per thread.
-<pre><blockquote>net.sf.beanlib.hibernate.UnEnhancer.setDefaultCheckCGLib(true);
-net.sf.beanlib.hibernate.UnEnhancer.setCheckCGLibForThisThread(true);</blockquote></pre>
+This optimization can be configured either globally or on a per thread basis.
+<pre><blockquote>net.sf.beanlib.hibernate.UnEnhancer.setDefaultCheckCGLib(false);
+net.sf.beanlib.hibernate.UnEnhancer.setCheckCGLibForThisThread(false);</blockquote></pre>
 </ol>
 </body>
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
