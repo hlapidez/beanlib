@@ -80,6 +80,10 @@ public class ArrayReplicator extends ReplicatorTemplate implements ArrayReplicat
         // recursively populate member objects.
         for (int i=fromArray.length-1; i >= 0; i--) {
             final Object fromElement = fromArray[i];
+            
+            if (fromElement == null)
+                continue;
+            
             final Object targetCloned = super.getTargetCloned(fromElement);
             
             if (targetCloned != null) {
