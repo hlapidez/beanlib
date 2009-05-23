@@ -57,7 +57,6 @@ public class CustomBeanTransformerSpiTest {
     static class B2 extends B {
     }
 
-    @SuppressWarnings("unused")
     private static class MyCustomBeanTransformer implements CustomBeanTransformerSpi {
         public static class Factory implements CustomBeanTransformerSpi.Factory {
           public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi beanTransformer) {
@@ -70,7 +69,7 @@ public class CustomBeanTransformerSpiTest {
           this.beanTransformer = beanTransformer;
         }
 
-        public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
+        public boolean isTransformable(Object from, Class<?> toClass, PropertyInfo propertyInfo) {
             return from != null 
                 && toClass == B.class;
         }

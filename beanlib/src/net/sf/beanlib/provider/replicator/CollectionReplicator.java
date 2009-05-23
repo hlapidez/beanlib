@@ -86,10 +86,15 @@ public class CollectionReplicator extends ReplicatorTemplate implements Collecti
             putTargetCloned(fromCollection, toCollection);
             final CustomBeanTransformerSpi customTransformer = getCustomerBeanTransformer();
             // recursively populate member objects.
-            for (V fromMember : fromCollection) {
-                final Object targetCloned = super.getTargetCloned(fromMember);
+            for (final V fromMember : fromCollection) 
+            {
+                if (fromMember == null) {
+                    toCollection.add(null);
+                    continue;
+                }
                 
-                if (targetCloned != null) {
+                if (super.containsTargetCloned(fromMember)) {
+                    final Object targetCloned = super.getTargetCloned(fromMember);
                     toCollection.add(targetCloned);
                     continue;
                 }

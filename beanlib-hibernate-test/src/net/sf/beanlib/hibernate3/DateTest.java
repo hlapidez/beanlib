@@ -84,7 +84,7 @@ public class DateTest
                         return new CustomBeanTransformerSpi() 
                         {
 
-                            public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
+                            public boolean isTransformable(Object from, Class<?> toClass, PropertyInfo propertyInfo) {
                                 return from instanceof Date && toClass == Date.class;
                             }
 

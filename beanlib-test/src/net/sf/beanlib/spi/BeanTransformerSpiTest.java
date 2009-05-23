@@ -66,7 +66,7 @@ public class BeanTransformerSpiTest {
         return beanTransformer.initCustomTransformerFactory(new CustomBeanTransformerSpi.Factory() {
             public CustomBeanTransformerSpi newCustomBeanTransformer(BeanTransformerSpi beanTransformer) {
                 return new CustomBeanTransformerSpi() {
-                    public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
+                    public boolean isTransformable(Object from, Class<?> toClass, PropertyInfo propertyInfo) {
                         return toClass == Point.class;
                     }
 

@@ -57,12 +57,13 @@ public class EnumTest {
                     {
                         return new CustomBeanTransformerSpi() 
                         {
-                            public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
+                            public boolean isTransformable(Object from, Class<?> toClass, PropertyInfo propertyInfo) {
                                 return toClass.isEnum();
                             }
     
                             public <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo) {
-                                return (T)in;
+                                @SuppressWarnings("unchecked") T ret = (T)in;
+                                return ret;
                             }
                         };
                     }

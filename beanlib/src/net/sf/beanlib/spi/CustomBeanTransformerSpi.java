@@ -120,7 +120,6 @@ public interface CustomBeanTransformerSpi extends Transformable {
      * Returns true if the given object is to be transformed by this transformer;
      * false otherwise.
      * 
-     * @param <T> target class type
      * @param from source object
      * @param propertyInfo If null, it means the in object is a root level object.
      * Otherwise, propertyInfo contains information about the input object 
@@ -128,5 +127,5 @@ public interface CustomBeanTransformerSpi extends Transformable {
      * 
      * @param toClass target class
      */
-    public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo);
+    public boolean isTransformable(Object from, Class<?> toClass, PropertyInfo propertyInfo);
 }

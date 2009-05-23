@@ -93,11 +93,13 @@ public abstract class ReplicatorTemplate
                  : null;
         }
         
-        @SuppressWarnings("unchecked")
-        T to = (T)beanTransformer.getClonedMap().get(from);
-        
-        if (to != null)
-            return to;    // already transformed.
+        if (beanTransformer.getClonedMap().containsKey(from)) 
+        {   // already transformed
+            @SuppressWarnings("unchecked")
+            T to = (T)beanTransformer.getClonedMap().get(from);
+            return to;
+            
+        }
         // Immutable e.g. String, Enum, primitvies, BigDecimal, etc.
         if (immutable(from.getClass()))
             return beanTransformer.getImmutableReplicatable()
@@ -271,12 +273,17 @@ public abstract class ReplicatorTemplate
         }));
     }
 
-    protected Object getTargetCloned(Object from)
+    protected final boolean containsTargetCloned(Object from)
+    {
+        return beanTransformer.getClonedMap().containsKey(from);
+    }
+
+    protected final Object getTargetCloned(Object from)
     {
         return beanTransformer.getClonedMap().get(from);
     }
 
-    protected Object putTargetCloned(Object from, Object to)
+    protected final Object putTargetCloned(Object from, Object to)
     {
         return beanTransformer.getClonedMap().put(from, to);
     }
