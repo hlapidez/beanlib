@@ -90,21 +90,37 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
             final Object key;
             
             setKey: {
-                final Object targetCloned = super.getTargetCloned(fromKey);
-                
-                if (targetCloned != null) {
-                    key = targetCloned;
+                if (fromKey == null) {
+                    key = null;
                     break setKey;
                 }
                 
-                if (customTransformer != null)
-                {
+                if (super.containsTargetCloned(fromKey)) {
+                    final Object targetCloned = super.getTargetCloned(fromKey);
+                    
+                    if (targetCloned != null) {
+                        key = targetCloned;
+                        break setKey;
+                    }
+                    // converting a non-null key to a null key
+                    // is likely not what the client really wants;
+                    // So let's move on (as a best effort)
+                }
+                
+                if (customTransformer != null) {
                     final Class<?> fromKeyClass = fromKey.getClass();
                     
                     if (customTransformer.isTransformable(fromKey, fromKeyClass, null)) {
-                        key = customTransformer.transform(fromKey, fromKeyClass, null);
-                        super.putTargetCloned(fromKey, key);
-                        break setKey;
+                        final Object transformed = customTransformer.transform(fromKey, fromKeyClass, null);
+                        super.putTargetCloned(fromKey, transformed);
+                        
+                        if (transformed != null) {
+                            key = transformed;
+                            break setKey;
+                        }
+                        // converting a non-null key to a null key
+                        // is likely not what the client really wants;
+                        // So let's move on (as a best effort)
                     }
                 }
                 key = replicate(fromKey);
@@ -114,19 +130,17 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
             final Object value;
             
             setValue: {
-                final Object targetCloned = super.getTargetCloned(fromValue);
-                
-                if (targetCloned != null) {
-                    value = targetCloned;
+                if (fromValue == null) {
+                    value = null;
                     break setValue;
                 }
-
-                if (customTransformer != null)
-                {
-                    if (fromValue == null) {
-                        value = null;
-                        break setValue;
-                    }
+                
+                if (super.containsTargetCloned(fromValue)) {
+                    value = super.getTargetCloned(fromValue);
+                    break setValue;
+                }
+                
+                if (customTransformer != null) {
                     final Class<?> fromValueClass = fromValue.getClass();
                     
                     if (customTransformer.isTransformable(fromValue, fromValueClass, null)) {
@@ -138,7 +152,12 @@ public class MapReplicator extends ReplicatorTemplate implements MapReplicatorSp
                 value = replicate(fromValue);
                 // cloned target is already placed in the target cloned map in replicate
             }
-            toMap.put(key, value);
+            try {
+                toMap.put(key, value);
+            } catch(RuntimeException ex) {
+                // probably due to either the key or value being null, but the target map doesn't allow it.
+                log.warn("Failed to put {" + key + "," + value + "} to " + toMap.getClass().getName(), ex);
+            }
         }
         return toClass.cast(toMap);
     }

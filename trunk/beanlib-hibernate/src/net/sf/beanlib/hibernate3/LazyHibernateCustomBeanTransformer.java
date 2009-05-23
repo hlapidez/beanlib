@@ -35,7 +35,7 @@ import org.hibernate.Hibernate;
  */
 public class LazyHibernateCustomBeanTransformer implements CustomBeanTransformerSpi 
 {
-    public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo)
+    public boolean isTransformable(Object from, Class<?> toClass, PropertyInfo propertyInfo)
     {   // apply custom transformation for the uninitialized properties 
         return !Hibernate.isInitialized(from); 
     } 

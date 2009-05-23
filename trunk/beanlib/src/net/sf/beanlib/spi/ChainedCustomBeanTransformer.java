@@ -68,7 +68,7 @@ public class ChainedCustomBeanTransformer implements CustomBeanTransformerSpi
         return this;
     }
 
-    public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
+    public boolean isTransformable(Object from, Class<?> toClass, PropertyInfo propertyInfo) {
         for (CustomBeanTransformerSpi cbt : customTransformers) {
             if (cbt.isTransformable(from, toClass, propertyInfo))
                 return true;

@@ -161,7 +161,7 @@ Bean to = replicator.replicateBean(from);
 </blockquote></pre>To get around this problem, use a custom transformer and the respective factory 
 for the Point class:
 <a name="MyBeanTransformer"><pre><blockquote>public class MyBeanTransformer implements CustomBeanTransformerSpi {
-    public  boolean isTransformable(Object from, Class toClass, PropertyInfo propertyInfo) {
+    public  boolean isTransformable(Object from, Class&lt?> toClass, PropertyInfo propertyInfo) {
         return toClass == Point.class;
     }
     

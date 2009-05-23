@@ -24,12 +24,12 @@ href="http://beanlib.svn.sourceforge.net/viewvc/beanlib/trunk/beanlib/src/net/sf
 <h2><li><a name="replicate-only-init">I would like to replicate only the initialized properties/associations in my Hibernate object graph. Is there a simple way to do this ?</a></h2>
 Yes, you can make use of a custom transformer to do that.  For example,
 <pre><blockquote>public class MyBeanTransformer implements CustomBeanTransformerSpi {
-    public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo)  
+    public boolean isTransformable(Object from, Class&lt;?> toClass, PropertyInfo propertyInfo)  
     { // apply custom transformation for the uninitialized properties 
         return !Hibernate.isInitialized(from); 
     } 
      
-    public <T> T transform(Object in, Class<T> toClass, PropertyInfo propertyInfo)  
+    public &lt;T> T transform(Object in, Class&lt;T> toClass, PropertyInfo propertyInfo)  
     { // custom transform by not replicating the uninitialized properties 
         return null; 
     } 

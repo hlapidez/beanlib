@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="lib" path="etc"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/beanlib"/>
-	<classpathentry kind="lib" path="etc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/beanlib-joda"/>
 	<classpathentry kind="lib" path="/beanlib-joda/lib/joda-time-1.5.2.jar" sourcepath="/beanlib-joda/lib/joda-time-1.5.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/junit/hamcrest-all-1.1.jar"/>

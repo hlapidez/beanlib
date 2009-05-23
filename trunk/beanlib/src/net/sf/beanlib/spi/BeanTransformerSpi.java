@@ -52,8 +52,7 @@ public interface BeanTransformerSpi extends Transformable, BeanPopulatorBaseSpi
 
     /**
      * Returns the customer bean transformer, if any.
-     * 
-     * @See {@link #initCustomTransformerFactory(net.sf.beanlib.spi.CustomBeanTransformerSpi.Factory)}
+     * See {@link BeanTransformerSpi#initCustomTransformerFactory(net.sf.beanlib.spi.CustomBeanTransformerSpi.Factory)
      */
     public CustomBeanTransformerSpi getCustomBeanTransformer();
     

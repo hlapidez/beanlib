@@ -54,7 +54,7 @@ public class JodaTimeTransformer implements CustomBeanTransformerSpi
         map.put(LocalDateTime.class, TrivialCustomBeanTransformerFactories.getIdentityCustomTransformer());
     }
     
-    public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
+    public boolean isTransformable(Object from, Class<?> toClass, PropertyInfo propertyInfo) {
         if (from == null)
             return false;
         return map.containsKey(from.getClass());

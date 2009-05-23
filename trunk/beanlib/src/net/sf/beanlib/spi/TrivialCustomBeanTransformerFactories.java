@@ -67,7 +67,7 @@ public class TrivialCustomBeanTransformerFactories {
         };
         /** Performs no custom transformation. */
         static final CustomBeanTransformerSpi SINGLETON = new CustomBeanTransformerSpi() {
-            public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
+            public boolean isTransformable(Object from, Class<?> toClass, PropertyInfo propertyInfo) {
                 return false;
             }
 
@@ -87,7 +87,7 @@ public class TrivialCustomBeanTransformerFactories {
         };
         /** Always transform to the same input instance. */
         static final CustomBeanTransformerSpi SINGLETON = new CustomBeanTransformerSpi() {
-            public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
+            public boolean isTransformable(Object from, Class<?> toClass, PropertyInfo propertyInfo) {
                 return true;
             }
 
@@ -108,7 +108,7 @@ public class TrivialCustomBeanTransformerFactories {
         };
         /** Always transform to null. */
         static final CustomBeanTransformerSpi SINGLETON = new CustomBeanTransformerSpi() {
-            public <T> boolean isTransformable(Object from, Class<T> toClass, PropertyInfo propertyInfo) {
+            public boolean isTransformable(Object from, Class<?> toClass, PropertyInfo propertyInfo) {
                 return true;
             }
 

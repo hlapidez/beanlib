@@ -83,14 +83,12 @@ public class ArrayReplicator extends ReplicatorTemplate implements ArrayReplicat
             
             if (fromElement == null)
                 continue;
-            
-            final Object targetCloned = super.getTargetCloned(fromElement);
-            
-            if (targetCloned != null) {
-                toArray[i] = targetCloned;
+
+            if (super.containsTargetCloned(fromElement)) {
+                toArray[i] = super.getTargetCloned(fromElement);
                 continue;
             }
-            
+
             if (customTransformer != null) {
                 final Class<?> fromElementClass = fromElement.getClass();
                 
