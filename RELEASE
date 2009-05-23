@@ -1,3 +1,25 @@
+beanlib 5.0.2beta
+-----------------
+* Provide native support of Calendar
+* generify: remove wild card from all return types
+* add convenient constructor to BeanReplicator for specifying custom transformer factories
+* make deepCopy consistent in Hibernate3DtoCopier for collection vs single instance
+* simplify and speed up UnEnhancer#unenhanceObject; thanks to Bruno!
+* fix ProtectedReaderMethodFinder to NOT return package private methods;
+  Thanks to Eric Raymond (ericraymond@gmail.com)
+* optimize performance of ProtectedReaderMethodFinder and PrivateReaderMethodFinder
+* fix the implementation of checking the package name of a given class;
+  Thanks to Andy Davey <as.davey@gmail.com>:
+* Add LazyHibernateCustomBeanTransformer as per David Durham <david.durham.jr@gmail.com>'s request
+* Support global and per thread configuration to enable/disable checking CGLib enhanced classes;
+  Thanks to Eric Raymond <ericraymond@gmail.com>
+* support custom bean transformation for beans in collection; 
+  Thanks to Martin <ove.martin.malm@gmail.com>
+* enhance generic signature of CustomBeanTransformerSpi#isTransformable
+* bug fixes related to handling transformed null objects
+* add unit tests for various custom bean transformations in collections, arrays and maps
+
+
 beanlib 5.0.1beta
 -----------------
 * Support initSetterMethodCollector for HibernateBeanReplicator.{deep,shallow}Copy
