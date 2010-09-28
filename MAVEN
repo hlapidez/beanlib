@@ -1,0 +1,33 @@
+You can generate the needed maven jars following these steps:
+
+# Beanlib
+
+shell> cd beanlib/trunk/beanlib
+shell> mvn clean source:jar javadoc:jar repository:bundle-create
+
+0.) Done
+1.) beanlib-5.0.2beta.jar
+2.) beanlib-5.0.2beta-javadoc.jar
+3.) beanlib-5.0.2beta-sources.jar
+
+Selection: 
+0
+# Press 0 when requested
+# The file that Maven needs is beanlib-5.0.2beta-bundle.jar (you will find it in target dir)
+
+
+# Beanlib Hibernate
+
+shell> cd beanlib/trunk/beanlib-hibernate
+shell> mvn clean source:jar javadoc:jar repository:bundle-create
+
+0.) Done
+1.) beanlib-hibernate-5.0.2beta.jar
+2.) beanlib-hibernate-5.0.2beta-javadoc.jar
+3.) beanlib-hibernate-5.0.2beta-sources.jar
+
+Selection: 
+0
+# Press 0 when requested
+# The file that Maven needs is beanlib-hibernate-5.0.2beta-bundle.jar (you will find it in target dir)
+
