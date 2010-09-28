@@ -83,7 +83,7 @@ public abstract class ReplicatorTemplate
      * of Collection, Map, Timestamp, Date, Blob, Hibernate entity, 
      * JavaBean, or an array.
      */
-    protected <T> T replicate(Object from, Class<T> toClass) 
+    protected <T> T replicate(final Object from, Class<T> toClass) 
         throws SecurityException 
     {
         if (from == null) 
@@ -92,46 +92,50 @@ public abstract class ReplicatorTemplate
                  ? ImmutableReplicator.getDefaultPrimitiveValue(toClass)
                  : null;
         }
+        final Object unenhanced = unenhanceObject(from);
         
-        if (beanTransformer.getClonedMap().containsKey(from)) 
+        if (unenhanced != from)
+            toClass = (Class<T>)unenhanced.getClass();
+        
+        if (containsTargetCloned(from)) 
         {   // already transformed
-            @SuppressWarnings("unchecked")
-            T to = (T)beanTransformer.getClonedMap().get(from);
+            @SuppressWarnings("unchecked") T to = (T)getTargetCloned(from);
             return to;
             
         }
         // Immutable e.g. String, Enum, primitvies, BigDecimal, etc.
-        if (immutable(from.getClass()))
+        if (immutable(toClass))
             return beanTransformer.getImmutableReplicatable()
-                                  .replicateImmutable(from, toClass);
+                                  .replicateImmutable(unenhanced, toClass);
         // Collection
-        if (from instanceof Collection)
+        if (unenhanced instanceof Collection<?>)
             return beanTransformer.getCollectionReplicatable()
-                                  .replicateCollection((Collection<?>)from, toClass);
+                                  .replicateCollection((Collection<?>)unenhanced, toClass);
         // Array
-        if (from.getClass().isArray())
+        if (unenhanced.getClass().isArray())
             return beanTransformer.getArrayReplicatable()
-                                  .replicateArray(from, toClass);
+                                  .replicateArray(unenhanced, toClass);
         // Map
-        if (from instanceof Map) {
+        if (unenhanced instanceof Map<?,?>) {
             @SuppressWarnings("unchecked")
             T ret = (T)beanTransformer.getMapReplicatable()
-                                      .replicateMap((Map)from, toClass);
+                                      .replicateMap((Map)unenhanced, toClass);
             return ret;
         }
         // Date or Timestamp
-        if (from instanceof Date)
+        if (unenhanced instanceof Date)
             return beanTransformer.getDateReplicatable()
-                                  .replicateDate((Date)from, toClass);
+                                  .replicateDate((Date)unenhanced, toClass);
         // Calendar
-        if (from instanceof Calendar)
+        if (unenhanced instanceof Calendar)
             return beanTransformer.getCalendarReplicatable()
-                                  .replicateCalendar((Calendar)from, toClass);
+                                  .replicateCalendar((Calendar)unenhanced, toClass);
         // Blob
-        if (from instanceof Blob)
+        if (unenhanced instanceof Blob)
             return beanTransformer.getBlobReplicatable()
-                                  .replicateBlob((Blob)from, toClass);
+                                  .replicateBlob((Blob)unenhanced, toClass);
         // Other objects
+        // Note the original from object is expected to be passed along
         return replicateByBeanReplicatable(from, toClass);
     }
     
@@ -287,4 +291,11 @@ public abstract class ReplicatorTemplate
     {
         return beanTransformer.getClonedMap().put(from, to);
     }
+    
+    /**
+     * Returns an equivalent object un-enhanced from the given object.  
+     * By default, the input object is returned.
+     * Subclass must override this method to perform any such un-enhancement, if necessary.
+     */
+    protected <T> T unenhanceObject(T object) { return object; }
 }

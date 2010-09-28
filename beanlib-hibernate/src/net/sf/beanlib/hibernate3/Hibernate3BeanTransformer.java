@@ -66,18 +66,5 @@ public class Hibernate3BeanTransformer extends BeanTransformer
         return newInstanceAsPrivileged(targetClass);
     }
     
-    /**
-     * Replicate the given from object, recursively if necessary.
-     * 
-     * 
-     * Currently a property is replicated if it is an instance
-     * of Collection, Map, Timestamp, Date, Blob, Hibernate entity, 
-     * JavaBean, or an array.
-     */
-    @Override
-    protected <T> T replicate(T from)
-    {
-        return super.replicate(
-                    UnEnhancer.unenhanceObject(from));
-    }
+    @Override protected final <T> T unenhanceObject(T from) { return UnEnhancer.unenhanceObject(from); }
 }
