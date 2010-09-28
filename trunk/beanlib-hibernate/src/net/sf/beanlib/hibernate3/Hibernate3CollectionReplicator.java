@@ -140,10 +140,5 @@ public class Hibernate3CollectionReplicator extends CollectionReplicator {
         return newInstanceAsPrivileged(targetClass);
     }
 
-    @Override
-    protected <T> T replicate(T from)
-    {
-        return super.replicate(
-                    UnEnhancer.unenhanceObject(from));
-    }
+    @Override protected final <T> T unenhanceObject(T from) { return UnEnhancer.unenhanceObject(from); }
 }
