@@ -2,6 +2,7 @@
 &cobertura;
 
 <property name="beanlib-hibernate.location" value="../beanlib-hibernate"/>
+<property name="beanlib-hibernate-test.location" value="../beanlib-hibernate-test"/>
 <property name="beanlib-test.location" value="../beanlib-test"/>
 <property name="beanlib-joda.location" value="../beanlib-joda"/>
 <property name="beanlib.location" value="../beanlib"/>

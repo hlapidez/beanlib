@@ -14,6 +14,19 @@
         <path refid="beanlib-hibernate.classpath"/>
         <path refid="beanlib-test.classpath"/>
         <pathelement location="${beanlib-hibernate.location}/lib/commons/commons-logging.jar"/>
+        <pathelement location="${beanlib-hibernate-test.location}/src"/>
+        <pathelement location="${beanlib-hibernate-test.location}/lib/asm-attrs.jar"/>
+        <pathelement location="${beanlib-hibernate-test.location}/lib/asm.jar"/>
+        <pathelement location="${beanlib-hibernate-test.location}/lib/commons-collections.jar"/>
+        <pathelement location="${beanlib-hibernate-test.location}/lib/dom4j.jar"/>
+        <pathelement location="${beanlib-hibernate-test.location}/lib/ejb3-persistence.jar"/>
+        <pathelement location="${beanlib-hibernate-test.location}/lib/hibernate-annotations-3.4.0.GA.jar"/>
+        <pathelement location="${beanlib-hibernate-test.location}/lib/hibernate-commons-annotations.jar"/>
+        <pathelement location="${beanlib-hibernate-test.location}/lib/hsqldb-1.8.0.9.jar"/>
+        <pathelement location="${beanlib-hibernate-test.location}/lib/javassist.jar"/>
+        <pathelement location="${beanlib-hibernate-test.location}/lib/jta.jar"/>
+        <pathelement location="${beanlib-hibernate-test.location}/lib/slf4j-api.jar"/>
+        <pathelement location="${beanlib-hibernate-test.location}/lib/slf4j-log4j12.jar"/>
     </path>
     <path id="mainproject.classpath">
         <pathelement location="target/classes"/>
