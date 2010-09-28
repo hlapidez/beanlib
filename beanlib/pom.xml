@@ -19,7 +19,8 @@
     </license>
   </licenses>
   <scm>
-    <url>http://svn.sourceforge.net/viewcvs.cgi/beanlib</url>
+    <connection>scm:svn:https://beanlib.svn.sourceforge.net/svnroot/beanlib</connection>
+    <url>http://beanlib.svn.sourceforge.net/viewvc/beanlib/</url>
   </scm>
   <dependencies>
     <dependency>
