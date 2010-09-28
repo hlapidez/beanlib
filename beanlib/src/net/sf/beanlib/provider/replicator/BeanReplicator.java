@@ -137,7 +137,7 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
      * 
      * @param <V> from type
      * @param <T> target type
-     * @param from from bean (after unenhancement) to be replicated
+     * @param from the original bean to be replicated
      * @param toClass target class to be instantiated
      */
     public <V,T> T replicateBean(V from, Class<T> toClass) {
@@ -183,6 +183,21 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
             throw new BeanlibException(e);
         }
         putTargetCloned(originalFrom, to);
+        // recursively populate member objects.
+        populateBean(from, to);
+        return to;
+    }
+    
+    /**
+     * Populates the properties of a "from" JavaBean object 
+     * to a target "to" JavaBean object.
+     * 
+     * @param from the bean from which the properties are to be retrieved
+     * @param to the target bean to be populated
+     */
+    public <V,T> T populate(V from, T to)
+    {
+        putTargetCloned(from, to);
         // recursively populate member objects.
         populateBean(from, to);
         return to;
