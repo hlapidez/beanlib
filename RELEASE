@@ -1,3 +1,9 @@
+beanlib 5.0.3beta
+-----------------
+* add public method BeanReplicator#populate(V, T)
+* bug fix (of duplicate cloning of the same member objects) when cloning Hibernate enhanced objects in a collection
+
+
 beanlib 5.0.2beta
 -----------------
 * Provide native support of Calendar
