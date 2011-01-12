@@ -79,6 +79,10 @@ public abstract class ReplicatorTemplate
      * Replicate the given from object, recursively if necessary, 
      * to an instance of the toClass.
      * 
+     * If, however, the from object is an enhanced object and the toClass
+     * is the same as the from object's class, the class of the un-enhanced object
+     * will be used as the toClass instead of the original toClass.
+     * 
      * Currently a property is replicated if it is an instance
      * of Collection, Map, Timestamp, Date, Blob, Hibernate entity, 
      * JavaBean, or an array.
@@ -94,8 +98,14 @@ public abstract class ReplicatorTemplate
         }
         final Object unenhanced = unenhanceObject(from);
         
-        if (unenhanced != from)
-            toClass = (Class<T>)unenhanced.getClass();
+        if (unenhanced != from
+        &&  from.getClass() == toClass) 
+        {   // The original to-class is an enhanced class:
+            // Use the un-enhanced class instead
+            @SuppressWarnings("unchecked")
+            Class<T> unenhancedClass = (Class<T>)unenhanced.getClass();
+            toClass = unenhancedClass;
+        }
         
         if (containsTargetCloned(from)) 
         {   // already transformed
