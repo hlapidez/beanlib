@@ -43,10 +43,18 @@ import net.sf.beanlib.utils.ClassUtils;
  */
 public class OrderedMethodCollector implements BeanMethodCollector  
 {
-    private final BeanMethodCollector publicSetterMethodCollector = new PublicSetterMethodCollector();
+    private final BeanMethodCollector beanMethodCollector;
+    
+    public OrderedMethodCollector() {
+        beanMethodCollector = new PublicSetterMethodCollector();
+    }
+
+    public OrderedMethodCollector(BeanMethodCollector beanMethodCollector) {
+        this.beanMethodCollector = beanMethodCollector;
+    }
     
     public Method[] collect(Object bean) {
-        Method[] ma = publicSetterMethodCollector.collect(bean);
+        Method[] ma = beanMethodCollector.collect(bean);
         List<Method> leaveMethods = new ArrayList<Method>();
         List<Method> colMethods = new ArrayList<Method>();
         
@@ -74,6 +82,6 @@ public class OrderedMethodCollector implements BeanMethodCollector
     }
 
     public String getMethodPrefix() {
-        return publicSetterMethodCollector.getMethodPrefix();
+        return beanMethodCollector.getMethodPrefix();
     }
 }
