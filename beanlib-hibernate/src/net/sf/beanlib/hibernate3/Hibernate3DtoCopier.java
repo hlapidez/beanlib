@@ -208,7 +208,7 @@ public class Hibernate3DtoCopier
      */
     @SuppressWarnings("unchecked")
     public <T> T hibernate2dto(T from, 
-        Class<?>[] interestedEntityTypes, CollectionPropertyName[] collectionPropertyNames) 
+        Class<?>[] interestedEntityTypes, CollectionPropertyName<?>[] collectionPropertyNames) 
     {
         return (T)hibernate2dto(
                     UnEnhancer.getActualClass(from), 
