@@ -25,26 +25,30 @@ import net.sf.beanlib.spi.BeanMethodFinder;
  * @author Joe D. Velopar
  */
 public class PublicReaderMethodFinder implements BeanMethodFinder {
-	public Method find(final String propertyName, Object bean) {
-		String s= propertyName;
-		
-		if (Character.isLowerCase(propertyName.charAt(0))) {
-			s = propertyName.substring(0, 1).toUpperCase();
-			
-			if (propertyName.length() > 1)
-				s += propertyName.substring(1);
-		}
-		Class<?> beanClass = bean.getClass();
-		try {
-			// Find the public member method of the class or interface,
-			// recursively on super classes and interfaces as necessary.
-			return beanClass.getMethod("get" + s);
-		} catch (NoSuchMethodException ignore) {
-		}
-		try {
-			return beanClass.getMethod("is" + s);
-		} catch (NoSuchMethodException ignore) {
-		}
-		return null;
-	}
+    public Method find(final String propertyName, Object bean) {
+        String s= propertyName;
+        
+        if (Character.isLowerCase(propertyName.charAt(0))) {
+            s = propertyName.substring(0, 1).toUpperCase();
+            
+            if (propertyName.length() > 1)
+                s += propertyName.substring(1);
+        }
+        Class<?> beanClass = bean.getClass();
+        try {
+            // Find the public member method of the class or interface,
+            // recursively on super classes and interfaces as necessary.
+            Method m = beanClass.getMethod("get" + s);
+            if (m.getParameterTypes().length == 0)
+                return m;
+        } catch (NoSuchMethodException ignore) {
+        }
+        try {
+            Method m = beanClass.getMethod("is" + s);
+            if (m.getParameterTypes().length == 0)
+                return m;
+        } catch (NoSuchMethodException ignore) {
+        }
+        return null;
+    }
 }
