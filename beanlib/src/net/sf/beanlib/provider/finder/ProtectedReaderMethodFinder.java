@@ -68,6 +68,7 @@ public class ProtectedReaderMethodFinder implements BeanMethodFinder {
     protected boolean qualified(Method m, int mod) {
         return (Modifier.isPublic(mod) || Modifier.isProtected(mod)) 
             && !Modifier.isStatic(mod)
+            && m.getParameterTypes().length == 0
             ;
     }
 }
