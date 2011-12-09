@@ -168,7 +168,7 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
         if (fromClassName.startsWith("java.")) {
             if (!toClass.isAssignableFrom(fromClass))
                 return null;
-            // https://sourceforge.net/tracker/index.php?func=detail&aid=3453206&group_id=140152&atid=745598#
+            // https://sourceforge.net/tracker/?func=detail&aid=3453166&group_id=140152&atid=745598
             if (fromClass == Class.class) { // "from" is a class per se
                 @SuppressWarnings("unchecked") T t =(T)from;
                 return t;
