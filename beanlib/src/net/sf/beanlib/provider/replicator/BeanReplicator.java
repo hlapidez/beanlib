@@ -153,8 +153,8 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
      * @param <T> target type
      * @param from from bean (after unenhancement) to be replicated
      * @param toClass target class to be instantiated
-     * @param originalFrom the original from bean before any "unehancement"
-     * @return an instance of the  replicated bean
+     * @param originalFrom the original from bean before any "unenhancement"
+     * @return an instance of the replicated bean
      */
     protected <V,T> T replicateBean(V from, Class<T> toClass, V originalFrom)
     {
@@ -168,19 +168,32 @@ public class BeanReplicator extends ReplicatorTemplate implements BeanReplicator
         if (fromClassName.startsWith("java.")) {
             if (!toClass.isAssignableFrom(fromClass))
                 return null;
+            // https://sourceforge.net/tracker/index.php?func=detail&aid=3453206&group_id=140152&atid=745598#
+            if (fromClass == Class.class) { // "from" is a class per se
+                @SuppressWarnings("unchecked") T t =(T)from;
+                return t;
+            }
             // Sorry, don't really know what it is ... soldier on...
         }
         T to;
         try {
             to = createToInstance(from, toClass);
         } catch (SecurityException e) {
-            throw new BeanlibException(e);
+            throw new BeanlibException("BeanReplicator.replicateBean failed:" 
+                + " toClass=" + toClass + ", from=" + from
+                +", originalFrom=" + originalFrom, e);
         } catch (InstantiationException e) {
-            throw new BeanlibException(e);
+            throw new BeanlibException("BeanReplicator.replicateBean failed:" 
+                + " toClass=" + toClass + ", from=" + from
+                +", originalFrom=" + originalFrom, e);
         } catch (IllegalAccessException e) {
-            throw new BeanlibException(e);
+            throw new BeanlibException("BeanReplicator.replicateBean failed:" 
+                + " toClass=" + toClass + ", from=" + from
+                +", originalFrom=" + originalFrom, e);
         } catch (NoSuchMethodException e) {
-            throw new BeanlibException(e);
+            throw new BeanlibException("BeanReplicator.replicateBean failed:" 
+                + " toClass=" + toClass + ", from=" + from
+                +", originalFrom=" + originalFrom, e);
         }
         putTargetCloned(originalFrom, to);
         // recursively populate member objects.
