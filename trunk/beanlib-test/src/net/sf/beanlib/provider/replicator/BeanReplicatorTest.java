@@ -18,11 +18,13 @@ package net.sf.beanlib.provider.replicator;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.JUnit4TestAdapter;
@@ -35,6 +37,8 @@ import org.junit.Test;
 public class BeanReplicatorTest 
 {
     public static class ComplexBean {
+        private Class<?> clazz;
+
         private String name;
         private ComplexBean[] array;
         private Collection<ComplexBean> collection;
@@ -54,6 +58,9 @@ public class BeanReplicatorTest
     
         public Map<String, ComplexBean> getMap() { return map; }
         public void setMap(Map<String, ComplexBean> map) { this.map = map; }
+
+        public Class<?> getClazz() { return clazz; }
+        public void setClazz(Class<?> clazz) { this.clazz = clazz; }
     }
     
     @Test
@@ -66,6 +73,7 @@ public class BeanReplicatorTest
         Map<String,ComplexBean> map = new HashMap<String,ComplexBean>();
         map.put(from.getName(), from);
         from.setMap(map);
+        from.setClazz(List.class);
         
         ComplexBean to = new BeanReplicator().replicateBean(from);
         
@@ -83,6 +91,7 @@ public class BeanReplicatorTest
         assertThat(to.getCollection().size(), is(1));
         assertThat(to.getMap().get(to.getName()), sameInstance(to));
         assertThat(to.getMap().size(), is(1));
+        assertSame(to.getClazz(), List.class);
     }
     
     public static junit.framework.Test suite() {
