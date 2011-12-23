@@ -1,8 +1,14 @@
+beanlib 5.0.5
+-------------
+* Bug fixes in ReplicatorTemplate, ProtectedReaderMethodFinder and OrderedMethodCollector.
+  Thanks to Donnchadh
+* Return getter methods only if there is zero parameters.  Thanks to smithcolina at gmail dot com.
+* Allow property of type Class<?> to be replicated.  Thanks to Mark Butcher.
+
 beanlib 5.0.3beta
 -----------------
 * add public method BeanReplicator#populate(V, T)
 * bug fix (of duplicate cloning of the same member objects) when cloning Hibernate enhanced objects in a collection
-
 
 beanlib 5.0.2beta
 -----------------
@@ -24,7 +30,6 @@ beanlib 5.0.2beta
 * enhance generic signature of CustomBeanTransformerSpi#isTransformable
 * bug fixes related to handling transformed null objects
 * add unit tests for various custom bean transformations in collections, arrays and maps
-
 
 beanlib 5.0.1beta
 -----------------
