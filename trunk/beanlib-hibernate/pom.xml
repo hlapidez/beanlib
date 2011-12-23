@@ -7,7 +7,7 @@
   <groupId>net.sf.beanlib</groupId>
   <artifactId>beanlib-hibernate</artifactId>
   <packaging>jar</packaging>
-  <version>5.0.3beta</version>
+  <version>5.0.5</version>
   <name>Java Bean Library for Hibernate</name>
   <url>http://beanlib.sourceforge.net/</url>
   <description>
@@ -30,7 +30,7 @@
     <dependency>
       <groupId>net.sf.beanlib</groupId>
       <artifactId>beanlib</artifactId>
-      <version>5.0.3beta</version>
+      <version>5.0.5</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
