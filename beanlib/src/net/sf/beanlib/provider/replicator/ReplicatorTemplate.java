@@ -111,10 +111,10 @@ public abstract class ReplicatorTemplate
         {   // already transformed
             @SuppressWarnings("unchecked") T to = (T)getTargetCloned(from);
             return to;
-            
         }
+        // https://sourceforge.net/tracker/?func=detail&atid=745596&aid=3496862&group_id=140152
         // Immutable e.g. String, Enum, primitvies, BigDecimal, etc.
-        if (immutable(toClass))
+        if (immutable(toClass) || immutable(unenhanced.getClass()))
             return beanTransformer.getImmutableReplicatable()
                                   .replicateImmutable(unenhanced, toClass);
         // Collection
